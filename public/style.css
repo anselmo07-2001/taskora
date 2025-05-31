@@ -1,0 +1,12 @@
+:root {
+    --main-primary-color: #EDFAFD;
+}
+
+
+.navbar-custom {
+    background-color: var(--main-primary-color);
+}
+
+.navbar-logo {
+    width: ;
+}
