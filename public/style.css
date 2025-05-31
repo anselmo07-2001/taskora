@@ -1,12 +1,40 @@
 :root {
-    --main-primary-color: #EDFAFD;
+    --main-bg-color: #EDFAFD;
+    --main-primary-color: #7ECBF6;
+    --main-primary-color-hover: #71b8e0;
 }
 
+
+
+ /*****************************************/
+ /* Navigation */
 
 .navbar-custom {
-    background-color: var(--main-primary-color);
+    background-color: var(--main-bg-color);
 }
 
-.navbar-logo {
-    width: ;
+.custom-logo {
+    width: 9rem;
+    height: 2.3rem;
 }
+
+.login-custom {
+    margin-top: 7rem;
+}
+
+.btn.custom-primary-btn {
+    background-color: var(--main-primary-color); 
+    color: #fff;
+}
+
+.btn.custom-primary-btn:hover,
+.btn.custom-primary-btn:focus {
+    background-color: var(--main-primary-color-hover); 
+    color: #fff;
+}
+
+
+/***********************************************
+
+
+
