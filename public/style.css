@@ -13,6 +13,7 @@
     color: #fff;
 }
 
+
 .btn.custom-primary-btn:hover,
 .btn.custom-primary-btn:focus {
     background-color: var(--main-primary-color-hover); 
@@ -114,3 +115,23 @@ p.card-title {
   position: relative;
   top: -1rem;
 }
+
+/*************************************************/
+/**** Create project form and create account form **/
+
+.card.custom-form-container {
+    box-shadow: 0 0 2px 1px #7ECBF6;
+}
+
+a.my-bg-iconform-color-primary,
+span.my-bg-iconform-color-primary {
+    background-color: var(--main-primary-color); 
+}
+
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    display: none;
+}
+
+
