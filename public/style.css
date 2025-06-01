@@ -23,6 +23,11 @@
      background-color: var(--main-bg-color);
 }
 
+.custom-icon-small-size {
+    height: 1rem;
+    width: 1rem;
+}
+
 
  /*****************************************/
  /* Navigation */
@@ -50,6 +55,10 @@ button:active .custom-icon-manage-account-btn {
     filter: invert(0);
 }
 
+.custom-logout-btn {
+    position: relative;
+    right: -0.5rem;
+}
 
 
 

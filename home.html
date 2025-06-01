@@ -14,10 +14,19 @@
                 <img src="./public/images/taskora.png" alt="Logo" class="custom-logo" class="d-inline-block align-text-top">
             </a>
 
-            <button class="btn custom-primary-btn d-flex align-items-center gap-2">
-                <img src="./public/images/user.png" class="custom-icon-manage-account-btn"/>
-                Manage Account
-            </button>
+            <div class="dropdown">
+                <button class="btn custom-primary-btn d-flex align-items-center gap-2"
+                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="./public/images/user.png" class="custom-icon-manage-account-btn"/>
+                    Manage Account
+                </button>
+                 <ul class="dropdown-menu mt-2">
+                    <li class="text-center">
+                         <image src="./public/images/power-off.png" class="custom-icon-small-size custom-logout-btn"/>
+                         <a href="login.html" class="btn">Logout</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
