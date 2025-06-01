@@ -58,8 +58,35 @@ button:active .custom-icon-manage-account-btn {
 /* Home Page */
 
 .container.custom-main-header {
-     margin-top: 4rem;
-     padding-left: 10rem;
-     padding-right: 10rem;
+    margin-top: 4rem;
+    padding-left: 2rem;   /* mobile default smaller padding */
+    padding-right: 2rem;
 }
 
+/* Tablets and up (md: 768px) */
+@media (min-width: 768px) {
+    .container.custom-main-header {
+        padding-left: 5rem;
+        padding-right: 5rem;
+    }
+}
+
+/* Desktops and up (lg: 992px) */
+@media (min-width: 992px) {
+    .container.custom-main-header {
+        padding-left: 10rem;
+        padding-right: 10rem;
+    }
+}
+
+/* Anything above 1200px applied this class */
+@media (min-width: 1200px) {
+    p.card-title {
+        font-size: 1.25rem !important;
+    }
+}
+
+/* mobile/ tablet default smaller font */
+p.card-title {
+    font-size: 1.10rem !important;
+}
