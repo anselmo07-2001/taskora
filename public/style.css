@@ -134,4 +134,31 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: none;
 }
 
+/*********************************************************/
+/** Show all Project Page **/
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    --bs-table-striped-bg: var(--main-bg-color);  /* your custom light blue */
+    color: #000;
+}
+
+th {
+  font-weight: normal;
+}
+
+a.my-manage-btn {
+  padding: 0.40rem 0.60rem;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+
+button.filter-form-btn {
+  padding: 0.40rem 0.60rem;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+
+
 
