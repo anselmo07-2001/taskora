@@ -3,13 +3,13 @@
 $driver   = 'mysql';
 $host     = 'localhost';
 $port     = '3307'; 
-$dbname   = 'myapp';
+$dbname   = 'db_taskora';
 $charset  = 'utf8mb4';
 
 $dsn = "$driver:host=$host;port=$port;dbname=$dbname;charset=$charset";
 
-$username = 'your_db_user';
-$password = 'your_db_password';
+$username = 'root';
+$password = '';
 
 try {
     $pdo = new PDO($dsn, $username, $password, [
