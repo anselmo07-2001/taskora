@@ -12,9 +12,10 @@ $container->bind("loginController", function() {
 });
 
 
-$page = isset($_GET["page"]) ? isset($_GET["page"]) : "";
+$page = isset($_GET["page"]) ? $_GET["page"] : "";
 $subPage = $_GET['subPage'] ?? '';
 $method = $_SERVER["REQUEST_METHOD"];
+  
 
 if ($page === "") {
     $page = "login";
@@ -40,7 +41,13 @@ if (isset($routes[$page][$method])) {
     // }
 
     $controller = $container->get($route['controller']);
-    $controller->{$route['method']}($_GET);
+
+    $request = [
+        'get' => $_GET,
+        "post" => $_POST
+    ];
+
+    $controller->{$route['method']}($request);
     exit;
 }
 
