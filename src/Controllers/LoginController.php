@@ -2,9 +2,9 @@
 
 namespace App\Controllers;
 
-class LoginController {
+class LoginController extends AbstractController {
     
     public function showLoginPage() {
-        echo "show login pages";
+        $this->render("login.view", []);
     }
 }
