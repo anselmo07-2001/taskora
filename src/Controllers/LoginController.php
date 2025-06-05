@@ -2,10 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Repository\UserRespository;
 use App\Support\Validation;
 
 class LoginController extends AbstractController {
-    
+
+    public function __construct(protected UserRespository $userRespository){}
+
     public function showLoginPage() {
         $this->render("login.view", []);
     }
@@ -29,6 +32,9 @@ class LoginController extends AbstractController {
             exit;
         }
 
-        echo "login";
+        //check if the username exist
+        $username = $this->userRespository->findByUsername($username);
+
+        var_dump($username);
     }
 }

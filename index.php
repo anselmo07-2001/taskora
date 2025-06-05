@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 require __DIR__ . "/inc/all.inc.php";
 
@@ -7,9 +8,19 @@ $container = new \App\Support\Container();
 $container->bind("pdo", function() {
     return require __DIR__ . "/inc/db-connect.inc.php";
 });
-$container->bind("loginController", function() {
-    return new \App\Controllers\LoginController();
+$container->bind("userRepository", function() use($container) {
+    $pdo = $container->get("pdo");
+    return new \App\Repository\UserRespository($pdo);
 });
+
+
+$container->bind("loginController", function() use($container) {
+    $userRespository = $container->get("userRepository");
+    return new \App\Controllers\LoginController($userRespository);
+});
+
+
+
 
 
 $page = isset($_GET["page"]) ? $_GET["page"] : "";
