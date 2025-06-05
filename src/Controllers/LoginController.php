@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Support\Validation;
+
 class LoginController extends AbstractController {
     
     public function showLoginPage() {
@@ -9,10 +11,24 @@ class LoginController extends AbstractController {
     }
 
     public function handleLogin($request) {
-        $username = $request["post"]["username"];
+        $username = sanitize($request["post"]["username"]);
         $password = $request["post"]["password"];
 
-        echo $username;
-        echo $password;
+        $errors = [];
+
+        if (empty($username)) {
+            $errors["usernameErr"] = "Please enter a username. This field is required";
+        }
+
+        if (!Validation::string($password, 3, 50)) {
+             $errors["passwordErr"] = "Please password must at least 3 characters long";
+        }
+   
+        if (!empty($errors)) {
+            $this->render("login.view", $errors);
+            exit;
+        }
+
+        echo "login";
     }
 }

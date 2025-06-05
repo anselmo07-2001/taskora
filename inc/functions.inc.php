@@ -14,6 +14,11 @@ function e($value) {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
+function sanitize($dirty)
+{
+    return filter_var(trim($dirty), FILTER_SANITIZE_SPECIAL_CHARS);
+}
+
 
 
 
