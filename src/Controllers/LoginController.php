@@ -14,8 +14,8 @@ class LoginController extends AbstractController {
     }
 
     public function handleLogin($request) {
-        $username = sanitize($request["post"]["username"]);
-        $password = $request["post"]["password"];
+        $username = sanitize($request["post"]["username"]) ?? "";
+        $password = trim($request["post"]["password"]) ?? "";
 
         $errors = [];
 
@@ -28,13 +28,34 @@ class LoginController extends AbstractController {
         }
    
         if (!empty($errors)) {
-            $this->render("login.view", $errors);
+            $this->render("login.view", [
+                "errors" => $errors
+            ]);
             exit;
         }
 
         //check if the username exist
-        $username = $this->userRespository->findByUsername($username);
+        $user = $this->userRespository->findByUsername($username);
 
-        var_dump($username);
+        if (empty($user)) {
+            $errors["usernameErr"] = "No records found for the given username";
+            $this->render("login.view", [
+                "errors" => $errors
+            ]);
+            exit;
+        }
+
+        
+        // check the password
+        if (!password_verify($password, $user->password)) {
+             $errors["passwordErr"] = "Invalid Credentials";
+
+              $this->render("login.view", [
+                "errors" => $errors
+            ]);
+             exit;
+       }
+
+       echo "login";
     }
 }
