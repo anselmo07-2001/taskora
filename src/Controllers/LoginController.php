@@ -14,6 +14,11 @@ class LoginController extends AbstractController {
         $this->render("login.view", []);
     }
 
+    public function handleLogout() {
+        SessionService::removeAllSessionData();
+        header("Location: index.php" );
+    }
+
     public function handleLogin($request) {
         $username = sanitize($request["post"]["username"]) ?? "";
         $password = trim($request["post"]["password"]) ?? "";

@@ -22,8 +22,10 @@
                 </button>
                  <ul class="dropdown-menu mt-2">
                     <li class="text-center">
-                         <image src="./public/images/power-off.png" class="custom-icon-small-size custom-logout-btn"/>
-                         <a href="login.html" class="btn">Logout</a>
+                        <form method="POST" action="<?php echo BASE_URL . "/index.php?page=logout"; ?>" >
+                            <image src="./public/images/power-off.png" class="custom-icon-small-size custom-logout-btn"/>
+                            <button href="login.html" class="btn">Logout</button>
+                        </form>
                     </li>
                 </ul>
             </div>
