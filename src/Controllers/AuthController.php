@@ -19,6 +19,10 @@ class AuthController extends AbstractController {
         header("Location: index.php" );
     }
 
+    public function showCreateAccountPage() {
+        $this->render("createAccount.view", []);
+    }
+
     public function handleLogin($request) {
         $username = sanitize($request["post"]["username"]) ?? "";
         $password = trim($request["post"]["password"]) ?? "";

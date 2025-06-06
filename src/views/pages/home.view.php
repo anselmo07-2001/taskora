@@ -122,7 +122,7 @@
                                 <img src="./public/images/add-friend.png" class="w-50 mb-2"/>
                                 <p class="card-title fs-5">Create Account</p>
                             </div>
-                            <a href="createAccount.html" class="btn custom-primary-btn">Open</a>
+                            <a href="<?php echo BASE_URL . "/index.php?page=createAccount" ?>" class="btn custom-primary-btn">Open</a>
                         </div>
                     </div>
                 <?php endif; ?>
