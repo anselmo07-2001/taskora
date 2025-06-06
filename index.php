@@ -48,14 +48,15 @@ if (isset($routes[$page][$method])) {
         exit;
     }
 
-    // if (!empty($route['roles'])) {
-    //     $role = getCurrentUserRole();s
-    //     if (!in_array($role, $route['roles'])) {
-    //         http_response_code(403);
-    //         echo "Forbidden";
-    //         exit;
-    //     }
-    // }
+    // only allow roles to go in a specific page
+    if (!empty($route['roles'])) {
+        $role = SessionService::getSessionKey("user")["role"];
+        if (!in_array($role, $route['roles'])) {
+            http_response_code(403);
+            echo "Forbidden";
+            exit;
+        }
+    }
 
     $controller = $container->get($route['controller']);
 

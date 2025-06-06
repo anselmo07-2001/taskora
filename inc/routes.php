@@ -9,6 +9,6 @@ $routes = [
         "POST" => ["controller" => "AuthController", "method" => "handleLogout"]
     ],
     "home" => [
-        "GET" => ["controller" => "homeController",  "method" => "showHomePage", "auth" => true, "roles" => ["admin, project_manager, member"]]
+        "GET" => ["controller" => "homeController",  "method" => "showHomePage", "auth" => true, "roles" => ["admin", "project_manager", "member"]]
     ],
 ];

@@ -1,12 +1,12 @@
 
 <div class="container custom-container">
-        <h1>Hi, <?php echo e($user["name"]); ?> <sup class="sup-lift fs-6 text-muted"><?= $user["role"] !== "Admin" ? "({$user['role']})" : "" ?></sup> </h1>
+        <h1>Hi, <?php echo e($user["name"]); ?> <sup class="sup-lift fs-6 text-muted"><?= $user["role"] !== "admin" ? "(" . ucwords(str_replace('_', ' ', $user["role"])) . ")" : "" ?></sup> </h1>
         <hr class="border-primary border-2">
     
         <div class="container mt-5">
             <div class="row mb-4">
                 <div class="col-12 col-md-6 col-lg-4 mb-3">
-                   <div class="card custom-card border rounded shadow p-3 lift-hover">
+             <div class="card custom-card border rounded shadow p-3 lift-hover">
                         <div class="card-body d-flex flex-column align-items-center">
                             <img src="./public/images/scope.png" class="w-50 mb-2"/>
                             <p class="card-title fs-5">Projects</p>
