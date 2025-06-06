@@ -6,7 +6,7 @@ use App\Repository\UserRespository;
 use App\Support\Validation;
 use App\Support\SessionService;
 
-class LoginController extends AbstractController {
+class AuthController extends AbstractController {
 
     public function __construct(protected UserRespository $userRespository){}
 

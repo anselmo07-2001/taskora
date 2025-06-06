@@ -2,11 +2,11 @@
 
 $routes = [
     "login" => [
-        "GET" => ["controller" => "loginController",  "method" => "showLoginPage"],
-        "POST" => ["controller" => "loginController", "method"=> "handleLogin"],
+        "GET" => ["controller" => "AuthController",  "method" => "showLoginPage"],
+        "POST" => ["controller" => "AuthController", "method"=> "handleLogin"],
     ],
     "logout" => [
-        "POST" => ["controller" => "loginController", "method" => "handleLogout"]
+        "POST" => ["controller" => "AuthController", "method" => "handleLogout"]
     ],
     "home" => [
         "GET" => ["controller" => "homeController",  "method" => "showHomePage", "auth" => true, "roles" => ["admin, project_manager, member"]]

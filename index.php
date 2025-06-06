@@ -16,9 +16,9 @@ $container->bind("userRepository", function() use($container) {
 });
 
 
-$container->bind("loginController", function() use($container) {
+$container->bind("AuthController", function() use($container) {
     $userRespository = $container->get("userRepository");
-    return new \App\Controllers\LoginController($userRespository);
+    return new \App\Controllers\AuthController($userRespository);
 });
 $container->bind("homeController", function() {
     return new \App\Controllers\HomeController();
@@ -44,7 +44,7 @@ if (isset($routes[$page][$method])) {
     $route = $routes[$page][$method];
 
     if (!empty($route['auth']) && !SessionService::getSessionKey('user')) {
-        $container->get('loginController')->showLoginPage();
+        $container->get('AuthController')->showLoginPage();
         exit;
     }
 
