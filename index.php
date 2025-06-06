@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 require __DIR__ . "/inc/all.inc.php";
 
+use \App\Support\SessionService;
+
 $container = new \App\Support\Container();
 
 $container->bind("pdo", function() {
@@ -18,10 +20,14 @@ $container->bind("loginController", function() use($container) {
     $userRespository = $container->get("userRepository");
     return new \App\Controllers\LoginController($userRespository);
 });
+$container->bind("homeController", function() {
+    return new \App\Controllers\HomeController();
+});
 
 
 
 
+SessionService::startSessionIfNotStarted();
 
 $page = isset($_GET["page"]) ? $_GET["page"] : "";
 $subPage = $_GET['subPage'] ?? '';
@@ -37,13 +43,13 @@ if ($page === "") {
 if (isset($routes[$page][$method])) {
     $route = $routes[$page][$method];
 
-    // if (!empty($route['auth']) && !SessionService::getSessionKey('user')) {
-    //     $container->get('loginController')->showLoginPage();
-    //     exit;
-    // }
+    if (!empty($route['auth']) && !SessionService::getSessionKey('user')) {
+        $container->get('loginController')->showLoginPage();
+        exit;
+    }
 
     // if (!empty($route['roles'])) {
-    //     $role = getCurrentUserRole();
+    //     $role = getCurrentUserRole();s
     //     if (!in_array($role, $route['roles'])) {
     //         http_response_code(403);
     //         echo "Forbidden";

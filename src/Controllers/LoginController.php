@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Repository\UserRespository;
 use App\Support\Validation;
+use App\Support\SessionService;
 
 class LoginController extends AbstractController {
 
@@ -56,6 +57,18 @@ class LoginController extends AbstractController {
              exit;
        }
 
-       echo "login";
+       
+
+       SessionService::setSessionValue("user", [
+            "userId" => $user->id,
+            'username' => $user->username,
+            'name' => $user->name,
+            'role' => $user->role,
+            'status' => $user->status,
+        ]);
+        
+        var_dump(SessionService::getSessionKey("user"));
+        
+        header("Location: index.php?page=home");
     }
 }

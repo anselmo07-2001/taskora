@@ -1,7 +1,3 @@
-<?php
-    var_dump($errors);
-?>
-
 <div class="container login-custom">
         <div class="d-flex justify-content-center align-items-center">
                 <div class="p-4 bg-light border rounded shadow" style="max-width: 400px; width: 100%;">
