@@ -1,12 +1,8 @@
 
 <div class="container custom-container">
-        <?php if ($user["role"] === "admin"): ?>
-            <h1>Hi, Admin</h1>
-        <?php else: ?>
-            <h1>Hi, <?php echo e($user["name"]); ?> <sup class="sup-lift fs-6 text-muted">(<?php echo e($user["role"]); ?>)</sup> </h1>
-            <hr class="border-primary border-2">
-        <?php endif; ?>
-
+        <h1>Hi, <?php echo e($user["name"]); ?> <sup class="sup-lift fs-6 text-muted"><?= $user["role"] !== "Admin" ? "({$user['role']})" : "" ?></sup> </h1>
+        <hr class="border-primary border-2">
+    
         <div class="container mt-5">
             <div class="row mb-4">
                 <div class="col-12 col-md-6 col-lg-4 mb-3">
