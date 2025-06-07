@@ -3,7 +3,7 @@
 $routes = [
     "login" => [
         "GET" => [
-            "controller" => "AuthController",
+            "controller" => "PageController",
             "method" => "showLoginPage"
         ],
         "POST" => [
@@ -27,13 +27,13 @@ $routes = [
     ],
     "createAccount" => [
         "GET" => [
-            "controller" => "AuthController", 
+            "controller" => "PageController", 
             "method"=> "showCreateAccountPage", 
             "auth" => true, 
             "role" => ["admin"]
         ],
         "POST" => [
-            "controller" => "AuthController",
+            "controller" => "AdminController",
             "method" => "handleCreateAccount",
             "auth" => true, 
             "role" => ["admin"]
@@ -52,7 +52,7 @@ $routes = [
             "auth" => true,
             "role" => ["admin", "project_manager"]
         ]
-        ],
+    ],
 
 
 ];

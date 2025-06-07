@@ -23,8 +23,9 @@ $container->bind("AuthController", function() use($container) {
 $container->bind("PageController", function() {
     return new \App\Controllers\PageController();
 });
-$container->bind("AdminController", function() {
-    return new \App\Controllers\AdminController();
+$container->bind("AdminController", function() use($container){
+    $userRespository = $container->get("userRepository");
+    return new \App\Controllers\AdminController($userRespository);
 });
 
 

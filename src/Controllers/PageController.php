@@ -16,4 +16,12 @@ class PageController extends AbstractController {
     public function showProjectFormPage() {
         $this->render("createProject.view", []);
     }
+
+    public function showCreateAccountPage() {
+        $this->render("createAccount.view", []);
+    }
+
+    public function showLoginPage() {
+        $this->render("login.view", []);
+    }
 }
