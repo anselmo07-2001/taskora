@@ -27,6 +27,7 @@ class AuthController extends AbstractController {
         $fullName = trim(sanitize($request["post"]["fullName"])) ?? "";
         $username = trim(sanitize($request["post"]["username"])) ?? "";
         $password = trim($request["post"]["password"]) ?? "";
+        $confirmPassword = trim($request["post"]["confirmPassword"]) ?? "";
         $role = $request["post"]["role"] ?? "";
 
         $errors = [];
@@ -41,6 +42,15 @@ class AuthController extends AbstractController {
 
         if (!Validation::string($password, 6, 50)) {
             $errors["passwordErr"] = "Please password must at least 6 character long";
+        }
+
+        if (!Validation::string($confirmPassword, 6, 50)) {
+            $errors["confirmPasswordErr"] = "Please confirm password must at least 6 character long";
+        }
+
+        if (!Validation::match($password, $confirmPassword)) {
+            $errors["passwordErr"] = "Password not match";
+            $errors["confirmPasswordErr"] = "Password Confirm not match";
         }
 
         if (empty($role)) {

@@ -36,6 +36,16 @@
                         <?php endif; ?>
                     </div>
 
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control <?= ($errors["confirmPasswordErr"] ?? "") ? 'is-invalid' : ''; ?>" id="password" placeholder="Enter confirm password" name="confirmPassword" />
+                        <?php if (!empty($errors["confirmPasswordErr"] ?? null)): ?> 
+                            <div class="invalid-feedback d-block mb-2" style="font-size: 0.75rem;">
+                                   <?php echo $errors["confirmPasswordErr"]; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
                     <div class="mb-5">
                         <label for="role" class="form-label">Role</label>
                         <select class="form-select <?= ($errors["roleErr"] ?? "") ? 'is-invalid' : ''; ?>" id="role" name="role" value="<?php echo e($_POST["role"] ?? ""); ?>" >
