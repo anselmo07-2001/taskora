@@ -47,7 +47,7 @@ $routes = [
             "role" => ["admin", "project_manager"]
         ],
         "POST" => [
-            "controller" => "createProjectController",
+            "controller" => "AdminController",
             "method" => "handleCreateProject",
             "auth" => true,
             "role" => ["admin", "project_manager"]

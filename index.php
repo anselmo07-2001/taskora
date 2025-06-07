@@ -23,8 +23,8 @@ $container->bind("AuthController", function() use($container) {
 $container->bind("PageController", function() {
     return new \App\Controllers\PageController();
 });
-$container->bind("createProjectController", function() {
-    return new \App\Controllers\CreateProjectController();
+$container->bind("AdminController", function() {
+    return new \App\Controllers\AdminController();
 });
 
 

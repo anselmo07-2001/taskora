@@ -4,7 +4,7 @@
             <div class="card-body p-5">
                 <h1 class="text-center mb-5">Create a Project</h1>
                 
-                <form>
+                <form method="POST" action="<?php echo BASE_URL . "/index.php?page=createProject"; ?>">
                     <div class="mb-4">
                     <label for="projectname" class="form-label">Project Name</label>
                     <input type="text" class="form-control" id="projectname" placeholder="Enter project name" name="projectname">
