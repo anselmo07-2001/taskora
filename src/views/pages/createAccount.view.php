@@ -7,7 +7,7 @@
                 <form method="POST" action="<?php echo BASE_URL . "/index.php?page=createAccount"; ?>">
                     <div class="mb-4">
                         <label for="fullName" class="form-label">Full Name</label>
-                        <input type="text" class="form-control <?= ($errors["fullNameErr"] ?? "") ? 'is-invalid' : ''; ?>" id="fullName" placeholder="Enter full name" name="fullName" value="<?php echo e($_POST["fullName"] ?? ""); ?>">
+                        <input required type="text" class="form-control <?= ($errors["fullNameErr"] ?? "") ? 'is-invalid' : ''; ?>" id="fullName" placeholder="Enter full name" name="fullName" value="<?php echo e($_POST["fullName"] ?? ""); ?>">
                         <?php if (!empty($errors["fullNameErr"] ?? null)): ?> 
                             <div class="invalid-feedback d-block mb-2" style="font-size: 0.75rem;">
                                    <?php echo $errors["fullNameErr"]; ?>
@@ -17,7 +17,7 @@
 
                     <div class="mb-4">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control <?= ($errors["usernameErr"] ?? "") ? 'is-invalid' : ''; ?>" id="username" placeholder="Enter username" name="username" value="<?php echo e($_POST["username"] ?? ""); ?>">
+                        <input required type="text" class="form-control <?= ($errors["usernameErr"] ?? "") ? 'is-invalid' : ''; ?>" id="username" placeholder="Enter username" name="username" value="<?php echo e($_POST["username"] ?? ""); ?>">
                          <?php if (!empty($errors["usernameErr"] ?? null)): ?> 
                             <div class="invalid-feedback d-block mb-2" style="font-size: 0.75rem;">
                                    <?php echo $errors["usernameErr"]; ?>
@@ -27,7 +27,7 @@
 
                     <div class="mb-4">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control <?= ($errors["passwordErr"] ?? "") ? 'is-invalid' : ''; ?>" id="password" placeholder="Enter password" name="password" />
+                        <input required type="password" class="form-control <?= ($errors["passwordErr"] ?? "") ? 'is-invalid' : ''; ?>" id="password" placeholder="Enter password" name="password" />
                         <?php if (!empty($errors["passwordErr"] ?? null)): ?> 
                             <div class="invalid-feedback d-block mb-2" style="font-size: 0.75rem;">
                                    <?php echo $errors["passwordErr"]; ?>
@@ -37,7 +37,7 @@
 
                     <div class="mb-4">
                         <label for="password" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control <?= ($errors["confirmPasswordErr"] ?? "") ? 'is-invalid' : ''; ?>" id="password" placeholder="Enter confirm password" name="confirmPassword" />
+                        <input required type="password" class="form-control <?= ($errors["confirmPasswordErr"] ?? "") ? 'is-invalid' : ''; ?>" id="password" placeholder="Enter confirm password" name="confirmPassword" />
                         <?php if (!empty($errors["confirmPasswordErr"] ?? null)): ?> 
                             <div class="invalid-feedback d-block mb-2" style="font-size: 0.75rem;">
                                    <?php echo $errors["confirmPasswordErr"]; ?>

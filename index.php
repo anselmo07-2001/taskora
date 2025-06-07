@@ -40,9 +40,6 @@ $method = $_SERVER["REQUEST_METHOD"];
 if ($page === "" && !SessionService::getSessionKey('user')) {
     $page = "login";
 }
-else {
-    $page = "home";
-}
 
 
 // Normal route handler
