@@ -10,7 +10,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom py-3">
         <div class="container">
-            <a class="navbar-brand" href="home.html">
+            <a class="navbar-brand" href="<?php echo BASE_URL . "/index.php?page=home" ?>">
                 <img src="./public/images/taskora.png" alt="Logo" class="custom-logo" class="d-inline-block align-text-top">
             </a>
 
