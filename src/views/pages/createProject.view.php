@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="d-grid">
-                        <button type="button" class="btn btn-danger">Cancel</button>
+                        <a href="<?php echo BASE_URL . "/index.php?page=home"; ?>" class="btn btn-danger">Cancel</a>
                     </div>
                 </form>
             </div>
