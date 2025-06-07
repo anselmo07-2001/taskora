@@ -38,7 +38,21 @@ $routes = [
             "auth" => true, 
             "role" => ["admin"]
         ]
-    ]
+    ],
+    "createProject" => [
+        "GET" => [
+            "controller" => "createProjectController",
+            "method" => "showProjectFormPage",
+            "auth" => true,
+            "role" => ["admin", "project_manager"]
+        ],
+        "POST" => [
+            "controller" => "createProjectController",
+            "method" => "handleCreateProject",
+            "auth" => true,
+            "role" => ["admin", "project_manager"]
+        ]
+        ],
 
 
 ];

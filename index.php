@@ -23,6 +23,9 @@ $container->bind("AuthController", function() use($container) {
 $container->bind("homeController", function() {
     return new \App\Controllers\HomeController();
 });
+$container->bind("createProjectController", function() {
+    return new \App\Controllers\CreateProjectController();
+});
 
 
 

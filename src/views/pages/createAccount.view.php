@@ -1,4 +1,3 @@
-<?php // var_dump($errors); ?>
 
 <div class="container custom-container">
         <div class="card custom-form-container">
