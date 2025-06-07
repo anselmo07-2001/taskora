@@ -65,9 +65,36 @@ class AuthController extends AbstractController {
             exit;
         }
 
+        $user = $this->userRespository->findByUsername($username);
 
+        if (!empty($user)) {
+            $errors["usernameErr"] = "Username is already taken";
+            $this->render("createAccount.view", [
+                "errors" => $errors
+            ]);
+            exit;
+        }
+
+        $formData = [
+            "fullName" => $fullName,
+            "username" => $username,
+            "role" => $role,
+            "password" => password_hash($password, PASSWORD_DEFAULT),
+            "status" => "active"
+        ];
         
         
+        $success = $this->userRespository->createAccount($formData);
+
+        if ($success) {
+            echo "Created account sucessfully";
+        }
+        else {
+            echo "Failed to create the account";
+        }
+
+
+         header("Location: index.php?page=home");
     }
 
     public function handleLogin($request) {
@@ -118,7 +145,7 @@ class AuthController extends AbstractController {
        SessionService::setSessionValue("user", [
             "userId" => $user->id,
             'username' => $user->username,
-            'name' => $user->name,
+            'fullname' => $user->fullname,
             'role' => $user->role,
             'status' => $user->status,
         ]);

@@ -1,6 +1,6 @@
 
 <div class="container custom-container">
-        <h1>Hi, <?php echo e($user["name"]); ?> <sup class="sup-lift fs-6 text-muted"><?= $user["role"] !== "admin" ? "(" . ucwords(str_replace('_', ' ', $user["role"])) . ")" : "" ?></sup> </h1>
+        <h1>Hi, <?php echo e($user["fullname"]); ?> <sup class="sup-lift fs-6 text-muted"><?= $user["role"] !== "admin" ? "(" . ucwords(str_replace('_', ' ', $user["role"])) . ")" : "" ?></sup> </h1>
         <hr class="border-primary border-2">
     
         <div class="container mt-5">

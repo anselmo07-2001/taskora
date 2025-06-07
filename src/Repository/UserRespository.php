@@ -9,7 +9,7 @@ class UserRespository {
     public function __construct(private PDO $pdo) {}
    
     public function findByUsername($username) : ?UserModel {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE username = :username");
         $stmt->bindValue(":username", $username);
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_CLASS, UserModel::class);
@@ -21,5 +21,16 @@ class UserRespository {
          else {
             return null;
          }
+    }
+
+    public function createAccount(array $formData) {
+        $stmt = $this->pdo->prepare("INSERT INTO `users` (username, fullname, password, role, status) VALUES (:username, :fullName, :password, :role, :status)");
+        $stmt->bindValue(":username", $formData["username"]);
+        $stmt->bindValue(":fullName", $formData["fullName"]);
+        $stmt->bindValue(":password", $formData["password"]);
+        $stmt->bindValue(":role", $formData["role"]);
+        $stmt->bindValue(":status", $formData["status"]);
+
+        return $stmt->execute();
     }
 }
