@@ -20,8 +20,8 @@ $container->bind("AuthController", function() use($container) {
     $userRespository = $container->get("userRepository");
     return new \App\Controllers\AuthController($userRespository);
 });
-$container->bind("homeController", function() {
-    return new \App\Controllers\HomeController();
+$container->bind("PageController", function() {
+    return new \App\Controllers\PageController();
 });
 $container->bind("createProjectController", function() {
     return new \App\Controllers\CreateProjectController();

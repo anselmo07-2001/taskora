@@ -19,7 +19,7 @@ $routes = [
     ],
     "home" => [
         "GET" => [
-            "controller" => "homeController",
+            "controller" => "PageController",
             "method" => "showHomePage",
             "auth" => true,
             "roles" => ["admin", "project_manager", "member"]
@@ -41,7 +41,7 @@ $routes = [
     ],
     "createProject" => [
         "GET" => [
-            "controller" => "createProjectController",
+            "controller" => "PageController",
             "method" => "showProjectFormPage",
             "auth" => true,
             "role" => ["admin", "project_manager"]
