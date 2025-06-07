@@ -37,8 +37,11 @@ $subPage = $_GET['subPage'] ?? '';
 $method = $_SERVER["REQUEST_METHOD"];
   
 
-if ($page === "") {
+if ($page === "" && !SessionService::getSessionKey('user')) {
     $page = "login";
+}
+else {
+    $page = "home";
 }
 
 
