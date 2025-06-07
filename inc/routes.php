@@ -32,6 +32,13 @@ $routes = [
             "auth" => true, 
             "role" => ["admin"]
         ],
+        "POST" => [
+            "controller" => "AuthController",
+            "method" => "handleCreateAccount",
+            "auth" => true, 
+            "role" => ["admin"]
+        ]
     ]
+
 
 ];

@@ -23,6 +23,43 @@ class AuthController extends AbstractController {
         $this->render("createAccount.view", []);
     }
 
+    public function handleCreateAccount($request) {
+        $fullName = trim(sanitize($request["post"]["fullName"])) ?? "";
+        $username = trim(sanitize($request["post"]["username"])) ?? "";
+        $password = trim($request["post"]["password"]) ?? "";
+        $role = $request["post"]["role"] ?? "";
+
+        $errors = [];
+        
+        if (empty($fullName)) {
+            $errors["fullNameErr"] = "Please enter the full name";
+        }
+
+        if (empty($username)) {
+            $errors["usernameErr"] = "Please enter the username";
+        }
+
+        if (!Validation::string($password, 6, 50)) {
+            $errors["passwordErr"] = "Please password must at least 6 character long";
+        }
+
+        if (empty($role)) {
+            $errors["roleErr"] = "Please choose the user role";
+        }
+
+    
+        if (!empty($errors)) {
+            $this->render("createAccount.view", [
+                "errors" => $errors
+            ]);
+            exit;
+        }
+
+
+        
+        
+    }
+
     public function handleLogin($request) {
         $username = sanitize($request["post"]["username"]) ?? "";
         $password = trim($request["post"]["password"]) ?? "";
