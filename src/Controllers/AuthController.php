@@ -87,14 +87,15 @@ class AuthController extends AbstractController {
         $success = $this->userRespository->createAccount($formData);
 
         if ($success) {
-            echo "Created account sucessfully";
+             SessionService::setAlertMessage("success_message", "Created account sucessully");
         }
         else {
-            echo "Failed to create the account";
+             SessionService::setAlertMessage("success_message", "Account creation failed");
         }
 
 
          header("Location: index.php?page=home");
+         
     }
 
     public function handleLogin($request) {

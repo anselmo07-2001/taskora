@@ -1,5 +1,7 @@
 
 <div class="container custom-container">
+        <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
+
         <h1>Hi, <?php echo e($user["fullname"]); ?> <sup class="sup-lift fs-6 text-muted"><?= $user["role"] !== "admin" ? "(" . ucwords(str_replace('_', ' ', $user["role"])) . ")" : "" ?></sup> </h1>
         <hr class="border-primary border-2">
     
