@@ -10,8 +10,15 @@ class AdminController extends AbstractController {
 
     public function __construct(protected UserRespository $userRespository){}
 
-    public function handleCreateProject() {
-        echo "creating a project";
+    public function handleCreateProject($request) {
+        $projectName = $request["post"]["projectName"] ?? "";
+        $projectDescription = $request["post"]["projectDescription"] ?? "";
+        $projectDeadline = $request["post"]["projectDeadline"] ?? "";
+        $searchInputtedProjectManager = $request["post"]["assignedProjectManager"] ?? "";
+        $assignedProjectManager = [];
+        $searchInputtedMembers = $request["post"]["assignedMembers"] ?? "";
+        $projectNote = $request["post"]["projectNote"] ?? "";
+
     }
 
     public function handleCreateAccount($request) {

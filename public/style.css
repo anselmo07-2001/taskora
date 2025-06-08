@@ -123,6 +123,7 @@ p.card-title {
     box-shadow: 0 0 2px 1px #7ECBF6;
 }
 
+button.my-bg-iconform-color-primary,
 a.my-bg-iconform-color-primary,
 span.my-bg-iconform-color-primary {
     background-color: var(--main-primary-color); 
@@ -196,4 +197,5 @@ img.mytask-title-icon {
     height: 2rem;
 }
 
+/*****************************************************************/
 

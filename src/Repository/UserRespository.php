@@ -33,4 +33,11 @@ class UserRespository {
 
         return $stmt->execute();
     }
+
+    public function fetchAllActiveUser(string $role)  {
+        $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE role = :role AND `status` = 'active'");
+        $stmt->bindValue(":role", $role);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);   
+    }
 }

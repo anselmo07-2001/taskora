@@ -1,3 +1,4 @@
+<?php // var_dump($projectManagers[0]); ?>
 
 <div class="container custom-container">
         <div class="card custom-form-container">
@@ -6,8 +7,8 @@
                 
                 <form method="POST" action="<?php echo BASE_URL . "/index.php?page=createProject"; ?>">
                     <div class="mb-4">
-                    <label for="projectname" class="form-label">Project Name</label>
-                    <input type="text" class="form-control" id="projectname" placeholder="Enter project name" name="projectname">
+                        <label for="projectName" class="form-label">Project Name</label>
+                        <input type="text" class="form-control" id="projectName" placeholder="Enter project name" name="projectName">
                     </div>
 
                     <div class="mb-4">
@@ -24,36 +25,35 @@
                                 <img src="./public/images/calendar.png" alt="icon" style="width:20px; height:20px; filter: invert(1);">
                             </span>
                         </div>
+                    </div>            
+
+                    <div class="mb-4">
+                        <label for="assignedProjectManager" class="form-label">Assigned Project Manager</label>
+                        <select class="form-select" id="assignedProjectManager" name="assignedProjectManager">
+                            <option selected disabled></option>
+                            <?php foreach($projectManagers AS $projectManager): ?>
+                                 <option value="<?php echo e($projectManager["id"]); ?>"><?php echo e($projectManager["fullname"]); ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div class="mb-4">
-                        <label for="assignedProjectManager" class="form-label">Assign Project Manager</label>
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="assignedProjectManager" placeholder="Search Project Manager" name="assignedProjectManager">
-                            <a class="input-group-text p-2 my-bg-iconform-color-primary border-start-0" href="#">
-                                <img src="./public/images/magnifying-glass.png" alt="icon" style="width:20px; height:20px; filter: invert(1);">
-                            </a>
-                        </div>
-                    </div>
-
-                     <div class="mb-4">
-                        <label for="assignedMembers" class="form-label">Assign Members</label>
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="assignedProjectManager" placeholder="Search Member" name="assignedMembers">
-                            <a class="input-group-text p-2 my-bg-iconform-color-primary border-start-0" href="#">
-                                <img src="./public/images/magnifying-glass.png" alt="icon" style="width:20px; height:20px; filter: invert(1);">
-                            </a>
-                        </div>
+                        <label for="assignedMembers" class="form-label">Assigned Members</label>
+                        <select class="form-select selectpicker" id="assignedMembers" name="assignedMembers[]" multiple data-live-search="true" data-width="100%">
+                            <?php foreach($members AS $member): ?>
+                                 <option value="<?php echo $member["id"]; ?>"><?php echo $member["fullname"]; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div class="mb-5">
-                        <label for="projectProjectNote" class="form-label">Project Note</label>
-                        <textarea type="text" class="form-control" id="projectProjectNote" style="height: 10rem;"
-                                  placeholder="Enter project note" name="projectProjectNote"></textarea>
+                        <label for="projectNote" class="form-label">Project Note</label>
+                        <textarea type="text" class="form-control" id="projectNote" style="height: 10rem;"
+                                  placeholder="Enter project note" name="projectNote"></textarea>
                     </div>
 
                     <div class="d-grid mb-2">
-                        <button type="submit" class="btn btn-success">Save Project</button>
+                        <button type="submit" name="action" value="save" class="btn btn-success">Save Project</button>
                     </div>
 
                     <div class="d-grid">
