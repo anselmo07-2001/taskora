@@ -31,10 +31,8 @@ class PageController extends AbstractController {
     }
 
     public function showLoginPage() {
-        $user = SessionService::getSessionKey("user") ?? "";
+       
 
-        $this->render("login.view", [
-            "user" => $user
-        ]);
+        $this->render("login.view", []);
     }
 }

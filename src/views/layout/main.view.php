@@ -15,7 +15,7 @@
                 <img src="./public/images/taskora.png" alt="Logo" class="custom-logo" class="d-inline-block align-text-top">
             </a>
 
-            <?php if(!empty($user)): ?>
+            <?php if(!empty($currentUserSession)): ?>
                 <div class="dropdown">
                     <button class="btn custom-primary-btn d-flex align-items-center gap-2"
                             type="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -1,8 +1,3 @@
-<?php 
-    // var_dump($errors ?? ""); 
-    // var_dump($projectManagers);
-    var_dump($_POST["assignedMembers"] ?? "");
-?>
 
 <div class="container custom-container">
         <div class="card custom-form-container">
