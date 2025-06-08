@@ -6,18 +6,70 @@ use App\Repository\UserRespository;
 use App\Support\SessionService;
 use App\Support\Validation;
 
+use DateTime;
+
 class AdminController extends AbstractController {
 
     public function __construct(protected UserRespository $userRespository){}
 
     public function handleCreateProject($request) {
-        $projectName = $request["post"]["projectName"] ?? "";
-        $projectDescription = $request["post"]["projectDescription"] ?? "";
+        $listOfProjectManagers = $this->userRespository->fetchAllActiveUser("project_manager");
+        $listOfMembers = $this->userRespository->fetchAllActiveUser("member");
+
+        $projectName = trim(sanitize($request["post"]["projectName"])) ?? "";
+        $projectDescription = trim(sanitize($request["post"]["projectDescription"])) ?? "";
         $projectDeadline = $request["post"]["projectDeadline"] ?? "";
         $assignedProjectManager = $request["post"]["assignedProjectManager"] ?? "";
-        $$assignedMembers = $request["post"]["assignedMembers"] ?? "";
-        $projectNote = $request["post"]["projectNote"] ?? "";
+        $assignedMembers = $request["post"]["assignedMembers"] ?? "";
+        $projectNote = trim(sanitize($request["post"]["projectNote"])) ?? "";
 
+        $errors = [];
+
+        if (empty($projectName)) {
+            $errors["projectNameErr"] = "Please enter the Project name";
+        }
+
+        if (empty($projectDescription)) {
+            $errors["projectDescriptionErr"] = "Please enter the Project description";
+        }
+
+        if (empty($projectDeadline)) {
+            $errors["projectDeadlineErr"] = "Please enter the Project deadline";
+        }
+
+        if (!empty($projectDeadline)) {
+            $deadlineDate = new DateTime($projectDeadline); 
+            $today = new DateTime();                        
+            
+            $deadlineStr = $deadlineDate->format('Y-m-d');
+            $todayStr = $today->format('Y-m-d');
+
+            if ($deadlineStr <= $todayStr) {
+                $errors["projectDeadlineErr"] = "Date cannot be set on the previous day or today.";
+            }
+        }
+
+        if (empty($assignedProjectManager)) {
+            $errors["assignedProjectManagerErr"] = "Please select Project manager";
+        }
+
+        if (empty($assignedMembers)) {
+            $errors["assignedMembersErr"] = "Please select members";
+        }
+
+        if (empty($projectNote)) {
+            $errors["projectNoteErr"] = "Please enter the Project deadline";
+        }
+
+        
+        if (!empty($errors)) {
+            $this->render("createProject.view", [
+                "errors" => $errors,
+                "projectManagers" => $listOfProjectManagers,
+                "members" => $listOfMembers,
+            ]);
+            exit;
+        }
     }
 
     public function handleCreateAccount($request) {
