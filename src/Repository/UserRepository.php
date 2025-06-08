@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Models\UserModel;
 use PDO;
 
-class UserRespository {
+class UserRepository {
     public function __construct(private PDO $pdo) {}
    
     public function findByUsername($username) : ?UserModel {

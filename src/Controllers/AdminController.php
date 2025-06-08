@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Repository\ProjectRepository;
-use App\Repository\UserRespository;
+use App\Repository\UserRepository;
 use App\Support\SessionService;
 use App\Support\Validation;
 
@@ -11,11 +11,11 @@ use DateTime;
 
 class AdminController extends AbstractController {
 
-    public function __construct(protected UserRespository $userRespository, protected ProjectRepository $projectRepository){}
+    public function __construct(protected UserRepository $userRepository, protected ProjectRepository $projectRepository){}
 
     public function handleCreateProject($request) {
-        $listOfProjectManagers = $this->userRespository->fetchAllActiveUser("project_manager");
-        $listOfMembers = $this->userRespository->fetchAllActiveUser("member");
+        $listOfProjectManagers = $this->userRepository->fetchAllActiveUser("project_manager");
+        $listOfMembers = $this->userRepository->fetchAllActiveUser("member");
 
         $projectName = trim(sanitize($request["post"]["projectName"])) ?? "";
         $projectDescription = trim(sanitize($request["post"]["projectDescription"])) ?? "";
@@ -121,7 +121,7 @@ class AdminController extends AbstractController {
             exit;
         }
 
-        $user = $this->userRespository->findByUsername($username);
+        $user = $this->userRepository->findByUsername($username);
 
         if (!empty($user)) {
             $errors["usernameErr"] = "Username is already taken";
@@ -140,7 +140,7 @@ class AdminController extends AbstractController {
         ];
         
         
-        $success = $this->userRespository->createAccount($formData);
+        $success = $this->userRepository->createAccount($formData);
 
         if ($success) {
              SessionService::setAlertMessage("success_message", "Created account sucessully");

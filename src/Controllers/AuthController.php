@@ -2,13 +2,13 @@
 
 namespace App\Controllers;
 
-use App\Repository\UserRespository;
+use App\Repository\UserRepository;
 use App\Support\Validation;
 use App\Support\SessionService;
 
 class AuthController extends AbstractController {
 
-    public function __construct(protected UserRespository $userRespository){}   
+    public function __construct(protected UserRepository $userRepository){}   
 
     public function handleLogout() {
         SessionService::removeAllSessionData();
@@ -37,7 +37,7 @@ class AuthController extends AbstractController {
         }
 
         //check if the username exist
-        $user = $this->userRespository->findByUsername($username);
+        $user = $this->userRepository->findByUsername($username);
 
         if (empty($user)) {
             $errors["usernameErr"] = "No records found for the given username";

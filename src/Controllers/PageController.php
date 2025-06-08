@@ -3,11 +3,11 @@
 namespace App\Controllers;
 
 use App\Support\SessionService;
-use App\Repository\UserRespository;
+use App\Repository\UserRepository;
 
 class PageController extends AbstractController {
 
-    public function __construct(protected UserRespository $userRespository){}   
+    public function __construct(protected UserRepository $userRepository){}   
 
     public function showHomePage() {
         $user = SessionService::getSessionKey("user") ?? "";
@@ -17,8 +17,8 @@ class PageController extends AbstractController {
     }
 
     public function showProjectFormPage() {
-        $listOfProjectManagers = $this->userRespository->fetchAllActiveUser("project_manager");
-        $listOfMembers = $this->userRespository->fetchAllActiveUser("member");
+        $listOfProjectManagers = $this->userRepository->fetchAllActiveUser("project_manager");
+        $listOfMembers = $this->userRepository->fetchAllActiveUser("member");
 
         $this->render("createProject.view", [
             "projectManagers" => $listOfProjectManagers,
