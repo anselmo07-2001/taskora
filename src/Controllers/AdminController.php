@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Repository\ProjectRepository;
 use App\Repository\UserRespository;
 use App\Support\SessionService;
 use App\Support\Validation;
@@ -10,7 +11,7 @@ use DateTime;
 
 class AdminController extends AbstractController {
 
-    public function __construct(protected UserRespository $userRespository){}
+    public function __construct(protected UserRespository $userRespository, protected ProjectRepository $projectRepository){}
 
     public function handleCreateProject($request) {
         $listOfProjectManagers = $this->userRespository->fetchAllActiveUser("project_manager");
@@ -70,6 +71,12 @@ class AdminController extends AbstractController {
             ]);
             exit;
         }
+
+        $formData = [
+
+        ];
+
+        $this->projectRepository->handleCreateProject();
     }
 
     public function handleCreateAccount($request) {

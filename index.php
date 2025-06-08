@@ -14,6 +14,10 @@ $container->bind("userRepository", function() use($container) {
     $pdo = $container->get("pdo");
     return new \App\Repository\UserRespository($pdo);
 });
+$container->bind("projectRepository", function() use($container) {
+    $pdo = $container->get("pdo");
+    return new \App\Repository\ProjectRepository($pdo);
+});
 
 
 $container->bind("AuthController", function() use($container) {
@@ -26,7 +30,8 @@ $container->bind("PageController", function() use($container) {
 });
 $container->bind("AdminController", function() use($container){
     $userRespository = $container->get("userRepository");
-    return new \App\Controllers\AdminController($userRespository);
+    $projectRespository = $container->get("projectRepository");
+    return new \App\Controllers\AdminController($userRespository, $projectRespository);
 });
 
 
