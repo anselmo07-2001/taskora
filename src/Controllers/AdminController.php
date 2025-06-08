@@ -14,9 +14,8 @@ class AdminController extends AbstractController {
         $projectName = $request["post"]["projectName"] ?? "";
         $projectDescription = $request["post"]["projectDescription"] ?? "";
         $projectDeadline = $request["post"]["projectDeadline"] ?? "";
-        $searchInputtedProjectManager = $request["post"]["assignedProjectManager"] ?? "";
-        $assignedProjectManager = [];
-        $searchInputtedMembers = $request["post"]["assignedMembers"] ?? "";
+        $assignedProjectManager = $request["post"]["assignedProjectManager"] ?? "";
+        $$assignedMembers = $request["post"]["assignedMembers"] ?? "";
         $projectNote = $request["post"]["projectNote"] ?? "";
 
     }
