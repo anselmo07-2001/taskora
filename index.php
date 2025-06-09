@@ -26,7 +26,8 @@ $container->bind("AuthController", function() use($container) {
 });
 $container->bind("PageController", function() use($container) {
     $userRepository = $container->get("userRepository");
-    return new \App\Controllers\PageController($userRepository);
+    $projectRepository = $container->get("projectRepository");
+    return new \App\Controllers\PageController($userRepository, $projectRepository);
 });
 $container->bind("AdminController", function() use($container){
     $userRepository = $container->get("userRepository");

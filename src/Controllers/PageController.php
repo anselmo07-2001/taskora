@@ -2,20 +2,26 @@
 
 namespace App\Controllers;
 
+use App\Repository\ProjectRepository;
 use App\Support\SessionService;
 use App\Repository\UserRepository;
 
 class PageController extends AbstractController {
     protected UserRepository $userRepository;
+    protected ProjectRepository $projectRepository;
     protected array|null $currentUserSession;
 
-    public function __construct(UserRepository $userRepository){
+    public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository){
          $this->userRepository = $userRepository;
+         $this->projectRepository = $projectRepository;
          $this->currentUserSession = SessionService::getSessionKey("user") ?? null;
     }   
 
     public function showProjects() {
-        $this->render("projects.view", []);
+        $projects = $this->projectRepository->fetchAllProjects();
+        $this->render("projects.view",[
+            "projects" => $projects
+        ]);
     }
 
     public function showHomePage() {

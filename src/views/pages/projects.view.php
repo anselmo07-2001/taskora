@@ -1,3 +1,4 @@
+
 <div class="container custom-container">
         <h2>Display All Projects Data</h2>
         <hr class="border-primary border-2 mb-4">
@@ -31,61 +32,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Website Redesign</td>
-                    <td>Sophia Carter</td>
-                    <td>13</td>
-                    <td>12</td>
-                    <td>2025-08-15</td>
-                    <td>0%</td>
-                    <td>In progress</td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
-                </tr>
-                <tr>
-                    <td scope="row">2</td>
-                    <td>Mobile App Launch</td>
-                    <td>Sophia Carter</td>
-                    <td>13</td>
-                    <td>13</td>
-                    <td>2025-09-01</td>
-                    <td>0%</td>
-                    <td>Pending</td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
-                </tr>
-                <tr>
-                    <td scope="row">3</td>
-                    <td>Marketing Revamp</td>
-                    <td>Liam Johnson</td>
-                    <td>13</td>
-                    <td>14</td>
-                    <td>2025-10-01</td>
-                    <td>0%</td>
-                    <td>Pending</td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
-                </tr>
-                 <tr>
-                    <td scope="row">4</td>
-                    <td>Data Migration</td>
-                    <td>Liam Johnson</td>
-                    <td>12</td>
-                    <td>12</td>
-                    <td>2025-11-15</td>
-                    <td>0%</td>
-                    <td>Pending</td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
-                </tr>
-                 <tr>
-                    <td scope="row">5</td>
-                    <td>Customer Portal Up</td>
-                    <td>Olivia Smith</td>
-                    <td>12</td>
-                    <td>14</td>
-                    <td>2025-12-31</td>
-                    <td>0%</td>
-                    <td>Pending</td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
-                </tr>
+                <?php foreach($projects as $project): ?>
+                    <tr>
+                        <th scope="row"><?php echo $project["id"]; ?></th>
+                        <td><?php echo $project["name"]; ?></td>
+                        <td><?php echo $project["fullname"]; ?></td>
+                        <td><?php echo $project["number_of_members"]; ?></td>
+                        <td><?php echo $project["number_of_tasks"]; ?></td>
+                        <td><?php echo $project["deadline"]; ?></td>
+                        <td>0%</td>
+                        <td><?php echo $project["status"]; ?></td>
+                        <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>

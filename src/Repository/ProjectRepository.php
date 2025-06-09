@@ -11,6 +11,43 @@ use Exception;
 class ProjectRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function fetchAllProjects() {
+        try {
+            $stmt = "
+                SELECT 
+                    projects.id,
+                    projects.name,
+                    users.fullname,
+                    COUNT(DISTINCT project_members.user_id) AS number_of_members,
+                    COUNT(DISTINCT tasks.id) AS number_of_tasks,
+                    projects.deadline,
+                    projects.status
+                FROM projects
+                LEFT JOIN users ON projects.assigned_manager = users.id
+                LEFT JOIN project_members 
+                    ON projects.id = project_members.project_id
+                    AND project_members.user_id IN (
+                        SELECT id FROM users WHERE status != 'deleted'
+                    )
+                LEFT JOIN tasks ON projects.id = tasks.project_id
+                GROUP BY 
+                    projects.id, 
+                    projects.name, 
+                    users.fullname, 
+                    projects.deadline, 
+                    projects.status
+            ";
+
+            $stmt = $this->pdo->prepare($stmt);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function handleCreateProject(array $formData) {
         try {
             $this->pdo->beginTransaction();
