@@ -9,6 +9,10 @@ class PageController extends AbstractController {
 
     public function __construct(protected UserRepository $userRepository){}   
 
+    public function showProjects() {
+        $this->render("projects.view", []);
+    }
+
     public function showHomePage() {
         $user = SessionService::getSessionKey("user") ?? "";
         $this->render("home.view", [
