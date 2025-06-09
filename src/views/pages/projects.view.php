@@ -3,7 +3,7 @@
         <h2>Display All Projects Data</h2>
         <hr class="border-primary border-2 mb-4">
 
-        <h6 class="text-muted">Total Project: 5</h6>
+        <h6 class="text-muted">Total Project: <?php echo count($projects); ?></h6>
         <div class="mb-3 d-flex justify-content-between">
             <div class="d-flex align-items-center gap-2">
                 <button href="#" class="btn custom-primary-btn filter-form-btn">Due Today</button>
@@ -34,14 +34,14 @@
             <tbody>
                 <?php foreach($projects as $project): ?>
                     <tr>
-                        <th scope="row"><?php echo $project["id"]; ?></th>
-                        <td><?php echo $project["name"]; ?></td>
-                        <td><?php echo $project["fullname"]; ?></td>
-                        <td><?php echo $project["number_of_members"]; ?></td>
-                        <td><?php echo $project["number_of_tasks"]; ?></td>
-                        <td><?php echo $project["deadline"]; ?></td>
-                        <td>0%</td>
-                        <td><?php echo $project["status"]; ?></td>
+                        <th scope="row"><?php echo e($project["id"]); ?></th>
+                        <td><?php echo e($project["name"]); ?></td>
+                        <td><?php echo e($project["fullname"]); ?></td>
+                        <td><?php echo e($project["number_of_members"]); ?></td>
+                        <td><?php echo e($project["number_of_tasks"]); ?></td>
+                        <td><?php echo e($project["deadline"]); ?></td>
+                        <td><?php echo e($project["progress"]) . "%"; ?></td>
+                        <td><?php echo e($project["status"]); ?></td>
                         <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
                     </tr>
                 <?php endforeach; ?>
