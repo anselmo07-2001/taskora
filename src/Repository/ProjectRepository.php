@@ -2,12 +2,61 @@
 
 namespace App\Repository;
 
+use App\Models\ProjectModel;
+use App\Support\SessionService;
 use PDO;
 
 class ProjectRepository {
     public function __construct(private PDO $pdo) {}
 
-    public function handleCreateProject() {
-        echo "creaating the projects";
+    public function handleCreateProject(array $formData) {
+        $stmt = $this->pdo->prepare("INSERT INTO projects (name, project_description, assigned_manager, deadline, status, date_created, is_suspended) VALUES (:name, :project_description, :assigned_manager, :deadline, :status, NOW(), :is_suspended)");
+
+        $stmt->bindValue(":name", $formData["projectName"]);
+        $stmt->bindValue(":project_description", $formData["projectDescription"]);
+        $stmt->bindValue(":assigned_manager", $formData["assignedProjectManager"]);
+        $stmt->bindValue(":deadline", $formData["projectDeadline"]);
+        $stmt->bindValue(":status", $formData["projectStatus"]);
+        $stmt->bindValue(":is_suspended", $formData["isSuspended"]);
+        $stmt->execute();
+
+        $projectId = $this->pdo->lastInsertId();
+
+        $teamIds = [
+            $formData["assignedProjectManager"],
+            ...$formData["assignedMembers"]
+        ];
+
+        $projectUsers = [];
+
+        foreach ($teamIds as $userId) {
+            $projectUsers[] = [
+                'project_id' => $projectId,
+                'user_id' => $userId,
+                'is_active' => 1  // All userId are all active, fetch active status by the repository
+            ];
+        }
+
+        $stmt = $this->pdo->prepare("INSERT INTO project_members (project_id, user_id, is_active) VALUES (:project_id, :user_id, :is_active)");
+
+        foreach ($projectUsers as $row ) {
+            $stmt->bindValue(':project_id', $row['project_id'], PDO::PARAM_INT);
+            $stmt->bindValue(':user_id', $row['user_id'], PDO::PARAM_INT);
+            $stmt->bindValue(':is_active', $row['is_active'], PDO::PARAM_INT);
+            $stmt->execute();
+        }
+
+
+        $currentUser = SessionService::getSessionKey("user")["userId"];
+        $stmt = $this->pdo->prepare("INSERT INTO project_notes (project_id, user_id, content, created_at, edited_at, projectnote_type) VALUES (:project_id, :user_id, :content, :created_at, :edited_at, :projectnote_type)");
+
+        $stmt->bindValue(':project_id', $projectId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $currentUser, PDO::PARAM_INT);
+        $stmt->bindValue(':content', $formData["projectNote"]);
+        $stmt->bindValue(':created_at', date('Y-m-d H:i:s')); 
+        $stmt->bindValue(':edited_at', null, PDO::PARAM_NULL);
+        $stmt->bindValue(':projectnote_type', $formData["projectNoteType"]);
+        $stmt->execute();
+
     }
 }

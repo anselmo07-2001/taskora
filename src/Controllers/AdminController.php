@@ -14,9 +14,10 @@ class AdminController extends AbstractController {
     public function __construct(protected UserRepository $userRepository, protected ProjectRepository $projectRepository){}
 
     public function handleCreateProject($request) {
+        // this lists use for the dropdown 
         $listOfProjectManagers = $this->userRepository->fetchAllActiveUser("project_manager");
         $listOfMembers = $this->userRepository->fetchAllActiveUser("member");
-
+       
         $projectName = trim(sanitize($request["post"]["projectName"])) ?? "";
         $projectDescription = trim(sanitize($request["post"]["projectDescription"])) ?? "";
         $projectDeadline = $request["post"]["projectDeadline"] ?? "";
@@ -73,10 +74,18 @@ class AdminController extends AbstractController {
         }
 
         $formData = [
-
+            "projectName" => $projectName,
+            "projectDescription" => $projectDescription,
+            "projectDeadline" => $projectDeadline,
+            "projectStatus" => "pending",
+            "isSuspended" => 0,
+            "assignedProjectManager" => $assignedProjectManager,
+            "assignedMembers" => $assignedMembers,
+            "projectNote" => $projectNote,
+            "projectNoteType" => "Created a project"
         ];
 
-        $this->projectRepository->handleCreateProject();
+        $this->projectRepository->handleCreateProject($formData);
     }
 
     public function handleCreateAccount($request) {

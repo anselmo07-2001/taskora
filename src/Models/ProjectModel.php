@@ -7,7 +7,7 @@ class ProjectModel {
     public string $name;
     public string $project_description;
     public int $assigned_manager;
-    public string $date;
+    public string $deadline;
     public string $status;
     public string $date_created;
     public int $is_suspended; 
