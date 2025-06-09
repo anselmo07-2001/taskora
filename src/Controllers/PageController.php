@@ -6,17 +6,21 @@ use App\Support\SessionService;
 use App\Repository\UserRepository;
 
 class PageController extends AbstractController {
+    protected UserRepository $userRepository;
+    protected array|null $currentUserSession;
 
-    public function __construct(protected UserRepository $userRepository){}   
+    public function __construct(UserRepository $userRepository){
+         $this->userRepository = $userRepository;
+         $this->currentUserSession = SessionService::getSessionKey("user") ?? null;
+    }   
 
     public function showProjects() {
         $this->render("projects.view", []);
     }
 
     public function showHomePage() {
-        $user = SessionService::getSessionKey("user") ?? "";
         $this->render("home.view", [
-            "user" => $user,
+            "user" => $this->currentUserSession,
         ]);
     }
 
@@ -35,8 +39,6 @@ class PageController extends AbstractController {
     }
 
     public function showLoginPage() {
-       
-
         $this->render("login.view", []);
     }
 }
