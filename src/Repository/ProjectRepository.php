@@ -18,7 +18,9 @@ class ProjectRepository {
                     projects.id,
                     projects.name,
                     users.fullname,
-                    COUNT(DISTINCT project_members.user_id) AS number_of_members,
+                    COUNT(DISTINCT CASE 
+                        WHEN project_members.user_id != projects.assigned_manager THEN project_members.user_id 
+                    END) AS number_of_members,
                     COUNT(DISTINCT tasks.id) AS number_of_tasks,
                     projects.deadline,
                     projects.status,
