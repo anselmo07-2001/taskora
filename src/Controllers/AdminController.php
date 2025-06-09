@@ -85,7 +85,19 @@ class AdminController extends AbstractController {
             "projectNoteType" => "Created a project"
         ];
 
-        $this->projectRepository->handleCreateProject($formData);
+        $success = $this->projectRepository->handleCreateProject($formData);
+
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Created project sucessully");
+        }
+        else {
+             SessionService::setAlertMessage("success_message", "Project creation failed");
+        }
+
+
+        header("Location: index.php?page=home");
+         
+
     }
 
     public function handleCreateAccount($request) {
