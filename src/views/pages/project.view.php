@@ -56,12 +56,12 @@
             <?php if ($currentNavTab === "projectNotes"): ?>
                 <div class="mb-5">
                     <h6 class="mb-3">Add Project Note</h6>
-                    <form>
-                        <textarea style="height: 10rem;" class="w-100 form-control mb-3" rows="4" placeholder="Enter your project note here"></textarea>
-                    </form>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn custom-primary-btn">Save Project Note</button>
-                    </div>  
+                    <form method="POST" action="<?php BASE_URL . "/index.php?" ?>">
+                        <textarea style="height: 10rem;" class="w-100 form-control mb-3" rows="4" placeholder="Enter your project note here" name="projectNote"></textarea>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn custom-primary-btn">Save Project Note</button>
+                        </div> 
+                    </form> 
                 </div>
 
                 <?php foreach ($data["projectNotes"] AS $row): ?>

@@ -51,50 +51,50 @@ if ($page === "" && !SessionService::getSessionKey('user')) {
 }
 
 
-if ($page === "projectPanel" && $method === "GET") {
-    $panelRoutes = $routes["projectPanel"]["GET"];
+// if ($page === "projectPanel" && $method === "GET") {
+//     $panelRoutes = $routes["projectPanel"]["GET"];
 
-    // Find subpage route or default
-    if ($subPage) {     
-        if (isset($panelRoutes[$subPage])) {
-            $subRoute = $panelRoutes[$subPage];
-        } else {
-            $subRoute = null;
-        }
-    } else {
-        if (isset($panelRoutes["default"])) {
-            $subRoute = $panelRoutes["default"];
-        } else {
-            $subRoute = null;
-        }
-    }
+//     // Find subpage route or default
+//     if ($subPage) {     
+//         if (isset($panelRoutes[$subPage])) {
+//             $subRoute = $panelRoutes[$subPage];
+//         } else {
+//             $subRoute = null;
+//         }
+//     } else {
+//         if (isset($panelRoutes["default"])) {
+//             $subRoute = $panelRoutes["default"];
+//         } else {
+//             $subRoute = null;
+//         }
+//     }
 
-    if (!$subRoute) {
-        http_response_code(404);
-        echo "Subpage not found";
-        exit;
-    }
+//     if (!$subRoute) {
+//         http_response_code(404);
+//         echo "Subpage not found";
+//         exit;
+//     }
 
-    // Auth check
-    if (!empty($subRoute['auth']) && !SessionService::getSessionKey('user')) {
-        $container->get('loginController')->showLoginPage();
-        exit;
-    }
+//     // Auth check
+//     if (!empty($subRoute['auth']) && !SessionService::getSessionKey('user')) {
+//         $container->get('loginController')->showLoginPage();
+//         exit;
+//     }
 
-    // Role check
-    if (!empty($route['roles'])) {
-        $role = SessionService::getSessionKey("user")["role"];
-        if (!in_array($role, $route['roles'])) {
-            http_response_code(403);
-            echo "Forbidden";
-            exit;
-        }
-    }
+//     // Role check
+//     if (!empty($route['roles'])) {
+//         $role = SessionService::getSessionKey("user")["role"];
+//         if (!in_array($role, $route['roles'])) {
+//             http_response_code(403);
+//             echo "Forbidden";
+//             exit;
+//         }
+//     }
 
-    $controller = $container->get($subRoute['controller']);
-    $controller->{$subRoute['method']}($_GET);
-    exit;
-}
+//     $controller = $container->get($subRoute['controller']);
+//     $controller->{$subRoute['method']}($_GET);
+//     exit;
+// }
 
 
 
