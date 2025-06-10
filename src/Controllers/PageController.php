@@ -56,6 +56,9 @@ class PageController extends AbstractController {
             $whereSQL = 'WHERE ' . implode(' AND ', $whereClauses);
         }
 
+        // var_dump($whereSQL);
+        // var_dump($params);
+
         $projects = $this->projectRepository->fetchAllProjects($whereSQL, $params);
  
         $this->render("projects.view",[
