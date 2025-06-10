@@ -13,6 +13,7 @@ class ProjectNotesController extends AbstractController {
 
     public function createProjectNote($request) {
         $project_id = $_GET["projectId"] ?? "";
+        $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes";
         $project = $this->projectRepository->fetchProject($project_id);
         $baseUrl = [
             "page" => "projectPanel",
@@ -47,7 +48,29 @@ class ProjectNotesController extends AbstractController {
         }
 
 
-        $this->projectNotesRepository->handleCreateProjectNote();
+        $success =$this->projectNotesRepository->handleCreateProjectNote([
+            "project_id" => $project_id,
+            "user_id" => $currentUserSession["userId"],
+            "content" => $content,
+            "projectnote_type" => $projectNoteType
+        ]);
+
+
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Created project note sucessully");
+        }
+        else {
+             SessionService::setAlertMessage("error_message", "Failed to create project note");
+        }
+
         
+        $data["projectNotes"] = $this->projectRepository->fetchProjectNotes($project_id);
+        
+        $this->render("project.view", [
+            "project" => $project,
+            "baseUrl" => $baseUrl,
+            "currentNavTab" => $currentNavTab,
+            "data" => $data
+        ]);
     }
 }

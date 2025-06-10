@@ -56,6 +56,7 @@
             <?php if ($currentNavTab === "projectNotes"): ?>
                 <div class="mb-5">
                     <h6 class="mb-3">Add Project Note</h6>
+                    <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
                     <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl); ?>">
                         <textarea style="height: 10rem;" class="w-100 form-control mb-2 <?= ($errors["projectnoteErr"] ?? "") ? 'is-invalid' : ''; ?>" rows="4" placeholder="Enter your project note here" name="projectNote"></textarea>
                         <div class="d-flex justify-content-between">
