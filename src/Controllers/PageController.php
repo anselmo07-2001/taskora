@@ -19,31 +19,37 @@ class PageController extends AbstractController {
 
     public function showProjects() {
         $filter = $_GET["filter"] ?? "";
-        $projects = $this->projectRepository->fetchAllProjects();
-
-        //filtering
+        $search = $_GET["search"] ?? "";
         $today = date("Y-m-d");
 
-        $filteredProjects = array_filter($projects, function($project) use($filter, $today) {
-            $deadline = $project["deadline"];
+        $whereClauses = [];
+        $params = [];
 
-            switch ($filter) {
-                case 'due_today':
-                    return $deadline === $today;
+        if ($filter === 'due_today') {
+            $whereClauses[] = "projects.deadline = :today";
+            $params['today'] = $today;
+        } elseif ($filter === 'overdue') {
+            $whereClauses[] = "projects.deadline < :today";
+            $params['today'] = $today;
+        } elseif ($filter === 'upcoming') {
+            $whereClauses[] = "projects.deadline > :today";
+            $params['today'] = $today;
+        }
 
-                case 'overdue':
-                    return $deadline < $today;
+        if (!empty($search)) {
+            $whereClauses[] = "projects.name LIKE :search";
+            $params['search'] = '%' . $search . '%';
+        }
+    
+        $whereSQL = '';
+        if (count($whereClauses) > 0) {
+            $whereSQL = 'WHERE ' . implode(' AND ', $whereClauses);
+        }
 
-                case 'upcoming':
-                    return $deadline > $today;
-
-                default:
-                    return true; // No filter: show all  
-            }
-        });
+        $projects = $this->projectRepository->fetchAllProjects($whereSQL, $params);
  
         $this->render("projects.view",[
-            "projects" => $filteredProjects,
+            "projects" => $projects,
             "filter" => $filter
         ]);
     }

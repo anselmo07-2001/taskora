@@ -11,7 +11,7 @@ use Exception;
 class ProjectRepository {
     public function __construct(private PDO $pdo) {}
 
-    public function fetchAllProjects() {
+    public function fetchAllProjects(string $whereSql, array $params) {
         try {
             $stmt = "
                 SELECT 
@@ -37,6 +37,7 @@ class ProjectRepository {
                         SELECT id FROM users WHERE status != 'deleted'
                     )
                 LEFT JOIN tasks ON projects.id = tasks.project_id
+                {$whereSql}
                 GROUP BY 
                     projects.id, 
                     projects.name, 
@@ -46,7 +47,7 @@ class ProjectRepository {
             ";
 
             $stmt = $this->pdo->prepare($stmt);
-            $stmt->execute();
+            $stmt->execute($params);
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }

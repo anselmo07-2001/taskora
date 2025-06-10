@@ -1,3 +1,4 @@
+<?php $searchQuery = isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : ''; ?>
 
 <div class="container custom-container">
         <h2>Display All Projects Data</h2>
@@ -6,22 +7,27 @@
         <h6 class="text-muted">Total Project: <?php echo count($projects); ?></h6>
         <div class="mb-3 d-flex justify-content-between">
             <div class="d-flex align-items-center gap-2">
-                <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=due_today" ?>" 
+                <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=due_today" . $searchQuery ?>" 
                     class="btn custom-primary-btn filter-form-btn <?php echo ( $filter ?? "" ) === "due_today" ? "filter-active" : "" ?>">
                        Due Today
                 </a>
-                <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=overdue" ?>" 
+                <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=overdue" . $searchQuery ?>" 
                     class="btn custom-primary-btn filter-form-btn <?php echo ( $filter ?? "" ) === "overdue" ? "filter-active" : "" ?>">
                         Overdue
                 </a>
-                <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=upcoming" ?>" 
+                <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=upcoming" . $searchQuery ?>" 
                     class="btn custom-primary-btn filter-form-btn <?php echo ( $filter ?? "" ) === "upcoming" ? "filter-active" : "" ?>">
                         Upcoming
                 </a>
             </div>
-            <form class="d-flex gap-2">
-                 <input type="text" class="form-control" name="searchProject" placeholder="Search Project">
-                 <button class="btn custom-primary-btn filter-form-btn">
+            <form method="GET" action="<?php echo BASE_URL . "/index.php" ?>" class="d-flex gap-2" >
+                 <input type="hidden" name="page" value="projects">
+                 <?php if (!empty($filter)): ?>
+                        <input type="hidden" name="filter" value="<?= e($filter) ?>">
+                 <?php endif; ?>
+
+                 <input type="text" class="form-control" name="search" placeholder="Search Project" value="<?= e($_GET["search"] ?? "") ?>">
+                 <button type="submit" class="btn custom-primary-btn filter-form-btn">
                       <img src="./public/images/magnifying-glass.png" alt="icon" style="width:15px; height:15px; filter: invert(1);">
                  </button>
             </form>
