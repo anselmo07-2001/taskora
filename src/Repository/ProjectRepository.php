@@ -42,11 +42,14 @@ class ProjectRepository {
                             WHEN projects.deadline > CURDATE() THEN 'Upcoming'
                         END AS deadline_status,
                         -- Progress calculation 
-                        CONCAT(
-                            ROUND(
-                                (SUM(CASE WHEN tasks.status = 'completed' THEN 1 ELSE 0 END) /
-                                NULLIF(COUNT(tasks.id), 0)) * 100, 0
-                            ), '%'
+                        IFNULL(
+                            CONCAT(
+                                ROUND(
+                                    (SUM(CASE WHEN tasks.status = 'completed' THEN 1 ELSE 0 END) / NULLIF(COUNT(tasks.id), 0)) * 100,
+                                    0
+                                ), '%'
+                            ),
+                            '0%'
                         ) AS progress,
 
                         -- Members full names (excluding manager)
