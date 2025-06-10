@@ -18,9 +18,33 @@ class PageController extends AbstractController {
     }   
 
     public function showProjects() {
+        $filter = $_GET["filter"] ?? "";
         $projects = $this->projectRepository->fetchAllProjects();
+
+        //filtering
+        $today = date("Y-m-d");
+
+        $filteredProjects = array_filter($projects, function($project) use($filter, $today) {
+            $deadline = $project["deadline"];
+
+            switch ($filter) {
+                case 'due_today':
+                    return $deadline === $today;
+
+                case 'overdue':
+                    return $deadline < $today;
+
+                case 'upcoming':
+                    return $deadline > $today;
+
+                default:
+                    return true; // No filter: show all  
+            }
+        });
+ 
         $this->render("projects.view",[
-            "projects" => $projects
+            "projects" => $filteredProjects,
+            "filter" => $filter
         ]);
     }
 

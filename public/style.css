@@ -159,6 +159,15 @@ button.filter-form-btn {
   font-size: 0.875rem;
   line-height: 1;
 }
+a.filter-form-btn {
+  padding: 0.40rem 0.60rem;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+a.filter-form-btn.filter-active {
+    background-color: #64a0c2 ;
+}
 
 /************************************************************/
 /** Show Project Page **/

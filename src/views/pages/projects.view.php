@@ -6,9 +6,18 @@
         <h6 class="text-muted">Total Project: <?php echo count($projects); ?></h6>
         <div class="mb-3 d-flex justify-content-between">
             <div class="d-flex align-items-center gap-2">
-                <button href="#" class="btn custom-primary-btn filter-form-btn">Due Today</button>
-                <button href="#" class="btn custom-primary-btn filter-form-btn">Overdue</button>
-                <button href="#" class="btn custom-primary-btn filter-form-btn">Upcoming</button>
+                <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=due_today" ?>" 
+                    class="btn custom-primary-btn filter-form-btn <?php echo ( $filter ?? "" ) === "due_today" ? "filter-active" : "" ?>">
+                       Due Today
+                </a>
+                <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=overdue" ?>" 
+                    class="btn custom-primary-btn filter-form-btn <?php echo ( $filter ?? "" ) === "overdue" ? "filter-active" : "" ?>">
+                        Overdue
+                </a>
+                <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=upcoming" ?>" 
+                    class="btn custom-primary-btn filter-form-btn <?php echo ( $filter ?? "" ) === "upcoming" ? "filter-active" : "" ?>">
+                        Upcoming
+                </a>
             </div>
             <form class="d-flex gap-2">
                  <input type="text" class="form-control" name="searchProject" placeholder="Search Project">
