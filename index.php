@@ -36,13 +36,13 @@ $container->bind("PageController", function() use($container) {
 });
 $container->bind("AdminController", function() use($container){
     $userRepository = $container->get("userRepository");
-    $projectRespository = $container->get("projectRepository");
-    return new \App\Controllers\AdminController($userRepository, $projectRespository);
+    $projectRepository = $container->get("projectRepository");
+    return new \App\Controllers\AdminController($userRepository, $projectRepository);
 });
 $container->bind("ProjectNotesController", function() use($container) {
-    $projectRespository = $container->get("projectRepository");
+    $projectRepository = $container->get("projectRepository");
     $projectNotesRepository = $container->get("projectNotesRepository");
-    return new \App\Controllers\ProjectNotesController($projectRespository, $projectNotesRepository);
+    return new \App\Controllers\ProjectNotesController($projectRepository, $projectNotesRepository);
 });
 
 
