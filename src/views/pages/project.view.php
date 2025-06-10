@@ -1,4 +1,3 @@
-<?= var_dump($project); ?>
 
 <div class="container custom-container">
         <div>

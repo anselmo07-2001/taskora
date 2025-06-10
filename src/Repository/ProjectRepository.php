@@ -18,9 +18,9 @@ class ProjectRepository {
                         projects.project_description,
                         projects.deadline,
                         CASE 
-                            WHEN projects.deadline < CURDATE() THEN 'overdue'
-                            WHEN projects.deadline = CURDATE() THEN 'due date'
-                            WHEN projects.deadline > CURDATE() THEN 'upcoming'
+                            WHEN projects.deadline < CURDATE() THEN 'Overdue'
+                            WHEN projects.deadline = CURDATE() THEN 'Today'
+                            WHEN projects.deadline > CURDATE() THEN 'Upcoming'
                         END AS deadline_status,
                         -- Progress calculation 
                         CONCAT(
