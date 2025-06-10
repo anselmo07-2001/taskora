@@ -2,12 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Repository\ProjectNotesRepository;
 use App\Repository\ProjectRepository;
 use App\Support\SessionService;
 
 class ProjectNotesController extends AbstractController {
 
-    public function __construct(protected ProjectRepository $projectRepository) {}
+    public function __construct(protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository) {}
     
 
     public function createProjectNote($request) {
@@ -46,6 +47,7 @@ class ProjectNotesController extends AbstractController {
         }
 
 
-        echo "creatinggg..";
+        $this->projectNotesRepository->handleCreateProjectNote();
+        
     }
 }

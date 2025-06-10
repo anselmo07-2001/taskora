@@ -19,6 +19,10 @@ $container->bind("projectRepository", function() use($container) {
     $pdo = $container->get("pdo");
     return new \App\Repository\ProjectRepository($pdo);
 });
+$container->bind("projectNotesRepository", function() use($container) {
+    $pdo = $container->get("pdo");
+    return new \App\Repository\ProjectNotesRepository($pdo);
+});
 
 
 $container->bind("AuthController", function() use($container) {
@@ -37,7 +41,8 @@ $container->bind("AdminController", function() use($container){
 });
 $container->bind("ProjectNotesController", function() use($container) {
     $projectRespository = $container->get("projectRepository");
-    return new \App\Controllers\ProjectNotesController($projectRespository);
+    $projectNotesRepository = $container->get("projectNotesRepository");
+    return new \App\Controllers\ProjectNotesController($projectRespository, $projectNotesRepository);
 });
 
 
