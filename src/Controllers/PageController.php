@@ -17,6 +17,11 @@ class PageController extends AbstractController {
          $this->currentUserSession = SessionService::getSessionKey("user") ?? null;
     }   
 
+    public function showProject() {
+        $this->render("project.view", []);
+    }
+
+
     public function showProjects() {
         $filter = $_GET["filter"] ?? "";
         $search = $_GET["search"] ?? "";
