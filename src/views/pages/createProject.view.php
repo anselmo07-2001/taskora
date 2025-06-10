@@ -1,3 +1,4 @@
+<?php // var_dump($currentUserSession); ?>
 
 <div class="container custom-container">
         <div class="card custom-form-container">
@@ -43,16 +44,35 @@
 
                     <div class="mb-4">
                         <label for="assignedProjectManager" class="form-label">Assigned Project Manager</label>
-                        <select class="form-select <?= ($errors["assignedProjectManagerErr"] ?? "") ? 'is-invalid' : ''; ?>" id="assignedProjectManager" name="assignedProjectManager">
-                            <option selected disabled></option>
-                            <?php foreach($projectManagers AS $projectManager): ?>
-                                 <option value="<?php echo e($projectManager["id"]);?>" 
-                                         <?php echo (($_POST["assignedProjectManager"] ?? "") == $projectManager["id"]) ? 'selected' : ''; ?>> 
-                                    <?php echo e($projectManager["fullname"]);?>
-                                 </option>
-                            <?php endforeach; ?>
+                        <?php if ($currentUserSession["role"] === "project_manager"): ?>
+                            <input type="hidden" name="assignedProjectManager" value="<?= e($currentUserSession["userId"]); ?>">
+                        <?php endif; ?>
+
+                        <select <?= $currentUserSession["role"] === "project_manager" ? "disabled" : 'name="assignedProjectManager"' ?>
+                                class="form-select 
+                                    <?= ($errors["assignedProjectManagerErr"] ?? "") && $currentUserSession["role"] !== "project_manager" 
+                                        ? 'is-invalid' : ''; ?>" id="assignedProjectManager" 
+                                    >
+
+                            <?php if ($currentUserSession["role"] === "project_manager"): ?>
+                                <option value="<?php echo e($currentUserSession["userId"]);?>" selected> 
+                                        <?php echo e($currentUserSession["fullname"]);?>
+                                </option>
+                            <?php endif; ?>   
+
+                            <?php if ($currentUserSession["role"] !== "project_manager"): ?>
+                                <option selected disabled></option>
+                                <?php foreach($projectManagers AS $projectManager): ?>
+                                    <option value="<?php echo e($projectManager["id"]);?>" 
+                                            <?php echo (($_POST["assignedProjectManager"] ?? "") == $projectManager["id"]) ? 'selected' : ''; ?>> 
+                                        <?php echo e($projectManager["fullname"]);?>
+                                    </option>
+                                <?php endforeach; ?>
+
+                            <?php endif; ?>
+
                         </select>
-                        <?php if (!empty($errors["assignedProjectManagerErr"] ?? null)): ?> 
+                        <?php if (!empty($errors["assignedProjectManagerErr"] ?? null) && $currentUserSession["role"] !== "project_manager"): ?> 
                                 <div class="invalid-feedback d-block mb-2" style="font-size: 0.75rem;">
                                     <?php echo $errors["assignedProjectManagerErr"]; ?>
                                 </div>

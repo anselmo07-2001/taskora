@@ -98,6 +98,7 @@ class PageController extends AbstractController {
         $this->render("createProject.view", [
             "projectManagers" => $listOfProjectManagers,
             "members" => $listOfMembers,
+            "currentUserSession" => $this->currentUserSession
         ]);
     }
 

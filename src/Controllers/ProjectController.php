@@ -23,6 +23,8 @@ class ProjectController extends AbstractController {
         $assignedMembers = $request["post"]["assignedMembers"] ?? "";
         $projectNote = trim(sanitize($request["post"]["projectNote"])) ?? "";
 
+        $currentUserSession = SessionService::getSessionKey("user");
+
         $errors = [];
 
         if (empty($projectName)) {
@@ -49,7 +51,7 @@ class ProjectController extends AbstractController {
             }
         }
 
-        if (empty($assignedProjectManager)) {
+        if (empty($assignedProjectManager) && $currentUserSession["role"] === "admin") {
             $errors["assignedProjectManagerErr"] = "Please select Project manager";
         }
 
@@ -67,6 +69,7 @@ class ProjectController extends AbstractController {
                 "errors" => $errors,
                 "projectManagers" => $listOfProjectManagers,
                 "members" => $listOfMembers,
+                "currentUserSession" => $currentUserSession,
             ]);
             exit;
         }
