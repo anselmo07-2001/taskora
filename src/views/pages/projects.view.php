@@ -7,6 +7,10 @@
         <h6 class="text-muted">Total Project: <?php echo count($projects); ?></h6>
         <div class="mb-3 d-flex justify-content-between">
             <div class="d-flex align-items-center gap-2">
+                <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=all_projects" . $searchQuery ?>" 
+                    class="btn custom-primary-btn filter-form-btn <?php echo ( $filter ?? "" ) === "all_projects" ? "filter-active" : "" ?>">
+                       All Projects
+                </a>
                 <a href="<?php echo BASE_URL . "/index.php?page=projects&filter=due_today" . $searchQuery ?>" 
                     class="btn custom-primary-btn filter-form-btn <?php echo ( $filter ?? "" ) === "due_today" ? "filter-active" : "" ?>">
                        Due Today
