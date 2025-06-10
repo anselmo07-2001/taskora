@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Models\ProjectModel;
 use App\Support\SessionService;
 use PDO;
 use PDOException;
@@ -10,6 +9,69 @@ use Exception;
 
 class ProjectRepository {
     public function __construct(private PDO $pdo) {}
+
+    public function fetchProject(int $id) {
+         try {
+            $stmt = $this->pdo->prepare("SELECT 
+                        projects.id,
+                        projects.name,
+                        projects.project_description,
+                        projects.deadline,
+                        CASE 
+                            WHEN projects.deadline < CURDATE() THEN 'overdue'
+                            WHEN projects.deadline = CURDATE() THEN 'due date'
+                            WHEN projects.deadline > CURDATE() THEN 'upcoming'
+                        END AS deadline_status,
+                        -- Progress calculation 
+                        CONCAT(
+                            ROUND(
+                                (SUM(CASE WHEN tasks.status = 'completed' THEN 1 ELSE 0 END) /
+                                NULLIF(COUNT(tasks.id), 0)) * 100, 0
+                            ), '%'
+                        ) AS progress,
+
+                        -- Members full names (excluding manager)
+                        GROUP_CONCAT(DISTINCT 
+                            CASE 
+                                WHEN project_members.user_id != projects.assigned_manager THEN users.fullname
+                                ELSE NULL
+                            END
+                            SEPARATOR ', '
+                        ) AS members,
+
+                        -- Count of members (excluding manager)
+                        COUNT(DISTINCT 
+                            CASE 
+                                WHEN project_members.user_id != projects.assigned_manager THEN project_members.user_id
+                                ELSE NULL
+                            END
+                        ) AS member_count,
+                  
+                        manager.fullname,
+                     
+                        projects.status
+
+                        FROM projects
+                      
+                        JOIN users AS manager ON projects.assigned_manager = manager.id
+                        LEFT JOIN tasks ON tasks.project_id = projects.id
+                        LEFT JOIN project_members ON project_members.project_id = projects.id AND project_members.is_active = 1
+                        LEFT JOIN users ON users.id = project_members.user_id
+
+                        -- Filter by project ID
+                        WHERE projects.id = :id
+                        GROUP BY projects.id;");
+
+            $stmt->execute([':id' => $id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return $result;
+         }
+         catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+         }
+    }
+
 
     public function fetchAllProjects(string $whereSql, array $params) {
         try {

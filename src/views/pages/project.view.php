@@ -1,19 +1,21 @@
+<?= var_dump($project); ?>
+
 <div class="container custom-container">
         <div>
             <div class="d-flex align-items-center gap-2 mb-4">
                 <img src="./public/images/scope.png" class="myproject-title-icon"/>
-                <h1>Customer Portal Upgrade</h1>
+                <h1><?= e($project["name"]); ?></h1>
             </div>
             <h5 class="lh-sm">Objective</h5>
-            <p class="fs-5 mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p class="fs-5 mb-4"><?= e($project["project_description"]); ?></p>
             <div class="mb-4">
                  <ul class="list-unstyled">
-                     <li>Deadline: <span>January 23, 2025</span></li>
-                     <li>Deadline Status: <span>Overdue</span></li>
-                     <li>Progress: <span>25%</span></li>
-                     <li>Members: <span>5</span></li>
-                     <li>Project Manager: <span>Jun Rivera</span></li>
-                     <li>Current Project Status: <span>In progress</span></li>
+                     <li>Deadline: <span><?= e($project["deadline"]); ?></span></li>
+                     <li>Deadline Status: <span><?= e($project["deadline_status"]); ?></span></li>
+                     <li>Progress: <span><?= e($project["progress"]); ?></span></li>
+                     <li>Members: <span><?= e($project["member_count"]); ?></span></li>
+                     <li>Project Manager: <span><?= e($project["fullname"]); ?></span></li>
+                     <li>Current Project Status: <span><?= e($project["status"]); ?></span></li>
                  </ul>
             </div>
 
@@ -231,7 +233,7 @@
         <hr>
 
 
-        
+
         <h6 class="text-muted">Total Group Task: 5</h6>
         <div class="mb-3 d-flex justify-content-between">
             <div class="d-flex align-items-center gap-2">

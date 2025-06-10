@@ -18,7 +18,12 @@ class PageController extends AbstractController {
     }   
 
     public function showProject() {
-        $this->render("project.view", []);
+        $project_id = $_GET["projectId"] ?? "";
+        $project = $this->projectRepository->fetchProject($project_id);
+
+        $this->render("project.view", [
+            "project" => $project
+        ]);
     }
 
 
