@@ -1,4 +1,4 @@
-<?php var_dump($errors ?? ""); ?>
+<?php // var_dump($errors ?? ""); ?>
 
 <div class="container custom-container pb-5">
         <div>

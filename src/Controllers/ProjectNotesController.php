@@ -20,20 +20,15 @@ class ProjectNotesController extends AbstractController {
             "projectId" => $project_id
         ];
 
-        $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes";
-        $data = [];
-
-        if ($currentNavTab === "projectNotes") {
-            $data["projectNotes"] = $this->projectRepository->fetchProjectNotes($project_id);
-        }
+        $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes"; 
+        $data["projectNotes"] = $this->projectRepository->fetchProjectNotes($project_id);
 
         $errors = [];
 
         $content = trim(sanitize($request["post"]["projectNote"])) ?? "";
         $currentUserSession = SessionService::getSessionKey("user");
         $projectNoteType = "Added a note";
-        
-        
+            
         if (empty($content)) {
             $errors["projectnoteErr"] = "Please enter your project note";
 
@@ -64,13 +59,13 @@ class ProjectNotesController extends AbstractController {
         }
 
         
-        $data["projectNotes"] = $this->projectRepository->fetchProjectNotes($project_id);
-        
-        $this->render("project.view", [
-            "project" => $project,
-            "baseUrl" => $baseUrl,
-            "currentNavTab" => $currentNavTab,
-            "data" => $data
+        $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
+            "page" => "projectPanel",
+            "projectId" => $project_id,
+            "currentNavTab" => $currentNavTab
         ]);
+
+        header("Location: $redirectUrl");
+        exit;
     }
 }
