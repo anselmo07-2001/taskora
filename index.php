@@ -35,6 +35,10 @@ $container->bind("AdminController", function() use($container){
     $projectRespository = $container->get("projectRepository");
     return new \App\Controllers\AdminController($userRepository, $projectRespository);
 });
+$container->bind("ProjectNotesController", function() use($container) {
+    $projectRespository = $container->get("projectRepository");
+    return new \App\Controllers\ProjectNotesController($projectRespository);
+});
 
 
 

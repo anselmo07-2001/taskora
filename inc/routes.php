@@ -79,6 +79,12 @@ $routes = [
                 "method" => "showProject",
                 "auth" => true,
                 "role" => ["admin", "project_manager", "member"]
+        ],
+        "POST" => [       
+                "controller" => "ProjectNotesController",
+                "method" => "createProjectNote",
+                "auth" => true,
+                "role" => ["admin", "project_manager", "member"]
         ]
     ]
 

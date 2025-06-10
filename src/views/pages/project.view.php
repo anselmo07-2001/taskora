@@ -1,4 +1,4 @@
-<?php // var_dump($data); ?>
+<?php var_dump($errors ?? ""); ?>
 
 <div class="container custom-container pb-5">
         <div>
@@ -56,10 +56,20 @@
             <?php if ($currentNavTab === "projectNotes"): ?>
                 <div class="mb-5">
                     <h6 class="mb-3">Add Project Note</h6>
-                    <form method="POST" action="<?php BASE_URL . "/index.php?" ?>">
-                        <textarea style="height: 10rem;" class="w-100 form-control mb-3" rows="4" placeholder="Enter your project note here" name="projectNote"></textarea>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn custom-primary-btn">Save Project Note</button>
+                    <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl); ?>">
+                        <textarea style="height: 10rem;" class="w-100 form-control mb-2 <?= ($errors["projectnoteErr"] ?? "") ? 'is-invalid' : ''; ?>" rows="4" placeholder="Enter your project note here" name="projectNote"></textarea>
+                        <div class="d-flex justify-content-between">
+                            <div class="me-3 flex-grow-1">
+                                <?php if (!empty($errors["projectnoteErr"] ?? null)): ?> 
+                                    <div class="invalid-feedback d-block" style="font-size: 0.75rem;">
+                                        <?php echo $errors["projectnoteErr"]; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="d-flex align-items-start">
+                                <button class="btn custom-primary-btn align-self-start">Save Project Note</button>
+                            </div>
                         </div> 
                     </form> 
                 </div>
