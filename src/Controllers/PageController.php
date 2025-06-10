@@ -20,9 +20,19 @@ class PageController extends AbstractController {
     public function showProject() {
         $project_id = $_GET["projectId"] ?? "";
         $project = $this->projectRepository->fetchProject($project_id);
+        $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes";
+
+        //use for the navbar
+        $baseUrl = [
+            "page" => "projectPanel",
+            "projectId" => $project_id
+        ];
+        
 
         $this->render("project.view", [
-            "project" => $project
+            "project" => $project,
+            "baseUrl" => $baseUrl,
+            "currentNavTab" => $currentNavTab
         ]);
     }
 
