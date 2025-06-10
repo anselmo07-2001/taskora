@@ -22,10 +22,10 @@
                 <form class="d-flex align-items-center gap-3">
                     <label for="project-status" class="form-label">Change the project status:</label>
                     <select class="form-select w-25" id="project-status" style="margin-right: -0.5rem;">
-                        <option value="pending">Pending</option>
-                        <option selected value="admin">In progress</option>
-                        <option value="manager">Completed</option>
-                        <option value="member">Failed</option>
+                        <option value="pending" <?= $project["status"] === "pending" ? "selected" : "" ?>>Pending</option>
+                        <option value="admin" <?= $project["status"] === "in_progress" ? "selected" : "" ?>>In progress</option>
+                        <option value="manager" <?= $project["status"] === "completed" ? "selected" : "" ?>>Completed</option>
+                        <option value="member" <?= $project["status"] === "failed" ? "selected" : "" ?>>Failed</option>
                     </select>
                     <button class="btn custom-primary-btn">Update Project</button>
                 </form>
