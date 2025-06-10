@@ -1,3 +1,4 @@
+<?php // var_dump($data); ?>
 
 <div class="container custom-container pb-5">
         <div>
@@ -63,53 +64,22 @@
                     </div>  
                 </div>
 
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start">
-                            <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
-                            <div>
-                                <h6 class="mb-0">Caramel <sup>(Member)</sup></h6>
-                                <small class="text-muted">Submitted the task at Oct 22, 2024 03: 23 pm</small>
-                                <p class="mt-2 mb-0">
-                                This is a great project! I really like how you structured the tasks.
-                                </p>
+                <?php foreach ($data["projectNotes"] AS $row): ?>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start">
+                                <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
+                                <div>
+                                    <h6 class="mb-0"><?= $row->fullname ?><sup> (<?= $row->role ?>)</sup></h6>
+                                    <small class="text-muted"><?= $row->projectnote_type ?></small>
+                                    <p class="mt-2 mb-0">
+                                      <?= $row->content ?>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start">
-                            <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
-                            <div>
-                                <h6 class="mb-0">Choco Choco <sup>(Member)</sup></h6>
-                                <small class="text-muted">Submitted the task at Oct 22, 2024 03: 23 pm</small>
-                                <p class="mt-2 mb-0">
-                                This is a great project! I really like how you structured the tasks.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mb-4">
-                    <div class="card-body position-relative">
-                        <div class="d-flex align-items-start">
-                            <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
-                            <div>
-                                <h6 class="mb-0">Osgar Rivera <sup>(Member)</sup></h6>
-                                <small class="text-muted lh-sm">Edited a task note at on Oct 23, 2024 01:24 pm </small><br/>
-                                <p class="mt-2 mb-0">
-                                    This is a great project! I really like how you structured the tasks.
-                                </p>
-                            </div>
-                        </div>
-                        <button class="btn custom-primary-btn position-absolute top-0 end-0 me-2 mt-2">
-                                <img src="./public/images/pen.png" style="filter: invert(1); height: 1rem; width: 1rem;" />
-                        </button>  
-                    </div>
-                </div>
+                <?php endforeach; ?>
 
                 <div class="d-flex justify-content-end">
                     <nav aria-label="Page navigation">

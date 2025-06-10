@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Models\ProjectNotes;
 use App\Support\SessionService;
 use PDO;
 use PDOException;
@@ -9,6 +10,24 @@ use Exception;
 
 class ProjectRepository {
     public function __construct(private PDO $pdo) {}
+
+    public function fetchProjectNotes(int $projectId): array {
+        try {
+            $stmt = $this->pdo->prepare("SELECT 
+                        project_notes.*, users.fullname, users.role
+                        FROM `project_notes` JOIN users ON project_notes.user_id = users.id WHERE `project_id` = :project_id 
+                        ORDER BY `created_at` DESC");
+
+            $stmt->bindValue(":project_id", $projectId);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_CLASS, ProjectNotes::class);
+            $projectNotes = $stmt->fetchAll();
+            return $projectNotes;
+        }
+         catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+         }
+    }
 
     public function fetchProject(int $id) {
          try {
