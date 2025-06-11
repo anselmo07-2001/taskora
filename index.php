@@ -48,7 +48,8 @@ $container->bind("ProjectNotesController", function() use($container) {
 $container->bind("ProjectController", function() use($container) {
     $userRepository = $container->get("userRepository");
     $projectRepository = $container->get("projectRepository");
-    return new \App\Controllers\ProjectController($userRepository, $projectRepository);
+    $projectNotesRepository = $container->get("projectNotesRepository");
+    return new \App\Controllers\ProjectController($userRepository, $projectRepository, $projectNotesRepository);
 });
 
 

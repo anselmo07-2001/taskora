@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Repository\ProjectNotesRepository;
 use App\Repository\ProjectRepository;
 use App\Repository\UserRepository;
 use App\Support\SessionService;
@@ -9,17 +10,24 @@ use App\Support\SessionService;
 use DateTime;
 
 class ProjectController extends AbstractController {
-    public function __construct(protected UserRepository $userRepository, protected ProjectRepository $projectRepository){}
+    public function __construct(protected UserRepository $userRepository, protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository){}
 
     public function updateProjectStatus($request) {
         $newProjectStatus = $request["post"]["projectStatus"];
         $projectId = $request["get"]["projectId"];
         $currentNavTab = $request["get"]["currentNavTab"];
+        $currentUserSession = SessionService::getSessionKey("user");
         
         $sucess = $this->projectRepository->handleUpdateProjectStatus($projectId, $newProjectStatus);
 
         if ($sucess) {
              SessionService::setAlertMessage("success_message", "You sucessfully change the project status into {$newProjectStatus}");
+             $this->projectNotesRepository->handleCreateProjectNote([
+                "project_id" => $projectId,
+                "user_id" => $currentUserSession["userId"],
+                "content" => "Change status to {$newProjectStatus}",
+                "projectnote_type" => "Update project status"
+             ]);
         }
 
         $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
