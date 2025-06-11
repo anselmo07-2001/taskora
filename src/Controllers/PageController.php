@@ -85,6 +85,10 @@ class PageController extends AbstractController {
         if ($this->currentUserSession["role"] === "project_manager") {
              $projects = $this->projectRepository->fetchProjects($this->currentUserSession["userId"], $whereSQL, $params);
         }
+
+        if ($this->currentUserSession["role"] === "member") {
+            $projects = $this->projectRepository->fetchProjectsForMember($this->currentUserSession["userId"], $whereSQL, $params);
+        }
  
         $this->render("projects.view",[
             "projects" => $projects,

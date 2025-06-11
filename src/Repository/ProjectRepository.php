@@ -76,6 +76,74 @@ class ProjectRepository {
          }
     }
 
+    public function fetchProjectsForMember(int $memberId, string $whereSql = "", array $params = []) {
+        try {
+            $where = [];
+            $params['memberId'] = $memberId;
+
+            // Only show projects where this user is a member (active or not)
+            $where[] = "projects.id IN (
+                SELECT project_id FROM project_members 
+                WHERE user_id = :memberId
+            )";
+
+            if (!empty($whereSql)) {
+                $where[] = preg_replace('/^WHERE\s+/i', '', $whereSql);
+            }
+
+            $finalWhere = '';
+            if (!empty($where)) {
+                $finalWhere = 'WHERE ' . implode(' AND ', $where);
+            }
+
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    projects.id,
+                    projects.name,
+                    manager.fullname AS fullname,
+
+                    COUNT(DISTINCT CASE 
+                        WHEN project_members.user_id != projects.assigned_manager THEN project_members.user_id 
+                    END) AS number_of_members,
+
+                    COUNT(DISTINCT tasks.id) AS number_of_tasks,
+
+                    projects.deadline,
+                    projects.status,
+
+                    ROUND(
+                        IF(COUNT(DISTINCT tasks.id) = 0, 0,
+                            (COUNT(DISTINCT CASE WHEN tasks.status = 'completed' THEN tasks.id END) / COUNT(DISTINCT tasks.id)) * 100
+                        ), 0
+                    ) AS progress
+
+                FROM projects
+
+                JOIN users AS manager ON manager.id = projects.assigned_manager
+
+                LEFT JOIN project_members 
+                    ON project_members.project_id = projects.id
+
+                LEFT JOIN users ON users.id = project_members.user_id
+                LEFT JOIN tasks ON tasks.project_id = projects.id
+
+                {$finalWhere}
+
+                GROUP BY 
+                    projects.id,
+                    projects.name,
+                    manager.fullname,
+                    projects.deadline,
+                    projects.status
+            ");
+
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
 
     public function fetchProjects(?int $projectManagerId = null, string $whereSql = "", array $params = []) {
         try {
