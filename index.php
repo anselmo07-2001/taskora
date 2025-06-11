@@ -32,7 +32,8 @@ $container->bind("AuthController", function() use($container) {
 $container->bind("PageController", function() use($container) {
     $userRepository = $container->get("userRepository");
     $projectRepository = $container->get("projectRepository");
-    return new \App\Controllers\PageController($userRepository, $projectRepository);
+    $projectNotesRepository = $container->get("projectNotesRepository");
+    return new \App\Controllers\PageController($userRepository, $projectRepository, $projectNotesRepository);
 });
 $container->bind("AdminController", function() use($container){
     $userRepository = $container->get("userRepository");

@@ -8,7 +8,7 @@ use App\Support\SessionService;
 
 class ProjectNotesController extends AbstractController {
 
-    public function __construct(protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository) {}
+    public function __construct(protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository,) {}
     
 
     public function createProjectNote($request) {
@@ -21,7 +21,7 @@ class ProjectNotesController extends AbstractController {
         ];
 
         $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes"; 
-        $data["projectNotes"] = $this->projectRepository->fetchProjectNotes($project_id);
+        $data["projectNotes"] = $this->projectNotesRepository->fetchProjectNotes($project_id);
 
         $errors = [];
 

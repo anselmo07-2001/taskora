@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Repository\ProjectNotesRepository;
 use App\Repository\ProjectRepository;
 use App\Support\SessionService;
 use App\Repository\UserRepository;
@@ -9,11 +10,13 @@ use App\Repository\UserRepository;
 class PageController extends AbstractController {
     protected UserRepository $userRepository;
     protected ProjectRepository $projectRepository;
+    protected ProjectNotesRepository $projectNotesRepository;
     protected array|null $currentUserSession;
 
-    public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository){
+    public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, ProjectNotesRepository $projectNotesRepository){
          $this->userRepository = $userRepository;
          $this->projectRepository = $projectRepository;
+         $this->projectNotesRepository = $projectNotesRepository;
          $this->currentUserSession = SessionService::getSessionKey("user") ?? null;
     }   
 
@@ -31,7 +34,7 @@ class PageController extends AbstractController {
         $data = [];
 
         if ($currentNavTab === "projectNotes") {
-            $data["projectNotes"] = $this->projectRepository->fetchProjectNotes($project_id);
+            $data["projectNotes"] = $this->projectNotesRepository->fetchProjectNotes($project_id);
         }
 
         
