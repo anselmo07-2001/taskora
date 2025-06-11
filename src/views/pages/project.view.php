@@ -79,9 +79,9 @@
                     </form> 
                 </div>
 
-                <?php foreach ($data["projectNotes"] AS $row): ?>            
+                <?php foreach ($data["projectNotes"] AS $row): ?>         
                     <div class="card mb-3">
-                        <div class="card-body">
+                        <div class="card-body position-relative">
                             <div class="d-flex align-items-start">
                                 <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
                                 <div>
@@ -92,6 +92,11 @@
                                     </p>
                                 </div>
                             </div>
+                            <?php if($currentUserSession["userId"] === $row->user_id): ?>
+                                <button class="btn custom-primary-btn position-absolute top-0 end-0 me-2 mt-2">
+                                    <img src="./public/images/pen.png" style="filter: invert(1); height: 1rem; width: 1rem;" />
+                                </button>  
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
