@@ -43,7 +43,8 @@ class PageController extends AbstractController {
             "project" => $project,
             "baseUrl" => $baseUrl,
             "currentNavTab" => $currentNavTab,
-            "data" => $data
+            "data" => $data,
+            "currentUserSession" => $this->currentUserSession
         ]);
     }
 
