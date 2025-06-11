@@ -77,8 +77,24 @@ class ProjectRepository {
     }
 
 
-    public function fetchAllProjects(string $whereSql, array $params) {
+    public function fetchProjects(?int $projectManagerId = null, string $whereSql = "", array $params = []) {
         try {
+            $where = [];
+
+            if ($projectManagerId !== null) {
+                $where[] = "projects.assigned_manager = :projectManagerId";
+                $params['projectManagerId'] = $projectManagerId;
+            }
+
+            if (!empty($whereSql)) {
+                $where[] = preg_replace('/^WHERE\s+/i', '', $whereSql);
+            }
+
+            $finalWhere = '';
+            if (!empty($where)) {
+                $finalWhere = 'WHERE ' . implode(' AND ', $where);
+            }
+
             $stmt = "
                 SELECT 
                     projects.id,
@@ -103,7 +119,7 @@ class ProjectRepository {
                         SELECT id FROM users WHERE status != 'deleted'
                     )
                 LEFT JOIN tasks ON projects.id = tasks.project_id
-                {$whereSql}
+                {$finalWhere}
                 GROUP BY 
                     projects.id, 
                     projects.name, 

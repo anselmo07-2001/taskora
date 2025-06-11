@@ -77,10 +77,14 @@ class PageController extends AbstractController {
             $whereSQL = 'WHERE ' . implode(' AND ', $whereClauses);
         }
 
-        // var_dump($whereSQL);
-        // var_dump($params);
+        $projects = [];
+        if ($this->currentUserSession["role"] === "admin") {
+             $projects = $this->projectRepository->fetchProjects(null, $whereSQL, $params);
+        }
 
-        $projects = $this->projectRepository->fetchAllProjects($whereSQL, $params);
+        if ($this->currentUserSession["role"] === "project_manager") {
+             $projects = $this->projectRepository->fetchProjects($this->currentUserSession["userId"], $whereSQL, $params);
+        }
  
         $this->render("projects.view",[
             "projects" => $projects,
