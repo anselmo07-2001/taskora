@@ -11,6 +11,24 @@ use Exception;
 class ProjectRepository {
     public function __construct(private PDO $pdo) {}
 
+
+    public function handleUpdateProjectStatus(int $projectId, string $newProjectStatus) {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE projects SET status = :status WHERE id = :projectId");
+            $stmt->execute([
+                "status" => $newProjectStatus,
+                "projectId" => $projectId
+            ]);
+
+            return $stmt->rowCount() > 0; // true if update happened
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+         }
+    }
+
+
+
     public function fetchProject(int $id) {
          try {
             $stmt = $this->pdo->prepare("SELECT 

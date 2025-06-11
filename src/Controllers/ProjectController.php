@@ -11,6 +11,28 @@ use DateTime;
 class ProjectController extends AbstractController {
     public function __construct(protected UserRepository $userRepository, protected ProjectRepository $projectRepository){}
 
+    public function updateProjectStatus($request) {
+        $newProjectStatus = $request["post"]["projectStatus"];
+        $projectId = $request["get"]["projectId"];
+        $currentNavTab = $request["get"]["currentNavTab"];
+        
+        $sucess = $this->projectRepository->handleUpdateProjectStatus($projectId, $newProjectStatus);
+
+        if ($sucess) {
+             SessionService::setAlertMessage("success_message", "You sucessfully change the project status into {$newProjectStatus}");
+        }
+
+        $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
+            "page" => "projectPanel",
+            "projectId" => $projectId,
+            "currentNavTab" => $currentNavTab
+        ]);
+
+        header("Location: $redirectUrl");
+        exit;
+    }
+
+
     public function createProject($request) {
         // this lists use for the dropdown 
         $listOfProjectManagers = $this->userRepository->fetchAllActiveUser("project_manager");

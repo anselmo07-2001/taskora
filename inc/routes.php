@@ -86,7 +86,16 @@ $routes = [
                 "auth" => true,
                 "role" => ["admin", "project_manager", "member"]
         ]
-    ]
+    ],
+
+    "updateProjectStatus" => [
+        "POST" => [
+            "controller" => "ProjectController",
+            "method" => "updateProjectStatus",
+            "auth" => true,
+            "role" => ["admin", "project_manager"]
+        ]
+    ],
 
 
 ];

@@ -37,6 +37,7 @@ class ProjectNotesController extends AbstractController {
                 "project" => $project,
                 "baseUrl" => $baseUrl,
                 "currentNavTab" => $currentNavTab,
+                "currentUserSession" => $currentUserSession,
                 "data" => $data
             ]);
             exit;

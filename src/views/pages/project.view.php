@@ -1,6 +1,7 @@
 <?php // var_dump($project ?? ""); ?>
 
 <div class="container custom-container pb-5">
+        <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
         <div>
             <div class="d-flex align-items-center gap-2 mb-4">
                 <img src="./public/images/scope.png" class="myproject-title-icon"/>
@@ -21,13 +22,15 @@
 
             <?php if ($currentUserSession["role"] !== "member"): ?>
                 <div class="mb-5">      
-                    <form class="d-flex align-items-center gap-3">
+                    <form method="POST" class="d-flex align-items-center gap-3" 
+                            action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "updateProjectStatus", "projectId" => $project["id"]]) ?>" 
+                    >
                         <label for="project-status" class="form-label">Change the project status:</label>
-                        <select class="form-select w-25" id="project-status" style="margin-right: -0.5rem;">
+                        <select class="form-select w-25" id="project-status" style="margin-right: -0.5rem;" name="projectStatus">
                             <option value="pending" <?= $project["status"] === "pending" ? "selected" : "" ?>>Pending</option>
-                            <option value="admin" <?= $project["status"] === "in_progress" ? "selected" : "" ?>>In progress</option>
-                            <option value="manager" <?= $project["status"] === "completed" ? "selected" : "" ?>>Completed</option>
-                            <option value="member" <?= $project["status"] === "failed" ? "selected" : "" ?>>Failed</option>
+                            <option value="in_progress" <?= $project["status"] === "in_progress" ? "selected" : "" ?>>In progress</option>
+                            <option value="completed" <?= $project["status"] === "completed" ? "selected" : "" ?>>Completed</option>
+                            <option value="failed" <?= $project["status"] === "failed" ? "selected" : "" ?>>Failed</option>
                         </select>
                         <button class="btn custom-primary-btn">Update Project</button>
                     </form>
@@ -58,7 +61,6 @@
             <?php if ($currentNavTab === "projectNotes"): ?>
                 <div class="mb-5">
                     <h6 class="mb-3">Add Project Note</h6>
-                    <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
                     <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl); ?>">
                         <textarea style="height: 10rem;" class="w-100 form-control mb-2 <?= ($errors["projectnoteErr"] ?? "") ? 'is-invalid' : ''; ?>" rows="4" placeholder="Enter your project note here" name="projectNote"></textarea>
                         <div class="d-flex justify-content-between">
