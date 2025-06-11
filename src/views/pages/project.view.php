@@ -1,4 +1,4 @@
-<?php var_dump($project ?? ""); ?>
+<?php // var_dump($project ?? ""); ?>
 
 <div class="container custom-container pb-5">
         <div>
@@ -75,14 +75,14 @@
                     </form> 
                 </div>
 
-                <?php foreach ($data["projectNotes"] AS $row): ?>
+                <?php foreach ($data["projectNotes"] AS $row): ?>            
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="d-flex align-items-start">
                                 <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
                                 <div>
-                                    <h6 class="mb-0"><?= $row->fullname ?><sup> (<?= $row->role ?>)</sup></h6>
-                                    <small class="text-muted"><?= $row->projectnote_type ?></small>
+                                    <h6 class="mb-0"><?= $row->fullname ?><sup><?= $row->role !== "admin" ? ' (' . $row->role . ')' : "" ?></sup></h6>
+                                    <small class="text-muted"><?= $row->projectnote_type . " on " . date("M d, Y, \a\\t h:i A", strtotime($row->created_at)); ?> </small>
                                     <p class="mt-2 mb-0">
                                       <?= $row->content ?>
                                     </p>
