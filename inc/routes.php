@@ -96,6 +96,14 @@ $routes = [
             "role" => ["admin", "project_manager"]
         ]
     ],
+    "updateProjectNote" => [
+        "POST" => [
+            "controller" => "ProjectNotesController",
+            "method" => "updateProjectNote",
+            "auth" => true,
+            "role" => ["admin", "project_manager"]
+        ]
+    ],
 
 
 ];

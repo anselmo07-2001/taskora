@@ -12,6 +12,18 @@ class ProjectNotesRepository {
 
     public function __construct(private PDO $pdo) {}
 
+    public function handleUpdateProjectNotes(array $data) {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE project_notes SET content = :content WHERE id = :id");
+            $stmt->execute($data);
+            return $stmt->rowCount() > 0;
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+
     public function fetchProjectNotes(int $projectId): array {
         try {
             $stmt = $this->pdo->prepare("SELECT 
@@ -25,9 +37,9 @@ class ProjectNotesRepository {
             $projectNotes = $stmt->fetchAll();
             return $projectNotes;
         }
-         catch(PDOException $e) {
+        catch(PDOException $e) {
             throw new Exception($e->getMessage());
-         }
+        }
     }
 
 

@@ -22,16 +22,17 @@
 <div class="modal fade" id="editProjectNoteModal" tabindex="-1" aria-labelledby="editProjectNoteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-        <form >
+        <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "updateProjectNote"] + $baseUrl); ?>">
             <div class="modal-header">
-            <h5 class="modal-title" id="editProjectNoteModalLabel">Edit this Project Note?</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="editProjectNoteModalLabel">Edit this Project Note?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <div class="mb-3">
-                <label for="editReason" class="form-label">Update your Project Note</label>
-                <textarea class="form-control" id="editReason" name="editReason" rows="3" required></textarea>
-            </div>
+                <div class="mb-3">
+                    <label for="updateValueNote" class="form-label">Update your Project Note</label>
+                    <textarea class="form-control" id="updateValueNote" name="updateValueNote" rows="3" required></textarea>
+                    <label id="editNoteMessage" class="text-danger mb-2 d-none">No changes were made to the project note.</label>
+                </div>
                 <input type="hidden" id="projectNoteId" name="projectNoteId">
             </div>
             <div class="modal-footer">
@@ -112,15 +113,34 @@
 
 
 <script>
+    const form = document.querySelector('#editProjectNoteModal form');
+    const textarea = document.querySelector('#updateValueNote');
+    const hiddenInput = document.querySelector('#projectNoteId');
+    const messageLabel = document.querySelector('#editNoteMessage');
+    const modal = document.getElementById('editProjectNoteModal');
+
+    let originalNote = '';
+
     document.getElementById('editProjectNoteModal').addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
+
         const noteText = button.getAttribute('data-note-text');
         const noteId = button.getAttribute('data-note-id');
 
-        const textarea = this.querySelector('#editReason');
-        const hiddenInput = this.querySelector('#projectNoteId');
+        originalNote = noteText;
 
         textarea.value = noteText;
         hiddenInput.value = noteId;
+    });
+
+    form.addEventListener('submit', function (e) {
+        if (textarea.value.trim() === originalNote.trim()) {
+            e.preventDefault();
+            messageLabel.classList.remove('d-none'); // Show message
+        }
+    });
+
+    modal.addEventListener('hidden.bs.modal', function () {
+        messageLabel.classList.add('d-none'); // Also hide the message when modal is closed
     });
 </script>

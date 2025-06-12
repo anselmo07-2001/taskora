@@ -11,6 +11,28 @@ class ProjectNotesController extends AbstractController {
     public function __construct(protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository,) {}
     
 
+    public function updateProjectNote($request) {
+        $project_id = $request["get"]["projectId"] ?? "";
+        $currentNavTab = $request["get"]["currentNavTab"] ?? "projectNotes";
+        $newContent = $request["post"]["updateValueNote"] ?? "";
+        $projectNoteId = (int) $request["post"]["projectNoteId"] ?? "";
+        
+        $this->projectNotesRepository->handleUpdateProjectNotes([
+            "content" => $newContent,
+            "id" => $projectNoteId
+        ]);
+
+        $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
+            "page" => "projectPanel",
+            "projectId" => $project_id,
+            "currentNavTab" => $currentNavTab
+        ]);
+
+        header("Location: $redirectUrl");
+        exit;
+    }
+
+
     public function createProjectNote($request) {
         $project_id = $_GET["projectId"] ?? "";
         $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes";
