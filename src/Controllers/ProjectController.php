@@ -13,11 +13,14 @@ class ProjectController extends AbstractController {
     public function __construct(protected UserRepository $userRepository, protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository){}
 
     public function updateProjectStatus($request) {
-        $newProjectStatus = $request["post"]["projectStatus"];
+        $previousProjectStatus =  $request["post"]["defaultProjectStatus"];
+        $newProjectStatus = $request["post"]["selectedProjectStatus"];
         $projectId = $request["get"]["projectId"];
         $currentNavTab = $request["get"]["currentNavTab"];
         $currentUserSession = SessionService::getSessionKey("user");
-        
+
+        $updateProjectStatusNote = $request["post"]["updateProjectStatusNote"];
+    
         $sucess = $this->projectRepository->handleUpdateProjectStatus($projectId, $newProjectStatus);
 
         if ($sucess) {
@@ -25,7 +28,7 @@ class ProjectController extends AbstractController {
              $this->projectNotesRepository->handleCreateProjectNote([
                 "project_id" => $projectId,
                 "user_id" => $currentUserSession["userId"],
-                "content" => "Change status to {$newProjectStatus}",
+                "content" => "[ Change status from {$previousProjectStatus} to {$newProjectStatus} ] {$updateProjectStatusNote}" ,
                 "projectnote_type" => "Update project status"
              ]);
         }

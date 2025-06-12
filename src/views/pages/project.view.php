@@ -30,10 +30,11 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="updateProjectStatus" class="form-label">Add a Project Note</label>
-                                <textarea class="form-control" id="updateProjectStatus" name="updateProjectStatus" rows="3" required></textarea>
+                                <label for="updateProjectStatusNote" class="form-label">Add a Project Note</label>
+                                <textarea class="form-control" id="updateProjectStatusNote" name="updateProjectStatusNote" rows="3" required></textarea>
                             </div>
                             <input type="hidden" id="selectedProjectStatus" name="selectedProjectStatus">
+                            <input type="hidden" id="defaultProjectStatus" name="defaultProjectStatus">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -137,8 +138,11 @@
                 changeProjectStatusMessageEl.classList.add("d-none");
             } 
             
-            const hiddenInput = this.querySelector('#selectedProjectStatus');
-            hiddenInput.value = selectedOptionValue;
+            const selectedHiddenInput = this.querySelector('#selectedProjectStatus');
+            const defaultValueHiddenInput = this.querySelector("#defaultProjectStatus");
+            
+            selectedHiddenInput.value = selectedOptionValue;
+            defaultValueHiddenInput.value = defaultSelectedOptionValue
         });
 
 </script>
