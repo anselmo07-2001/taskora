@@ -93,9 +93,19 @@
                                 </div>
                             </div>
                             <?php if($currentUserSession["userId"] === $row->user_id): ?>
-                                <button class="btn custom-primary-btn position-absolute top-0 end-0 me-2 mt-2">
-                                    <img src="./public/images/pen.png" style="filter: invert(1); height: 1rem; width: 1rem;" />
-                                </button>  
+                                <div class="dropdown position-absolute top-0 end-0 me-2 mt-2">
+                                    <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <div class="d-flex flex-column align-items-center justify-content-center" style="width: 20px; height: 30px;">
+                                            <span class="bg-secondary rounded-circle" style="width: 4px; height: 4px; margin: 2px 0;"></span>
+                                            <span class="bg-secondary rounded-circle" style="width: 4px; height: 4px; margin: 2px 0;"></span>
+                                            <span class="bg-secondary rounded-circle" style="width: 4px; height: 4px; margin: 2px 0;"></span>
+                                        </div>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Edit</a></li>
+                                        <li><a class="dropdown-item" href="#">Delete</a></li>
+                                    </ul>
+                                </div>  
                             <?php endif; ?>
                         </div>
                     </div>
