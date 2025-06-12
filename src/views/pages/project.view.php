@@ -78,8 +78,34 @@
                         </div> 
                     </form> 
                 </div>
+                
+                <!--  modal for edit project notes -->
+                <div class="modal fade" id="editProjectNoteModal" tabindex="-1" aria-labelledby="editProjectNoteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <form>
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="editProjectNoteModalLabel">Edit this Project Note?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="editReason" class="form-label">Reason for editing this Project Note</label>
+                                <textarea class="form-control" id="editReason" name="editReason" rows="3" required></textarea>
+                            </div>
+                                <input type="hidden" name="task_id" value="123">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-success">Edit Project Note</button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
 
-                <?php foreach ($data["projectNotes"] AS $row): ?>         
+
+                <?php foreach ($data["projectNotes"] AS $row): ?>       
                     <div class="card mb-3">
                         <div class="card-body position-relative">
                             <div class="d-flex align-items-start">
@@ -102,14 +128,20 @@
                                         </div>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item" href="#">Delete</a></li>
+                                        <li>
+                                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editProjectNoteModal" 
+                                                data-note-id="<?= e($row->id); ?>" data-note-text="<?= e($row->content); ?>" >
+                                                Edit
+                                            </button>
+                                        </li>
+                                        <li><button class="dropdown-item" >Delete</button></li>
                                     </ul>
                                 </div>  
                             <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
+
 
                 <div class="d-flex justify-content-end">
                     <nav aria-label="Page navigation">
@@ -640,5 +672,18 @@
                 </tbody>
             </table>
         <?php endif ?>
-
 </div>
+
+<script>
+    document.getElementById('editProjectNoteModal').addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const noteText = button.getAttribute('data-note-text');
+        const noteId = button.getAttribute('data-note-id');
+
+        const textarea = this.querySelector('#editReason');
+        const hiddenInput = this.querySelector('#noteIdInput');
+
+        textarea.value = noteText;
+        hiddenInput.value = noteId;
+    });
+</script>
