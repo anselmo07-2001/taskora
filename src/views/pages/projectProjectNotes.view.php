@@ -45,7 +45,7 @@
 </div>
 
 
-<?php foreach ($data["projectNotes"] AS $row): ?>       
+<?php foreach ($data["projectNotes"] AS $row): ?>   
     <div class="card mb-3">
         <div class="card-body position-relative">
             <div class="d-flex align-items-start">
@@ -53,6 +53,9 @@
                 <div>
                     <h6 class="mb-0"><?= $row->fullname ?><sup><?= $row->role !== "admin" ? ' (' . $row->role . ')' : "" ?></sup></h6>
                     <small class="text-muted"><?= $row->projectnote_type . " on " . date("M d, Y, \a\\t h:i A", strtotime($row->created_at)); ?> </small>
+                    <?php if ($row->created_at !== $row->edited_at): ?>
+                        <small class="text-muted d-block">Last modified <?= (new DateTime($row->edited_at))->format('M d, Y, \a\t h:i A'); ?></small>
+                    <?php endif; ?>
                     <p class="mt-2 mb-0">
                         <?= $row->content ?>
                     </p>
