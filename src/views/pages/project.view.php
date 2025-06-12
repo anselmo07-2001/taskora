@@ -20,11 +20,34 @@
                  </ul>
             </div>
 
+            <div class="modal fade" id="updateProjectStatusModal" tabindex="-1" aria-labelledby="updateProjectStatusModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "updateProjectStatus"] + $baseUrl); ?>">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="updateProjectStatusModalLabel">Update the status of the Project?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="updateProjectStatus" class="form-label">Add a Project Note</label>
+                                <textarea class="form-control" id="updateProjectStatus" name="updateProjectStatus" rows="3" required></textarea>
+                            </div>
+                            <input type="hidden" id="selectedProjectStatus" name="selectedProjectStatus">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success">Change Project Status</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+
+
             <?php if ($currentUserSession["role"] !== "member"): ?>
                 <div class="mb-5">      
-                    <form method="POST" class="d-flex align-items-center gap-3" 
-                            action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "updateProjectStatus", "projectId" => $project["id"]]) ?>" 
-                    >
+                    <div class="d-flex align-items-center gap-3 mb-2">
                         <label for="project-status" class="form-label">Change the project status:</label>
                         <select class="form-select w-25" id="project-status" style="margin-right: -0.5rem;" name="projectStatus">
                             <option value="pending" <?= $project["status"] === "pending" ? "selected" : "" ?>>Pending</option>
@@ -32,8 +55,12 @@
                             <option value="completed" <?= $project["status"] === "completed" ? "selected" : "" ?>>Completed</option>
                             <option value="failed" <?= $project["status"] === "failed" ? "selected" : "" ?>>Failed</option>
                         </select>
-                        <button class="btn custom-primary-btn">Update Project</button>
-                    </form>
+                        <button class="btn custom-primary-btn" data-bs-toggle="modal" 
+                              data-bs-target="#updateProjectStatusModal" data->
+                            Update Project
+                        </button>
+                    </div>
+                    <small id="changeProjectStatusMessage" class="text-danger d-none">Please change the project status before updating</small>
                 </div>
             <?php endif ?>
 
@@ -87,4 +114,32 @@
             <?php require __DIR__ . "/projectManageMembers.view.php"; ?>
         <?php endif ?>
 </div>
+
+
+<script>
+        const selectEl = document.getElementById("project-status");
+        const changeProjectStatusMessageEl = document.getElementById("changeProjectStatusMessage");
+        const defaultSelectedOptionValue = selectEl.value;
+
+
+        document.getElementById('updateProjectStatusModal').addEventListener('show.bs.modal', function (event) {  
+            const selectedOptionValue = selectEl.value;
+
+            if (defaultSelectedOptionValue === selectedOptionValue) {
+                event.preventDefault();
+                changeProjectStatusMessageEl.classList.remove('d-none');
+
+                setTimeout(() => {
+                    changeProjectStatusMessageEl.classList.add("d-none");
+                }, 3000);
+                return;
+            }else {
+                changeProjectStatusMessageEl.classList.add("d-none");
+            } 
+            
+            const hiddenInput = this.querySelector('#selectedProjectStatus');
+            hiddenInput.value = selectedOptionValue;
+        });
+
+</script>
 
