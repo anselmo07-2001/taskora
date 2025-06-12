@@ -92,7 +92,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <?php if($currentUserSession["userId"] === $row->user_id): ?>
+                            <?php if($currentUserSession["userId"] === $row->user_id || $currentUserSession["role"] === "project_manager" || $currentUserSession["role"] === "admin"): ?>
                                 <div class="dropdown position-absolute top-0 end-0 me-2 mt-2">
                                     <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="d-flex flex-column align-items-center justify-content-center" style="width: 20px; height: 30px;">
