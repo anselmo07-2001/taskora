@@ -93,7 +93,7 @@
                                 <label for="editReason" class="form-label">Reason for editing this Project Note</label>
                                 <textarea class="form-control" id="editReason" name="editReason" rows="3" required></textarea>
                             </div>
-                                <input type="hidden" name="task_id" value="123">
+                                <input type="hidden" id="projectNoteId" name="projectNoteId">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -681,7 +681,7 @@
         const noteId = button.getAttribute('data-note-id');
 
         const textarea = this.querySelector('#editReason');
-        const hiddenInput = this.querySelector('#noteIdInput');
+        const hiddenInput = this.querySelector('#projectNoteId');
 
         textarea.value = noteText;
         hiddenInput.value = noteId;
