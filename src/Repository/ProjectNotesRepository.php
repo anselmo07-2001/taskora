@@ -12,6 +12,18 @@ class ProjectNotesRepository {
 
     public function __construct(private PDO $pdo) {}
 
+    public function handleDeleteProjectNote(array $data) {
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM project_notes WHERE id = :id");
+            $stmt->execute($data);
+            return $stmt->rowCount() > 0;
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        } 
+    }
+
+
     public function handleUpdateProjectNote(array $data) {
         try {
             $stmt = $this->pdo->prepare("UPDATE project_notes SET content = :content WHERE id = :id");

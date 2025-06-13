@@ -83,7 +83,12 @@
                                 Edit
                             </button>
                         </li>
-                        <li><button class="dropdown-item" >Delete</button></li>
+                        <li>
+                            <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "deleteProjectNote"] + $baseUrl)?>">
+                                <input type="hidden" name="projectNoteId" value="<?= $row->id ?>">
+                                <button type="submit" class="dropdown-item">Delete</button>
+                            </form>
+                        </li>
                     </ul>
                 </div>  
             <?php endif; ?>

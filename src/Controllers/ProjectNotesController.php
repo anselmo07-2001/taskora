@@ -10,6 +10,31 @@ class ProjectNotesController extends AbstractController {
 
     public function __construct(protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository,) {}
     
+    public function deleteProjectNote($request) {
+        $project_id = $request["get"]["projectId"] ?? "";
+        $currentNavTab = $request["get"]["currentNavTab"] ?? "projectNotes";
+        $projectNoteId = $request["post"]["projectNoteId"];
+    
+        $success = $this->projectNotesRepository->handleDeleteProjectNote([
+           "id" => $projectNoteId
+        ]);
+
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Deleted project note sucessully");
+        }
+        else {
+             SessionService::setAlertMessage("error_message", "Failed to deleted project note");
+        }
+
+        $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
+            "page" => "projectPanel",
+            "projectId" => $project_id,
+            "currentNavTab" => $currentNavTab
+        ]);
+
+        header("Location: $redirectUrl");
+        exit;
+    }
 
     public function updateProjectNote($request) {
         $project_id = $request["get"]["projectId"] ?? "";
