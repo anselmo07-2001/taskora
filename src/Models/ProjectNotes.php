@@ -11,6 +11,7 @@ class ProjectNotes {
     public string $edited_at;
     public string $projectnote_type;
 
-    public string $fullname;
+    //who owned the project notes
+    public string $fullname; 
     public string $role;
 }

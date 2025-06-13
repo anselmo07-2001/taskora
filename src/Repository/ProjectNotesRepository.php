@@ -24,6 +24,25 @@ class ProjectNotesRepository {
     }
 
 
+    public function fetchProjectNote(int $projectNoteId): ?ProjectNotes {
+        try {
+            $stmt = $this->pdo->prepare("SELECT 
+                        project_notes.*, users.fullname, users.role
+                        FROM `project_notes` JOIN users ON project_notes.user_id = users.id WHERE project_notes.id = :projectNote_id 
+                        ORDER BY `created_at` DESC");
+
+            $stmt->bindValue(":projectNote_id", $projectNoteId);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_CLASS, ProjectNotes::class);
+            $projectNote = $stmt->fetch();
+            return $projectNote ?: null;
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+
     public function fetchProjectNotes(int $projectId): array {
         try {
             $stmt = $this->pdo->prepare("SELECT 

@@ -16,6 +16,16 @@ class ProjectNotesController extends AbstractController {
         $currentNavTab = $request["get"]["currentNavTab"] ?? "projectNotes";
         $newContent = $request["post"]["updateValueNote"] ?? "";
         $projectNoteId = (int) $request["post"]["projectNoteId"] ?? "";
+        $addedProjectNoteStatus = $request["post"]["addedProjectNoteStatus"] ?? "";
+
+        $projectNote = $this->projectNotesRepository->fetchProjectNote($projectNoteId);
+
+      
+        if ($projectNote->projectnote_type === "Update project status") {
+            $newContent = $addedProjectNoteStatus . " " . $newContent;
+        }
+
+        
         
         $this->projectNotesRepository->handleUpdateProjectNotes([
             "content" => $newContent,
@@ -31,7 +41,6 @@ class ProjectNotesController extends AbstractController {
         header("Location: $redirectUrl");
         exit;
     }
-
 
     public function createProjectNote($request) {
         $project_id = $_GET["projectId"] ?? "";
@@ -91,4 +100,5 @@ class ProjectNotesController extends AbstractController {
         header("Location: $redirectUrl");
         exit;
     }
+
 }

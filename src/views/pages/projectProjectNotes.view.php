@@ -34,6 +34,7 @@
                     <label id="editNoteMessage" class="text-danger mb-2 d-none">No changes were made to the project note.</label>
                 </div>
                 <input type="hidden" id="projectNoteId" name="projectNoteId">
+                <input type="hidden" id="addedProjectNoteStatus" name="addedProjectNoteStatus">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -45,7 +46,7 @@
 </div>
 
 
-<?php foreach ($data["projectNotes"] AS $row): ?>   
+<?php foreach ($data["projectNotes"] AS $row): ?> 
     <div class="card mb-3">
         <div class="card-body position-relative">
             <div class="d-flex align-items-start">
@@ -73,7 +74,7 @@
                     <ul class="dropdown-menu">
                         <li>
                             <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editProjectNoteModal" 
-                                data-note-id="<?= e($row->id); ?>" data-note-text="<?= e($row->content); ?>" >
+                                data-note-id="<?= e($row->id); ?>" data-note-text="<?= e($row->content); ?>" data-note-type="<?= e($row->projectnote_type); ?>" >
                                 Edit
                             </button>
                         </li>
@@ -118,7 +119,8 @@
 <script>
     const form = document.querySelector('#editProjectNoteModal form');
     const textarea = document.querySelector('#updateValueNote');
-    const hiddenInput = document.querySelector('#projectNoteId');
+    const hiddenInputAddedProjectNoteStatus = document.querySelector("#addedProjectNoteStatus");
+    const hiddenInputProjectNoteId = document.querySelector('#projectNoteId');
     const messageLabel = document.querySelector('#editNoteMessage');
     const modal = document.getElementById('editProjectNoteModal');
 
@@ -129,12 +131,29 @@
 
         const noteText = button.getAttribute('data-note-text');
         const noteId = button.getAttribute('data-note-id');
+        const noteType = button.getAttribute('data-note-type');
 
         originalNote = noteText;
+        let parts = []
 
-        textarea.value = noteText;
-        hiddenInput.value = noteId;
+        if (noteType === "Update project status") {
+             const match = noteText.match(/^(\[.*?\])\s?(.*)/);
+             
+             if (match) {
+                parts = [match[1], match[2]];
+                textarea.value = parts[1];
+                originalNote = parts[1];
+            } 
+        }
+        
+        if (noteType !== "Update project status") {
+            textarea.value = noteText;
+        }
+
+        hiddenInputProjectNoteId.value = noteId;
+        hiddenInputAddedProjectNoteStatus.value = parts[0];
     });
+
 
     form.addEventListener('submit', function (e) {
         if (textarea.value.trim() === originalNote.trim()) {
