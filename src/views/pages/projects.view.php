@@ -61,7 +61,11 @@
                         <td><?php echo e($project["deadline"]); ?></td>
                         <td><?php echo e($project["progress"]) . "%"; ?></td>
                         <td><?php echo e($project["status"]); ?></td>
-                        <td><a href="<?= BASE_URL . "/index.php?page=projectPanel&projectId={$project['id']}" ?>" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
+                        <td>
+                            <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "projectId" => $project['id']])  ?>" 
+                                class="btn custom-primary-btn my-manage-btn">Manage
+                            </a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

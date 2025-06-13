@@ -29,7 +29,6 @@ class PageController extends AbstractController {
         $baseUrl = [
             "page" => "projectPanel",
             "projectId" => $project_id,
-            "currentNavTab" => $currentNavTab 
         ];
 
         
