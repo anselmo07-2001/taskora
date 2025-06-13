@@ -57,9 +57,14 @@
                     <?php if ($row->created_at !== $row->edited_at): ?>
                         <small class="text-muted d-block">Last content modified <?= (new DateTime($row->edited_at))->format('M d, Y, \a\t h:i A'); ?></small>
                     <?php endif; ?>
-                    <p class="mt-2 mb-0">
-                        <?= $row->content ?>
-                    </p>
+                    <?php if ($row->projectnote_type === "Update project status"): ?>
+                            <?php $content = preg_replace('/^(\[.*?\])/', '<strong>$1</strong>', $row->content); ?>
+                            <p class="mt-2 mb-0">
+                                <?= $content ?>
+                            </p>
+                    <?php else: ?>
+                        <p class="mt-2 mb-0"> <?= $row->content ?></p>  
+                    <?php endif; ?>  
                 </div>
             </div>
             <?php if($currentUserSession["userId"] === $row->user_id || $currentUserSession["role"] === "project_manager" || $currentUserSession["role"] === "admin"): ?>
