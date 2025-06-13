@@ -26,11 +26,17 @@ class ProjectNotesController extends AbstractController {
         }
 
         
-        
-        $this->projectNotesRepository->handleUpdateProjectNotes([
+        $success = $this->projectNotesRepository->handleUpdateProjectNote([
             "content" => $newContent,
             "id" => $projectNoteId
         ]);
+
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Updated project note sucessully");
+        }
+        else {
+             SessionService::setAlertMessage("error_message", "Failed to update project note");
+        }
 
         $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
             "page" => "projectPanel",

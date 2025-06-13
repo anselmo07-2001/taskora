@@ -12,7 +12,7 @@ class ProjectNotesRepository {
 
     public function __construct(private PDO $pdo) {}
 
-    public function handleUpdateProjectNotes(array $data) {
+    public function handleUpdateProjectNote(array $data) {
         try {
             $stmt = $this->pdo->prepare("UPDATE project_notes SET content = :content WHERE id = :id");
             $stmt->execute($data);
