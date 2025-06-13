@@ -30,13 +30,13 @@ $routes = [
             "controller" => "PageController", 
             "method"=> "showCreateAccountPage", 
             "auth" => true, 
-            "role" => ["admin"]
+            "roles" => ["admin"]
         ],
         "POST" => [
             "controller" => "AdminController",
             "method" => "handleCreateAccount",
             "auth" => true, 
-            "role" => ["admin"]
+            "roles" => ["admin"]
         ]
     ],
     "createProject" => [
@@ -44,13 +44,13 @@ $routes = [
             "controller" => "PageController",
             "method" => "showProjectFormPage",
             "auth" => true,
-            "role" => ["admin", "project_manager"]
+            "roles" => ["admin", "project_manager"]
         ],
         "POST" => [
             "controller" => "ProjectController",
             "method" => "createProject",
             "auth" => true,
-            "role" => ["admin", "project_manager"]
+            "roles" => ["admin", "project_manager"]
         ]
     ],
     "projects" => [
@@ -58,7 +58,7 @@ $routes = [
             "controller" => "PageController",
             "method" => "showProjects",
             "auth" => true,
-            "role" => ["admin", "project_manager", "member"]
+            "roles" => ["admin", "project_manager", "member"]
         ]
     ],
     
@@ -78,13 +78,13 @@ $routes = [
                 "controller" => "PageController",
                 "method" => "showProject",
                 "auth" => true,
-                "role" => ["admin", "project_manager", "member"]
+                "roles" => ["admin", "project_manager", "member"]
         ],
         "POST" => [       
                 "controller" => "ProjectNotesController",
                 "method" => "createProjectNote",
                 "auth" => true,
-                "role" => ["admin", "project_manager", "member"]
+                "roles" => ["admin", "project_manager", "member"]
         ]
     ],
 
@@ -93,7 +93,7 @@ $routes = [
             "controller" => "ProjectController",
             "method" => "updateProjectStatus",
             "auth" => true,
-            "role" => ["admin", "project_manager"]
+            "roles" => ["admin", "project_manager"]
         ]
     ],
     "updateProjectNote" => [
@@ -101,7 +101,7 @@ $routes = [
             "controller" => "ProjectNotesController",
             "method" => "updateProjectNote",
             "auth" => true,
-            "role" => ["admin", "project_manager"]
+            "roles" => ["admin", "project_manager"]
         ]
     ],
     "deleteProjectNote" => [
@@ -109,7 +109,7 @@ $routes = [
             "controller" => "ProjectNotesController",
             "method" => "deleteProjectNote",
             "auth" => true,
-            "role" => ["admin", "project_manager"]
+            "roles" => ["admin", "project_manager"]
         ]
     ],
 
