@@ -97,9 +97,64 @@
 <?php endforeach; ?>
 
 
+<?php // var_dump($baseUrl)?>
+
+<!-- pagination -->
 <div class="d-flex justify-content-end">
     <nav aria-label="Page navigation">
         <ul class="pagination">
+            
+        <?php if ($baseUrl["currentPaginationPage"] > 1): ?>
+            <li class="page-item">
+            <a class="page-link" href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "currentPaginationPage" => $baseUrl["currentPaginationPage"] - 1] + $baseUrl); ?>" >Previous</a>
+          </li>
+        <?php else: ?>
+            <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+            </li>
+        <?php endif; ?>
+
+        <?php 
+            // Page number buttons (centered logic with 2 pages before and after)
+            $range = 5;
+            $start = max(1, $baseUrl["currentPaginationPage"] - $range);
+            $end = min($totalPages, $baseUrl["currentPaginationPage"] + $range);
+        ?>
+        
+        <?php for ($i = $start; $i <= $end; $i++): ?>
+            <?php $active = $i == $baseUrl["currentPaginationPage"] ? 'active' : ''; ?>
+            <?php $myActiveClass = $i == $baseUrl["currentPaginationPage"] ? 'page-link-mycolor' : ''; ?>
+
+            <li class="page-item <?php echo $active; ?>">
+                    <a class="page-link <?php echo $myActiveClass; ?>" href="<?=  BASE_URL . "/index.php?" . http_build_query(["currentPaginationPage" => $i] + $baseUrl) ?>"><?php echo $i; ?></a>
+            </li>
+        <?php endfor; ?>
+
+        
+        
+        <?php if ($baseUrl["currentPaginationPage"] < $totalPages): ?>
+           <li class="page-item">
+                <a class="page-link" href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "currentPaginationPage" => $baseUrl["currentPaginationPage"] + 1] + $baseUrl); ?>">Next</a>
+            </li>
+        <?php else: ?>
+            <li class="page-item disabled">
+                <span class="page-link">Next</span>
+            </li>'
+        <?php endif; ?>
+        
+
+        </ul>
+    </nav>
+</div>
+            
+
+
+
+
+<!-- <div class="d-flex justify-content-end">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+
             <li class="page-item disabled">
                 <a class="page-link" href="#" tabindex="-1">Previous</a>
             </li>
@@ -123,7 +178,7 @@
             </li>
         </ul>
     </nav>
-</div>
+</div> -->
 
 
 <script>

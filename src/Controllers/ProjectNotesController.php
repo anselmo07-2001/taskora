@@ -10,6 +10,26 @@ class ProjectNotesController extends AbstractController {
 
     public function __construct(protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository,) {}
     
+
+    public function fetchProjectNotes($projectId) {
+        $limit = 5;
+        $projectId = (int) $projectId;
+        $currentPaginationPage = isset($_GET['currentPaginationPage']) ? (int) $_GET['currentPaginationPage'] : 1;
+        $currentPaginationPage = max($currentPaginationPage, 1);
+
+        $totalItems = $this->projectNotesRepository->countAllProjectNotes($projectId);
+        $totalPages = ceil($totalItems / $limit);
+        $offset = ($currentPaginationPage - 1) * $limit;
+
+        $projectNotes = $this->projectNotesRepository->fetchProjectNotes($projectId, $limit, $offset);
+        return [
+            "totalPages" => $totalPages,
+            "projectNotes" => $projectNotes
+        ];    
+    }
+
+
+
     public function deleteProjectNote($request) {
         $project_id = $request["get"]["projectId"] ?? "";
         $currentNavTab = $request["get"]["currentNavTab"] ?? "projectNotes";
@@ -77,13 +97,23 @@ class ProjectNotesController extends AbstractController {
         $project_id = $_GET["projectId"] ?? "";
         $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes";
         $project = $this->projectRepository->fetchProject($project_id);
+        $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes"; 
+
+        $limit = 5;
+        $currentPaginationPage = isset($_GET['currentPaginationPage']) ? (int) $_GET['currentPaginationPage'] : 1;
+        $currentPaginationPage = max($currentPaginationPage, 1);
+        $offset = ($currentPaginationPage - 1) * $limit;
+        $totalItems = $this->projectNotesRepository->countAllProjectNotes($project_id);
+        $totalPages = ceil($totalItems / $limit);
+        $offset = ($currentPaginationPage - 1) * $limit;
+
         $baseUrl = [
             "page" => "projectPanel",
-            "projectId" => $project_id
+            "projectId" => $project_id,
+            "currentPaginationPage" => $currentPaginationPage,
         ];
-
-        $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes"; 
-        $data["projectNotes"] = $this->projectNotesRepository->fetchProjectNotes($project_id);
+   
+        $data["projectNotes"] = $this->projectNotesRepository->fetchProjectNotes($project_id, $limit,  $offset);
 
         $errors = [];
 
@@ -100,7 +130,8 @@ class ProjectNotesController extends AbstractController {
                 "baseUrl" => $baseUrl,
                 "currentNavTab" => $currentNavTab,
                 "currentUserSession" => $currentUserSession,
-                "data" => $data
+                "data" => $data,
+                "totalPages" => $totalPages
             ]);
             exit;
         }

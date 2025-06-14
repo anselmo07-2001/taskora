@@ -12,6 +12,20 @@ class ProjectNotesRepository {
 
     public function __construct(private PDO $pdo) {}
 
+
+    public function countAllProjectNotes(int $projectId) {
+        try {
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM project_notes WHERE project_id = :projectId");
+            $stmt->execute(['projectId' => $projectId]);
+            $totalItems = $stmt->fetchColumn();
+            return $totalItems;
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        } 
+    }
+
+
     public function handleDeleteProjectNote(array $data) {
         try {
             $stmt = $this->pdo->prepare("DELETE FROM project_notes WHERE id = :id");
@@ -55,14 +69,17 @@ class ProjectNotesRepository {
     }
 
 
-    public function fetchProjectNotes(int $projectId): array {
+    public function fetchProjectNotes(int $projectId, int $limit, int $offset): array {
         try {
             $stmt = $this->pdo->prepare("SELECT 
                         project_notes.*, users.fullname, users.role
-                        FROM `project_notes` JOIN users ON project_notes.user_id = users.id WHERE `project_id` = :project_id 
-                        ORDER BY `created_at` DESC");
+                        FROM `project_notes` JOIN users ON project_notes.user_id = users.id WHERE `project_id` = :project_id
+                        ORDER BY `created_at` DESC LIMIT :limit OFFSET :offset");
 
-            $stmt->bindValue(":project_id", $projectId);
+            $stmt->bindValue(":project_id", $projectId, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
             $stmt->execute();
             $stmt->setFetchMode(PDO::FETCH_CLASS, ProjectNotes::class);
             $projectNotes = $stmt->fetchAll();

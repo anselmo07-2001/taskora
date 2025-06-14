@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Controllers\ProjectNotesController;
+use App\Models\ProjectNotes;
 use App\Repository\ProjectNotesRepository;
 use App\Repository\ProjectRepository;
 use App\Support\SessionService;
@@ -11,33 +13,41 @@ class PageController extends AbstractController {
     protected UserRepository $userRepository;
     protected ProjectRepository $projectRepository;
     protected ProjectNotesRepository $projectNotesRepository;
+    protected ProjectNotesController $projectNotesController;
     protected array|null $currentUserSession;
 
-    public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, ProjectNotesRepository $projectNotesRepository){
+    public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, 
+                                ProjectNotesRepository $projectNotesRepository, ProjectNotesController $projectNotesController){
          $this->userRepository = $userRepository;
          $this->projectRepository = $projectRepository;
          $this->projectNotesRepository = $projectNotesRepository;
          $this->currentUserSession = SessionService::getSessionKey("user") ?? null;
+         $this->projectNotesController = $projectNotesController;
     }   
 
     public function showProject() {
         $project_id = $_GET["projectId"] ?? "";
         $project = $this->projectRepository->fetchProject($project_id);
         $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes";
+        $currentPaginationPage = $_GET["currentPaginationPage"] ?? 1;
+        $totalPages = 0;
 
         //use for the navbar
         $baseUrl = [
             "page" => "projectPanel",
             "projectId" => $project_id,
+            "currentPaginationPage" => $currentPaginationPage
         ];
 
         
         $data = [];
 
         if ($currentNavTab === "projectNotes") {
-            $data["projectNotes"] = $this->projectNotesRepository->fetchProjectNotes($project_id);
+            // $data["projectNotes"] = $this->projectNotesRepository->fetchProjectNotes($project_id);
+            $projectNotes = $this->projectNotesController->fetchProjectNotes($project_id);
+            $data["projectNotes"] = $projectNotes["projectNotes"] ;
+            $totalPages = $projectNotes["totalPages"];
         }
-
         
 
         $this->render("project.view", [
@@ -45,6 +55,7 @@ class PageController extends AbstractController {
             "baseUrl" => $baseUrl,
             "currentNavTab" => $currentNavTab,
             "data" => $data,
+            "totalPages" => $totalPages,
             "currentUserSession" => $this->currentUserSession
         ]);
     }

@@ -29,21 +29,22 @@ $container->bind("AuthController", function() use($container) {
     $userRepository = $container->get("userRepository");
     return new \App\Controllers\AuthController($userRepository);
 });
+$container->bind("ProjectNotesController", function() use($container) {
+    $projectRepository = $container->get("projectRepository");
+    $projectNotesRepository = $container->get("projectNotesRepository");
+    return new \App\Controllers\ProjectNotesController($projectRepository, $projectNotesRepository);
+});
 $container->bind("PageController", function() use($container) {
     $userRepository = $container->get("userRepository");
     $projectRepository = $container->get("projectRepository");
     $projectNotesRepository = $container->get("projectNotesRepository");
-    return new \App\Controllers\PageController($userRepository, $projectRepository, $projectNotesRepository);
+    $projectNotesController = $container->get("ProjectNotesController");
+    return new \App\Controllers\PageController($userRepository, $projectRepository, $projectNotesRepository, $projectNotesController);
 });
 $container->bind("AdminController", function() use($container){
     $userRepository = $container->get("userRepository");
     $projectRepository = $container->get("projectRepository");
     return new \App\Controllers\AdminController($userRepository, $projectRepository);
-});
-$container->bind("ProjectNotesController", function() use($container) {
-    $projectRepository = $container->get("projectRepository");
-    $projectNotesRepository = $container->get("projectNotesRepository");
-    return new \App\Controllers\ProjectNotesController($projectRepository, $projectNotesRepository);
 });
 $container->bind("ProjectController", function() use($container) {
     $userRepository = $container->get("userRepository");
@@ -127,7 +128,7 @@ if (isset($routes[$page][$method])) {
         $role = SessionService::getSessionKey("user")["role"];
         if (!in_array($role, $route['roles'])) {
             http_response_code(403);
-            echo "Forbidden";
+            echo "<h1>Forbidden Route Please contact your Administrator to access this page</h1>";
             exit;
         }
     }
