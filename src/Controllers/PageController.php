@@ -30,7 +30,6 @@ class PageController extends AbstractController {
         $project = $this->projectRepository->fetchProject($project_id);
         $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes";
         $currentPaginationPage = $_GET["currentPaginationPage"] ?? 1;
-        $totalPages = 0;
 
         //use for the navbar
         $baseUrl = [
@@ -38,24 +37,23 @@ class PageController extends AbstractController {
             "projectId" => $project_id,
             "currentPaginationPage" => $currentPaginationPage
         ];
-
-        
-        $data = [];
+     
+        $paginationItems = [];
+        $paginationMeta = [];
 
         if ($currentNavTab === "projectNotes") {
-            // $data["projectNotes"] = $this->projectNotesRepository->fetchProjectNotes($project_id);
-            $projectNotes = $this->projectNotesController->fetchProjectNotes($project_id);
-            $data["projectNotes"] = $projectNotes["projectNotes"] ;
-            $totalPages = $projectNotes["totalPages"];
+            $paginationPayload = $this->projectNotesController->fetchProjectNotes($project_id);
+            $paginationItems = $paginationPayload["projectNotes"];
+            $paginationMeta = $paginationPayload["paginationMeta"];
         }
-        
-
+     
+          
         $this->render("project.view", [
             "project" => $project,
             "baseUrl" => $baseUrl,
             "currentNavTab" => $currentNavTab,
-            "data" => $data,
-            "totalPages" => $totalPages,
+            "paginationItems" => $paginationItems,
+            "paginationMeta" => $paginationMeta,
             "currentUserSession" => $this->currentUserSession
         ]);
     }

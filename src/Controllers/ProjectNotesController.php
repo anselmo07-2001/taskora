@@ -4,27 +4,24 @@ namespace App\Controllers;
 
 use App\Repository\ProjectNotesRepository;
 use App\Repository\ProjectRepository;
+use App\Support\PaginateService;
 use App\Support\SessionService;
 
 class ProjectNotesController extends AbstractController {
 
-    public function __construct(protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository,) {}
+    public function __construct(protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository) {}
     
-
     public function fetchProjectNotes($projectId) {
-        $limit = 5;
         $projectId = (int) $projectId;
         $currentPaginationPage = isset($_GET['currentPaginationPage']) ? (int) $_GET['currentPaginationPage'] : 1;
-        $currentPaginationPage = max($currentPaginationPage, 1);
-
         $totalItems = $this->projectNotesRepository->countAllProjectNotes($projectId);
-        $totalPages = ceil($totalItems / $limit);
-        $offset = ($currentPaginationPage - 1) * $limit;
+        $paginationMeta = PaginateService::paginate($totalItems, $currentPaginationPage);
+        
+        $projectNotes = $this->projectNotesRepository->fetchProjectNotes($projectId, $paginationMeta["limit"], $paginationMeta["offset"]);
 
-        $projectNotes = $this->projectNotesRepository->fetchProjectNotes($projectId, $limit, $offset);
         return [
-            "totalPages" => $totalPages,
-            "projectNotes" => $projectNotes
+            "projectNotes" => $projectNotes,
+            "paginationMeta" => $paginationMeta,
         ];    
     }
 
@@ -98,14 +95,8 @@ class ProjectNotesController extends AbstractController {
         $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes";
         $project = $this->projectRepository->fetchProject($project_id);
         $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes"; 
-
-        $limit = 5;
         $currentPaginationPage = isset($_GET['currentPaginationPage']) ? (int) $_GET['currentPaginationPage'] : 1;
-        $currentPaginationPage = max($currentPaginationPage, 1);
-        $offset = ($currentPaginationPage - 1) * $limit;
-        $totalItems = $this->projectNotesRepository->countAllProjectNotes($project_id);
-        $totalPages = ceil($totalItems / $limit);
-        $offset = ($currentPaginationPage - 1) * $limit;
+        
 
         $baseUrl = [
             "page" => "projectPanel",
@@ -113,14 +104,18 @@ class ProjectNotesController extends AbstractController {
             "currentPaginationPage" => $currentPaginationPage,
         ];
    
-        $data["projectNotes"] = $this->projectNotesRepository->fetchProjectNotes($project_id, $limit,  $offset);
-
-        $errors = [];
-
+     
         $content = trim(sanitize($request["post"]["projectNote"])) ?? "";
         $currentUserSession = SessionService::getSessionKey("user");
         $projectNoteType = "Added a note";
-            
+
+        //For Pagination
+        $totalItems = $this->projectNotesRepository->countAllProjectNotes($project_id);
+        $paginationMeta = PaginateService::paginate($totalItems, $currentPaginationPage);
+        $paginationItems = $this->projectNotesRepository->fetchProjectNotes($project_id, $paginationMeta["limit"],  $paginationMeta["offset"]);
+        
+    
+        $errors = [];   
         if (empty($content)) {
             $errors["projectnoteErr"] = "Please enter your project note";
 
@@ -128,14 +123,13 @@ class ProjectNotesController extends AbstractController {
                 "errors" => $errors,
                 "project" => $project,
                 "baseUrl" => $baseUrl,
-                "currentNavTab" => $currentNavTab,
+                "currentNavTab" => $currentNavTab,      
+                "paginationItems" =>  $paginationItems,
+                "paginationMeta" => $paginationMeta,
                 "currentUserSession" => $currentUserSession,
-                "data" => $data,
-                "totalPages" => $totalPages
             ]);
             exit;
         }
-
 
         $success =$this->projectNotesRepository->handleCreateProjectNote([
             "project_id" => $project_id,

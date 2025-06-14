@@ -46,7 +46,7 @@
 </div>
 
 
-<?php foreach ($data["projectNotes"] AS $row): ?> 
+<?php foreach ($paginationItems AS $row): ?> 
     <div class="card mb-3">
         <div class="card-body position-relative">
             <div class="d-flex align-items-start">
@@ -97,88 +97,47 @@
 <?php endforeach; ?>
 
 
-<?php // var_dump($baseUrl)?>
 
-<!-- pagination -->
+
+
 <div class="d-flex justify-content-end">
     <nav aria-label="Page navigation">
         <ul class="pagination">
+        
+            <?php if ($paginationMeta["currentPaginationPage"] > 1): ?>
+                <li class="page-item">
+                <a class="page-link" href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "currentPaginationPage" => $paginationMeta["currentPaginationPage"] - 1] + $baseUrl); ?>" >Previous</a>
+            </li>
+            <?php else: ?>
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+            <?php endif; ?>
+    
+            <?php for ($i = $paginationMeta["start"]; $i <= $paginationMeta["end"]; $i++): ?>
+                <li class="page-item <?= $i == $paginationMeta["currentPaginationPage"] ? 'active' : ''; ?>">
+                    <a class="page-link <?= $i == $paginationMeta["currentPaginationPage"] ? 'page-link-mycolor' : ''; ?>" 
+                        href="<?=  BASE_URL . "/index.php?" . http_build_query(["currentPaginationPage" => $i] + $baseUrl) ?>">
+                            <?php echo $i; ?>
+                    </a>
+                </li>
+            <?php endfor; ?>
+
             
-        <?php if ($baseUrl["currentPaginationPage"] > 1): ?>
+            <?php if ($paginationMeta["currentPaginationPage"] < $paginationMeta["totalPages"]): ?>
             <li class="page-item">
-            <a class="page-link" href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "currentPaginationPage" => $baseUrl["currentPaginationPage"] - 1] + $baseUrl); ?>" >Previous</a>
-          </li>
-        <?php else: ?>
-            <li class="page-item disabled">
-                <span class="page-link">Previous</span>
-            </li>
-        <?php endif; ?>
-
-        <?php 
-            // Page number buttons (centered logic with 2 pages before and after)
-            $range = 5;
-            $start = max(1, $baseUrl["currentPaginationPage"] - $range);
-            $end = min($totalPages, $baseUrl["currentPaginationPage"] + $range);
-        ?>
-        
-        <?php for ($i = $start; $i <= $end; $i++): ?>
-            <?php $active = $i == $baseUrl["currentPaginationPage"] ? 'active' : ''; ?>
-            <?php $myActiveClass = $i == $baseUrl["currentPaginationPage"] ? 'page-link-mycolor' : ''; ?>
-
-            <li class="page-item <?php echo $active; ?>">
-                    <a class="page-link <?php echo $myActiveClass; ?>" href="<?=  BASE_URL . "/index.php?" . http_build_query(["currentPaginationPage" => $i] + $baseUrl) ?>"><?php echo $i; ?></a>
-            </li>
-        <?php endfor; ?>
-
-        
-        
-        <?php if ($baseUrl["currentPaginationPage"] < $totalPages): ?>
-           <li class="page-item">
-                <a class="page-link" href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "currentPaginationPage" => $baseUrl["currentPaginationPage"] + 1] + $baseUrl); ?>">Next</a>
-            </li>
-        <?php else: ?>
-            <li class="page-item disabled">
-                <span class="page-link">Next</span>
-            </li>'
-        <?php endif; ?>
-        
-
+                    <a class="page-link" href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "currentPaginationPage" => $paginationMeta["currentPaginationPage"] + 1] + $baseUrl); ?>">Next</a>
+                </li>
+            <?php else: ?>
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>'
+            <?php endif; ?>
+    
         </ul>
     </nav>
 </div>
             
-
-
-
-
-<!-- <div class="d-flex justify-content-end">
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
-            </li>
-            <li class="page-item active">
-                <a class="page-link page-link-mycolor" href="#">1 <span class="visually-hidden">(current)</span></a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">4</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">5</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
-    </nav>
-</div> -->
 
 
 <script>
