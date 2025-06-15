@@ -38,13 +38,12 @@ class PageController extends AbstractController {
             "currentPaginationPage" => $currentPaginationPage
         ];
      
-        $paginationItems = [];
-        $paginationMeta = [];
-
+      
+        $tabData = [];
         if ($currentNavTab === "projectNotes") {
             $paginationPayload = $this->projectNotesController->fetchProjectNotes($project_id);
-            $paginationItems = $paginationPayload["projectNotes"];
-            $paginationMeta = $paginationPayload["paginationMeta"];
+            $tabData["projectNotes"] = $paginationPayload["projectNotes"];
+            $tabData["paginationMeta"] = $paginationPayload["paginationMeta"];
         }
      
           
@@ -52,8 +51,7 @@ class PageController extends AbstractController {
             "project" => $project,
             "baseUrl" => $baseUrl,
             "currentNavTab" => $currentNavTab,
-            "paginationItems" => $paginationItems,
-            "paginationMeta" => $paginationMeta,
+            "tabData" => $tabData,
             "currentUserSession" => $this->currentUserSession
         ]);
     }

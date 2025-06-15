@@ -1,4 +1,4 @@
-<?php // var_dump($project ?? ""); ?>
+<?php // var_dump($tabData ?? ""); ?>
 
 <div class="container custom-container pb-5">
         <?php require __DIR__ . "/../components/flashMessage.view.php" ?>

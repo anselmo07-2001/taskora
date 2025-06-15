@@ -46,7 +46,7 @@
 </div>
 
 
-<?php foreach ($paginationItems AS $row): ?> 
+<?php foreach ($tabData["projectNotes"] AS $row): ?> 
     <div class="card mb-3">
         <div class="card-body position-relative">
             <div class="d-flex align-items-start">
@@ -98,15 +98,15 @@
 
 
 
-
+<?php // var_dump($tabData["paginationMeta"])?>
 
 <div class="d-flex justify-content-end">
     <nav aria-label="Page navigation">
         <ul class="pagination">
         
-            <?php if ($paginationMeta["currentPaginationPage"] > 1): ?>
+            <?php if ($tabData["paginationMeta"]["currentPaginationPage"] > 1): ?>
                 <li class="page-item">
-                <a class="page-link" href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "currentPaginationPage" => $paginationMeta["currentPaginationPage"] - 1] + $baseUrl); ?>" >Previous</a>
+                <a class="page-link" href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "currentPaginationPage" => $tabData["paginationMeta"]["currentPaginationPage"] - 1] + $baseUrl); ?>" >Previous</a>
             </li>
             <?php else: ?>
                 <li class="page-item disabled">
@@ -114,9 +114,9 @@
                 </li>
             <?php endif; ?>
     
-            <?php for ($i = $paginationMeta["start"]; $i <= $paginationMeta["end"]; $i++): ?>
-                <li class="page-item <?= $i == $paginationMeta["currentPaginationPage"] ? 'active' : ''; ?>">
-                    <a class="page-link <?= $i == $paginationMeta["currentPaginationPage"] ? 'page-link-mycolor' : ''; ?>" 
+            <?php for ($i = $tabData["paginationMeta"]["start"]; $i <= $tabData["paginationMeta"]["end"]; $i++): ?>
+                <li class="page-item <?= $i == $tabData["paginationMeta"]["currentPaginationPage"] ? 'active' : ''; ?>">
+                    <a class="page-link <?= $i == $tabData["paginationMeta"]["currentPaginationPage"] ? 'page-link-mycolor' : ''; ?>" 
                         href="<?=  BASE_URL . "/index.php?" . http_build_query(["currentPaginationPage" => $i] + $baseUrl) ?>">
                             <?php echo $i; ?>
                     </a>
@@ -124,9 +124,9 @@
             <?php endfor; ?>
 
             
-            <?php if ($paginationMeta["currentPaginationPage"] < $paginationMeta["totalPages"]): ?>
+            <?php if ($tabData["paginationMeta"]["currentPaginationPage"] < $tabData["paginationMeta"]["totalPages"]): ?>
             <li class="page-item">
-                    <a class="page-link" href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "currentPaginationPage" => $paginationMeta["currentPaginationPage"] + 1] + $baseUrl); ?>">Next</a>
+                    <a class="page-link" href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "currentPaginationPage" => $tabData["paginationMeta"]["currentPaginationPage"] + 1] + $baseUrl); ?>">Next</a>
                 </li>
             <?php else: ?>
                 <li class="page-item disabled">

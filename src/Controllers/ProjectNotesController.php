@@ -111,8 +111,9 @@ class ProjectNotesController extends AbstractController {
 
         //For Pagination
         $totalItems = $this->projectNotesRepository->countAllProjectNotes($project_id);
-        $paginationMeta = PaginateService::paginate($totalItems, $currentPaginationPage);
-        $paginationItems = $this->projectNotesRepository->fetchProjectNotes($project_id, $paginationMeta["limit"],  $paginationMeta["offset"]);
+        $tabData = [];
+        $tabData["paginationMeta"] = PaginateService::paginate($totalItems, $currentPaginationPage);
+        $tabData["projectNotes"] = $this->projectNotesRepository->fetchProjectNotes($project_id, $tabData["paginationMeta"]["limit"],  $tabData["paginationMeta"]["offset"]);
         
     
         $errors = [];   
@@ -124,8 +125,7 @@ class ProjectNotesController extends AbstractController {
                 "project" => $project,
                 "baseUrl" => $baseUrl,
                 "currentNavTab" => $currentNavTab,      
-                "paginationItems" =>  $paginationItems,
-                "paginationMeta" => $paginationMeta,
+                "tabData" => $tabData,
                 "currentUserSession" => $currentUserSession,
             ]);
             exit;
