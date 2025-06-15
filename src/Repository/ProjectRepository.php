@@ -11,6 +11,29 @@ use Exception;
 class ProjectRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function fetchMembersInProject(int $projectId) {
+        try {
+            $stmt = $this->pdo->prepare("
+                            SELECT 
+                            users.id,
+                            users.username,
+                            users.fullname,
+                            users.role
+                        FROM project_members
+                        JOIN users ON project_members.user_id = users.id
+                        WHERE project_members.project_id = :projectId
+                        AND project_members.is_active = 1
+                        AND users.status NOT IN ('suspended', 'deleted')
+                        AND users.role NOT IN ('admin', 'project_manager')
+                    ");
+
+            $stmt->execute(['projectId' => $projectId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+         }
+    }
 
     public function handleUpdateProjectStatus(int $projectId, string $newProjectStatus) {
         try {
@@ -28,7 +51,7 @@ class ProjectRepository {
     }
 
 
-
+    /** fetch projects that owned by the project_manager or the admin */
     public function fetchProject(int $id) {
          try {
             $stmt = $this->pdo->prepare("SELECT 
@@ -94,6 +117,7 @@ class ProjectRepository {
          }
     }
 
+     /** fetch projects that owned by a member */
     public function fetchProjectsForMember(int $memberId, string $whereSql = "", array $params = []) {
         try {
             $where = [];

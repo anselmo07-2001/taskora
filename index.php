@@ -39,7 +39,8 @@ $container->bind("PageController", function() use($container) {
     $projectRepository = $container->get("projectRepository");
     $projectNotesRepository = $container->get("projectNotesRepository");
     $projectNotesController = $container->get("ProjectNotesController");
-    return new \App\Controllers\PageController($userRepository, $projectRepository, $projectNotesRepository, $projectNotesController);
+    $taskController = $container->get("TaskController");
+    return new \App\Controllers\PageController($userRepository, $projectRepository, $projectNotesRepository, $projectNotesController, $taskController);
 });
 $container->bind("AdminController", function() use($container){
     $userRepository = $container->get("userRepository");

@@ -1,4 +1,4 @@
-<?php // var_dump($baseUrl); ?>
+<?php var_dump($tabData); ?>
 
 <div class="card custom-form-container">
     <div class="card-body p-5">
@@ -37,11 +37,11 @@
             </div>
 
             <div class="mb-4">
-                <label for="assignedProjectManager" class="form-label">Assign Members</label>
-                <select class="form-select">        
-                    <?php foreach($projectMembers AS $member): ?>
-                        <option value="<?php echo e($member["id"]);?>" 
-                                <?php echo (($_POST["assignedProjectManager"] ?? "") == $projectManager["id"]) ? 'selected' : ''; ?>> 
+                <label for="assignMembers" class="form-label">Assign Members</label>
+                <select class="form-select">    
+                    <option value="" disabled selected>Select a member</option>      
+                    <?php foreach($tabData["projectMembers"] AS $member): ?>
+                        <option value="<?php echo e($member["id"]);?>">
                             <?php echo e($member["fullname"]);?>
                         </option>
                     <?php endforeach; ?>      

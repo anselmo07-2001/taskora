@@ -14,6 +14,7 @@ class TaskController extends AbstractController{
         // $assignedMembers = $request["post"]["assignedMembers"];
         $taskNote = $request["post"]["taskNote"];
 
-        var_dump($request["post"]);
+        var_dump($request);
     }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\ProjectNotesController;
+use App\Controllers\TaskController;
 use App\Models\ProjectNotes;
 use App\Repository\ProjectNotesRepository;
 use App\Repository\ProjectRepository;
@@ -14,18 +15,22 @@ class PageController extends AbstractController {
     protected ProjectRepository $projectRepository;
     protected ProjectNotesRepository $projectNotesRepository;
     protected ProjectNotesController $projectNotesController;
+    protected TaskController $taskController;
+
     protected array|null $currentUserSession;
 
     public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, 
-                                ProjectNotesRepository $projectNotesRepository, ProjectNotesController $projectNotesController){
+                                ProjectNotesRepository $projectNotesRepository, ProjectNotesController $projectNotesController,
+                                TaskController $taskController){
          $this->userRepository = $userRepository;
          $this->projectRepository = $projectRepository;
          $this->projectNotesRepository = $projectNotesRepository;
          $this->currentUserSession = SessionService::getSessionKey("user") ?? null;
          $this->projectNotesController = $projectNotesController;
+         $this->taskController = $taskController;
     }   
 
-    public function showProject() {
+    public function showProject($request) {
         $project_id = $_GET["projectId"] ?? "";
         $project = $this->projectRepository->fetchProject($project_id);
         $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes";
@@ -44,6 +49,10 @@ class PageController extends AbstractController {
             $paginationPayload = $this->projectNotesController->fetchProjectNotes($project_id);
             $tabData["projectNotes"] = $paginationPayload["projectNotes"];
             $tabData["paginationMeta"] = $paginationPayload["paginationMeta"];
+        }
+
+        if ($currentNavTab === "createTask") {
+           $tabData["projectMembers"] = $this->projectRepository->fetchMembersInProject($project_id);
         }
      
           
