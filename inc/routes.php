@@ -114,4 +114,14 @@ $routes = [
     ],
 
 
+    "createTask" => [
+        "POST" => [
+            "controller" => "TaskController",
+            "method" => "createTask",
+            "auth" => true,
+            "roles" => ["admin", "project_manager"]
+        ]
+    ]
+
+
 ];

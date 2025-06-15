@@ -1,8 +1,10 @@
+<?php // var_dump($baseUrl); ?>
+
 <div class="card custom-form-container">
     <div class="card-body p-5">
         <h1 class="text-center mb-5">Create a Task</h1>
         
-        <form>
+        <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "createTask"] + $baseUrl); ?>">
             <div class="mb-4">
                 <label for="taskname" class="form-label">Task Name</label>
                 <input type="text" class="form-control" id="taskname" placeholder="Enter task name" name="taskname">
@@ -14,6 +16,7 @@
                         placeholder="Enter task description" name="taskDescription"></textarea>
             </div>
 
+            
             <div class="mb-5">
                 <label for="taskDeadline" class="form-label">Task Deadline</label>
                 <div class="input-group mb-3">
@@ -26,21 +29,23 @@
 
             <div class="mb-5">
                 <label for="tasktype" class="form-label">Task Type</label>
-                <select class="form-select" id="tasktype">
-                    <option selected disabled>Choose Task Type</option>
-                    <option value="admin">Solo Task</option>
-                    <option value="manager">Group Task</option>
+                <select class="form-select" id="tasktype" name="taskType" required>
+                    <option value="" selected disabled>Choose Task Type</option>
+                    <option value="soloTask">Solo Task</option>
+                    <option value="groupTask">Group Task</option>
                 </select>
             </div>
 
             <div class="mb-4">
-                <label for="assignedMembers" class="form-label">Assign Members</label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="assignedProjectManager" placeholder="Search Member" name="assignedMembers">
-                    <a class="input-group-text p-2 my-bg-iconform-color-primary border-start-0" href="#">
-                        <img src="./public/images/magnifying-glass.png" alt="icon" style="width:20px; height:20px; filter: invert(1);">
-                    </a>
-                </div>
+                <label for="assignedProjectManager" class="form-label">Assign Members</label>
+                <select class="form-select">        
+                    <?php foreach($projectMembers AS $member): ?>
+                        <option value="<?php echo e($member["id"]);?>" 
+                                <?php echo (($_POST["assignedProjectManager"] ?? "") == $projectManager["id"]) ? 'selected' : ''; ?>> 
+                            <?php echo e($member["fullname"]);?>
+                        </option>
+                    <?php endforeach; ?>      
+                </select>
             </div>
 
             <div class="mb-5">
@@ -59,3 +64,9 @@
         </form>
     </div>
 </div> 
+
+<script>
+        document.getElementById('calendar-icon').addEventListener('click', function() {
+            document.getElementById('taskDeadline').showPicker();
+        });
+</script>

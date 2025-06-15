@@ -58,7 +58,7 @@ class PageController extends AbstractController {
         ]);
     }
 
-
+    
     public function showProjects() {
         $filter = $_GET["filter"] ?? "";
         $search = $_GET["search"] ?? "";
