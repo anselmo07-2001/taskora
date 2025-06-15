@@ -38,8 +38,8 @@
 
             <div class="mb-4">
                 <label for="assignMembers" class="form-label">Assign Members</label>
-                <select class="form-select">    
-                    <option value="" disabled selected>Select a member</option>      
+                <select class="form-select selectpicker" name="assignedMembers[]" multiple data-live-search="true" data-width="100%" title="Select members">    
+                    
                     <?php foreach($tabData["projectMembers"] AS $member): ?>
                         <option value="<?php echo e($member["id"]);?>">
                             <?php echo e($member["fullname"]);?>
