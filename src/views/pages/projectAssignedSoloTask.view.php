@@ -1,3 +1,5 @@
+<?php // var_dump($tabData["soloTask"]); ?>
+
 <h6 class="text-muted">Total Solo Task: 5</h6>
         <div class="mb-3 d-flex justify-content-between">
             <div class="d-flex align-items-center gap-2">
@@ -28,60 +30,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Write unit tests</td>
-                    <td>Sophia Carter</td>
-                    <td>2025-05-26</td>
-                    <td>2025-09-23</td>
-                    <td>93 Days</td>
-                    <td>Completed</td>
-                    <td>Approved</td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
-                </tr>
-                <tr>
-                    <td scope="row">2</td>
-                    <td>Run security audit</td>
-                    <td>Osgar Rivera</td>
-                    <td>2025-05-26</td>
-                    <td>2025-09-07</td>
-                    <td>58 Days</td>
-                    <td>Completed</td>
-                    <td>Approved</td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
-                </tr>
-                <tr>
-                    <td scope="row">3</td>
-                    <td>Conduct code review</td>
-                    <td>Choco Choco</td>
-                    <td>2025-05-26</td>
-                    <td>2025-08-20</td>
-                    <td>112 Days</td>
-                    <td>Pending</td>
-                    <td>Not yet submitted</td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
-                </tr>
-                <tr>
-                    <td scope="row">4</td>
-                    <td>Deploy to staging</td>
-                    <td>Caramel</td>
-                    <td>2025-05-26</td>
-                    <td>2025-10-06</td>
-                    <td>55 Days</td>
-                    <td>Pending</td>
-                    <td>Not yet submitted</td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
-                </tr>
-                <tr>
-                    <td scope="row">5</td>
-                    <td>Fix UI bugs</td>
-                    <td>Muning Meowzer</td>
-                    <td>2025-05-26</td>
-                    <td>2025-08-20</td>
-                    <td>32 Days</td>
-                    <td>Pending</td>
-                    <td>Not yet submitted</td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
-                </tr>
+                <?php foreach($tabData["soloTask"] as $row): ?>
+                    <tr>
+                        <th scope="row"><?= e($row["id"]); ?></th>
+                        <td><?= e($row["taskname"]); ?></td>
+                        <td><?= e($row["fullname"]); ?></td>
+                        <td><?= e($row["assigned_date"]); ?></td>
+                        <td><?= e($row["deadline"]); ?></td>
+                        <td><?= e($row["milestone"]); ?></td>
+                        <td><?= e($row["status"]); ?></td>
+                        <td><?= e($row["approval_status"] ?? "Not yet submitted"); ?></td>
+                        <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
+                    </tr>
+                <?php endforeach; ?>
         </tbody>
 </table>

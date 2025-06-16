@@ -4,11 +4,13 @@ namespace App\Support;
 
 use App\Controllers\ProjectNotesController;
 use App\Repository\ProjectRepository;
+use App\Repository\TaskRepository;
 
 class ProjectPanelService {
     public function __construct(
         private ProjectRepository $projectRepository,
-        private ProjectNotesController $projectNotesController
+        private ProjectNotesController $projectNotesController,
+        private TaskRepository $taskRepository,
     ) {}
 
     public function buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage): array {
@@ -30,6 +32,10 @@ class ProjectPanelService {
 
         if ($currentNavTab === "createTask") {
             $tabData["projectMembers"] = $this->projectRepository->fetchMembersInProject($projectId);
+        }
+
+        if ($currentNavTab === "assignedSoloTask") {
+            $tabData["soloTask"] = $this->taskRepository->fetchProjectSoloTasks($projectId);
         }
 
         return [
