@@ -9,6 +9,7 @@ use App\Repository\ProjectNotesRepository;
 use App\Repository\ProjectRepository;
 use App\Support\SessionService;
 use App\Repository\UserRepository;
+use App\Support\ProjectPanelService;
 
 class PageController extends AbstractController {
     protected UserRepository $userRepository;
@@ -16,53 +17,33 @@ class PageController extends AbstractController {
     protected ProjectNotesRepository $projectNotesRepository;
     protected ProjectNotesController $projectNotesController;
     protected TaskController $taskController;
+    protected ProjectPanelService $projectPanelService;
 
     protected array|null $currentUserSession;
 
     public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, 
                                 ProjectNotesRepository $projectNotesRepository, ProjectNotesController $projectNotesController,
-                                TaskController $taskController){
+                                TaskController $taskController, ProjectPanelService $projectPanelService){
          $this->userRepository = $userRepository;
          $this->projectRepository = $projectRepository;
          $this->projectNotesRepository = $projectNotesRepository;
          $this->currentUserSession = SessionService::getSessionKey("user") ?? null;
          $this->projectNotesController = $projectNotesController;
          $this->taskController = $taskController;
-    }   
+         $this->projectPanelService = $projectPanelService;
+    } 
+    
 
     public function showProject($request) {
-        $project_id = $_GET["projectId"] ?? "";
-        $project = $this->projectRepository->fetchProject($project_id);
-        $currentNavTab = $_GET["currentNavTab"] ?? "projectNotes";
-        $currentPaginationPage = $_GET["currentPaginationPage"] ?? 1;
+        $projectId = (int) ($request["get"]["projectId"] ?? 0);
+        $currentNavTab = $request["get"]["currentNavTab"] ?? "projectNotes";
+        $currentPaginationPage = (int) ($request["get"]["currentPaginationPage"] ?? 1);
 
-        //use for the navbar
-        $baseUrl = [
-            "page" => "projectPanel",
-            "projectId" => $project_id,
-            "currentPaginationPage" => $currentPaginationPage
-        ];
-     
-      
-        $tabData = [];
-        if ($currentNavTab === "projectNotes") {
-            $paginationPayload = $this->projectNotesController->fetchProjectNotes($project_id);
-            $tabData["projectNotes"] = $paginationPayload["projectNotes"];
-            $tabData["paginationMeta"] = $paginationPayload["paginationMeta"];
-        }
+        $projectPanel = $this->projectPanelService->buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage);
 
-        if ($currentNavTab === "createTask") {
-           $tabData["projectMembers"] = $this->projectRepository->fetchMembersInProject($project_id);
-        }
-     
-          
-        $this->render("project.view", [
-            "project" => $project,
-            "baseUrl" => $baseUrl,
-            "currentNavTab" => $currentNavTab,
-            "tabData" => $tabData,
+        $this->render("project.view", array_merge($projectPanel, [
             "currentUserSession" => $this->currentUserSession
-        ]);
+        ]));
     }
 
     

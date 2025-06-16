@@ -1,10 +1,10 @@
-<?php var_dump($tabData); ?>
+<?php // var_dump($tabData); ?>
 
 <div class="card custom-form-container">
     <div class="card-body p-5">
         <h1 class="text-center mb-5">Create a Task</h1>
         
-        <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "createTask"] + $baseUrl); ?>">
+        <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "createTask", "currentNavTab" => "createTask"] + $baseUrl); ?>">
             <div class="mb-4">
                 <label for="taskname" class="form-label">Task Name</label>
                 <input type="text" class="form-control" id="taskname" placeholder="Enter task name" name="taskname">

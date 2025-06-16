@@ -3,18 +3,55 @@
 namespace App\Controllers;
 
 use App\Controllers\AbstractController;
+use App\Support\ProjectPanelService;
+use App\Support\SessionService;
 
 class TaskController extends AbstractController{
 
-    public function createTask($request) {
-        $taskName = $request["post"]["taskname"];
-        $taskDescription = $request["post"]["taskDescription"];
-        $taskDeadline = $request["post"]["taskDeadline"];
-        $taskType = $request["post"]["taskType"];
-        // $assignedMembers = $request["post"]["assignedMembers"];
-        $taskNote = $request["post"]["taskNote"];
+    public function __construct(private ProjectPanelService $projectPanelService) {}
+    
 
-        var_dump($request);
+    public function createTask($request) {
+        $projectId = (int) ($request["get"]["projectId"] ?? 0);
+        $currentNavTab = $request["get"]["currentNavTab"] ?? "projectNotes";
+        $currentPaginationPage = (int) ($request["get"]["currentPaginationPage"] ?? 1);
+
+        $taskName = trim(sanitize($request["post"]["taskname"])) ?? "";
+        $taskDescription = trim(sanitize($request["post"]["taskDescription"])) ?? "";
+        $taskDeadline = trim(sanitize($request["post"]["taskDeadline"])) ?? "";
+        $taskType = $request["post"]["taskType"] ?? "";
+        $assignedMembers = $request["post"]["assignedMembers"] ?? "";
+        $taskNote = trim(sanitize($request["post"]["taskNote"])) ?? "";
+ 
+        $errors = [];
+       
+        if (empty($taskName)) {
+            $errors["taskNameErr"] = "Please enter the task name";
+        }
+
+        if (empty($taskDescription)) {
+            $errors["taskDescriptionErr"] = "Please enter the task description";
+        }
+
+        if (empty($taskDeadline)) {
+            $errors["taskDeadlineErr"] = "Please enter the task deadline";
+        }
+
+        if (empty($taskNote)) {
+            $errors["taskNoteErr"] = "Please enter the task note";
+        }
+
+        
+        if (!empty($errors)) {
+            $projectPanel = $this->projectPanelService->buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage);
+        
+            $this->render("project.view", array_merge($projectPanel, [
+                 "empty" => $errors,
+                 "previousInput" => $request["post"],
+                 "currentUserSession" => SessionService::getSessionKey("user") ?? ""
+            ]));
+            exit;
+        }
     }
 
 }

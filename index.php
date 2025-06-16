@@ -39,8 +39,9 @@ $container->bind("PageController", function() use($container) {
     $projectRepository = $container->get("projectRepository");
     $projectNotesRepository = $container->get("projectNotesRepository");
     $projectNotesController = $container->get("ProjectNotesController");
-    $taskController = $container->get("TaskController");
-    return new \App\Controllers\PageController($userRepository, $projectRepository, $projectNotesRepository, $projectNotesController, $taskController);
+    $taskController = $container->get("TaskController"); // please check this later if this code is really needed
+    $projectPanelService = $container->get("ProjectPanelService");
+    return new \App\Controllers\PageController($userRepository, $projectRepository, $projectNotesRepository, $projectNotesController, $taskController, $projectPanelService);
 });
 $container->bind("AdminController", function() use($container){
     $userRepository = $container->get("userRepository");
@@ -53,8 +54,14 @@ $container->bind("ProjectController", function() use($container) {
     $projectNotesRepository = $container->get("projectNotesRepository");
     return new \App\Controllers\ProjectController($userRepository, $projectRepository, $projectNotesRepository);
 });
-$container->bind("TaskController", function(){
-    return new \App\Controllers\TaskController();
+$container->bind("ProjectPanelService", function () use ($container) {
+    $projectRepository = $container->get("projectRepository");
+    $projectNotesRepository = $container->get("ProjectNotesController");
+    return new \App\Support\ProjectPanelService($projectRepository, $projectNotesRepository);
+});
+$container->bind("TaskController", function() use($container){
+    $projectPanelService = $container->get("ProjectPanelService");
+    return new \App\Controllers\TaskController($projectPanelService);
 });
 
 
