@@ -16,7 +16,7 @@ class TaskController extends AbstractController{
         $currentNavTab = $request["get"]["currentNavTab"] ?? "projectNotes";
         $currentPaginationPage = (int) ($request["get"]["currentPaginationPage"] ?? 1);
 
-        $taskName = trim(sanitize($request["post"]["taskname"])) ?? "";
+        $taskName = trim(sanitize($request["post"]["taskName"])) ?? "";
         $taskDescription = trim(sanitize($request["post"]["taskDescription"])) ?? "";
         $taskDeadline = trim(sanitize($request["post"]["taskDeadline"])) ?? "";
         $taskType = $request["post"]["taskType"] ?? "";
@@ -24,7 +24,6 @@ class TaskController extends AbstractController{
         $taskNote = trim(sanitize($request["post"]["taskNote"])) ?? "";
 
         $errors = [];
-        
        
         if (empty($taskName)) {
             $errors["taskNameErr"] = "Please enter the task name";
@@ -58,8 +57,7 @@ class TaskController extends AbstractController{
             $errors["taskTypeErr"] = "Group Task must be assigned to at least 2 members";
         }
 
-
-        
+  
         if (!empty($errors)) {
             $projectPanel = $this->projectPanelService->buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage);
         
@@ -70,6 +68,9 @@ class TaskController extends AbstractController{
             ]));
             exit;
         }
+
+        
+
     }
 
 }
