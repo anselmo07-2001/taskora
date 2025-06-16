@@ -20,12 +20,11 @@ class TaskController extends AbstractController{
         $taskDescription = trim(sanitize($request["post"]["taskDescription"])) ?? "";
         $taskDeadline = trim(sanitize($request["post"]["taskDeadline"])) ?? "";
         $taskType = $request["post"]["taskType"] ?? "";
-        $assignedMembers = $request["post"]["assignedMembers"] ?? "";
+        $assignedMembers = $request["post"]["assignedMembers"] ?? [];
         $taskNote = trim(sanitize($request["post"]["taskNote"])) ?? "";
 
         $errors = [];
-        // var_dump($taskType);
-        // die();
+        
        
         if (empty($taskName)) {
             $errors["taskNameErr"] = "Please enter the task name";
@@ -50,6 +49,15 @@ class TaskController extends AbstractController{
         if (empty($taskNote)) {
             $errors["taskNoteErr"] = "Please enter the task note";
         }
+
+        if ($taskType === "soloTask" && count($assignedMembers) > 1 ) {
+            $errors["taskTypeErr"] = "Solo Task can only be assigned to one member";
+        } 
+
+        if ($taskType === "groupTask" && count($assignedMembers) < 2) {
+            $errors["taskTypeErr"] = "Group Task must be assigned to at least 2 members";
+        }
+
 
         
         if (!empty($errors)) {
