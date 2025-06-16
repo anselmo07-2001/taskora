@@ -1,6 +1,6 @@
 <?php // var_dump($tabData["soloTask"]); ?>
 
-<h6 class="text-muted">Total Solo Task: 5</h6>
+<h6 class="text-muted">Total Solo Task: <?= count($tabData["soloTask"]); ?></h6>
         <div class="mb-3 d-flex justify-content-between">
             <div class="d-flex align-items-center gap-2">
                 <button href="#" class="btn custom-primary-btn filter-form-btn">Due Today</button>
