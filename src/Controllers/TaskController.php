@@ -22,8 +22,10 @@ class TaskController extends AbstractController{
         $taskType = $request["post"]["taskType"] ?? "";
         $assignedMembers = $request["post"]["assignedMembers"] ?? "";
         $taskNote = trim(sanitize($request["post"]["taskNote"])) ?? "";
- 
+
         $errors = [];
+        // var_dump($taskType);
+        // die();
        
         if (empty($taskName)) {
             $errors["taskNameErr"] = "Please enter the task name";
@@ -37,6 +39,14 @@ class TaskController extends AbstractController{
             $errors["taskDeadlineErr"] = "Please enter the task deadline";
         }
 
+        if (empty($taskType)) {
+            $errors["taskTypeErr"] = "Please select a task type";
+        }
+
+        if (empty($assignedMembers)) {
+            $errors["assignedMembersErr"] = "Please assign a members";
+        }
+
         if (empty($taskNote)) {
             $errors["taskNoteErr"] = "Please enter the task note";
         }
@@ -46,7 +56,7 @@ class TaskController extends AbstractController{
             $projectPanel = $this->projectPanelService->buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage);
         
             $this->render("project.view", array_merge($projectPanel, [
-                 "empty" => $errors,
+                 "errors" => $errors,
                  "previousInput" => $request["post"],
                  "currentUserSession" => SessionService::getSessionKey("user") ?? ""
             ]));
