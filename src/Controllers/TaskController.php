@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\AbstractController;
+use App\Repository\TaskRepository;
 use App\Support\ProjectPanelService;
 use App\Support\SessionService;
 
@@ -10,7 +11,7 @@ use DateTime;
 
 class TaskController extends AbstractController{
 
-    public function __construct(private ProjectPanelService $projectPanelService) {}
+    public function __construct(private ProjectPanelService $projectPanelService, protected TaskRepository $taskRepository) {}
     
 
     public function createTask($request) {
@@ -63,11 +64,11 @@ class TaskController extends AbstractController{
             $errors["taskNoteErr"] = "Please enter the task note";
         }
 
-        if ($taskType === "soloTask" && count($assignedMembers) > 1 ) {
+        if ($taskType === "solo" && count($assignedMembers) > 1 ) {
             $errors["taskTypeErr"] = "Solo Task can only be assigned to one member";
         } 
 
-        if ($taskType === "groupTask" && count($assignedMembers) < 2) {
+        if ($taskType === "group" && count($assignedMembers) < 2) {
             $errors["taskTypeErr"] = "Group Task must be assigned to at least 2 members";
         }
 
@@ -97,10 +98,14 @@ class TaskController extends AbstractController{
             "isSubmitted" => 0,
             "status" => "pending",
             "approvalStatus" => NULL,
+            "taskNoteType" => "Created a task",
+            "taskCreatorId" => SessionService::getSessionKey("user")["userId"]
         ];
 
         $newTaskData = array_merge($formData, $taskMeta);
-    
+
+
+        $this->taskRepository->handleCreateTask($newTaskData);
     }
 
 }

@@ -23,6 +23,10 @@ $container->bind("projectNotesRepository", function() use($container) {
     $pdo = $container->get("pdo");
     return new \App\Repository\ProjectNotesRepository($pdo);
 });
+$container->bind("taskRepository", function() use($container) {
+    $pdo = $container->get("pdo");
+    return new \App\Repository\TaskRepository($pdo);
+});
 
 
 $container->bind("AuthController", function() use($container) {
@@ -61,7 +65,8 @@ $container->bind("ProjectPanelService", function () use ($container) {
 });
 $container->bind("TaskController", function() use($container){
     $projectPanelService = $container->get("ProjectPanelService");
-    return new \App\Controllers\TaskController($projectPanelService);
+    $taskRepository = $container->get("taskRepository");
+    return new \App\Controllers\TaskController($projectPanelService, $taskRepository);
 });
 
 

@@ -1,4 +1,4 @@
-<?php var_dump($previousInput ?? ""); ?>
+<?php // var_dump($previousInput ?? ""); ?>
 
 <div class="card custom-form-container">
     <div class="card-body p-5">
@@ -49,8 +49,8 @@
                 <select class="form-select <?= ($errors["taskTypeErr"] ?? "") ? 'is-invalid' : ''; ?>" 
                             id="tasktype" name="taskType">
                     <option value="" selected disabled>Choose Task Type</option>
-                    <option value="soloTask" <?= ( $previousInput["taskType"] ?? "" ) === "soloTask" ? "selected" : ""; ?>>Solo Task</option>
-                    <option value="groupTask" <?= ( $previousInput["taskType"] ?? "" ) === "groupTask" ? "selected" : ""; ?>>Group Task</option>
+                    <option value="solo" <?= ( $previousInput["taskType"] ?? "" ) === "solo" ? "selected" : ""; ?>>Solo Task</option>
+                    <option value="group" <?= ( $previousInput["taskType"] ?? "" ) === "group" ? "selected" : ""; ?>>Group Task</option>
                 </select>
                 <?php if (!empty($errors["taskTypeErr"] ?? null)): ?> 
                     <div class="invalid-feedback d-block mb-2" style="font-size: 0.75rem;">
