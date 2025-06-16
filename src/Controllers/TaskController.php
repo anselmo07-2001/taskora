@@ -105,7 +105,23 @@ class TaskController extends AbstractController{
         $newTaskData = array_merge($formData, $taskMeta);
 
 
-        $this->taskRepository->handleCreateTask($newTaskData);
+        $success = $this->taskRepository->handleCreateTask($newTaskData);
+ 
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Created task sucessully");
+        }
+        else {
+             SessionService::setAlertMessage("error_message", "Failed to create task");
+        }
+
+        $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
+            "page" => "projectPanel",
+            "projectId" => $projectId,
+            "currentNavTab" => $currentNavTab
+        ]);
+
+        header("Location: $redirectUrl");
+        exit;
     }
 
 }

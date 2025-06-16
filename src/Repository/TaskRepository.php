@@ -61,6 +61,7 @@ class TaskRepository {
 
 
             $this->pdo->commit();
+            return true;
         }
         catch(PDOException $e) {
             $this->pdo->rollBack();
