@@ -1,4 +1,4 @@
-<?php var_dump($request); ?>
+<?php // var_dump($request); ?>
 
 <h6 class="text-muted">Total Solo Task: <?= count($tabData["soloTask"]); ?></h6>
         <div class="mb-3 d-flex justify-content-between">
@@ -17,12 +17,12 @@
 
                 <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "assignedSoloTask", "filter" => "overdue"] + 
                                 ( ($request["get"]["search"] ?? "") !== "" ? ["search" => $request["get"]["search"]] : []) ) ?>" 
-                                class="btn custom-primary-btn filter-form-btn <?= $tabData["filter"] === "due_today" ? "filter-active" : "" ?>">
+                                class="btn custom-primary-btn filter-form-btn <?= $tabData["filter"] === "overdue" ? "filter-active" : "" ?>">
                     Overdue
                 </a>
                 <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "assignedSoloTask", "filter" => "upcoming"] + 
                                 ( ($request["get"]["search"] ?? "") !== "" ? ["search" => $request["get"]["search"]] : []) ) ?>" 
-                                class="btn custom-primary-btn filter-form-btn <?= $tabData["filter"] === "due_today" ? "filter-active" : "" ?>">
+                                class="btn custom-primary-btn filter-form-btn <?= $tabData["filter"] === "upcoming" ? "filter-active" : "" ?>">
                     Upcoming
                 </a>
             </div>

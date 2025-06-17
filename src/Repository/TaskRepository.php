@@ -9,9 +9,9 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
-    public function fetchProjectSoloTasks(int $projectId) {
+    public function fetchProjectSoloTasks(int $projectId, $taskFilters) {
         try {
-           $stmt = $this->pdo->prepare("SELECT
+           $sql = "SELECT
                         tasks.id,
                         tasks.taskname,
                         users.fullname,
@@ -27,11 +27,34 @@ class TaskRepository {
                     WHERE
                         tasks.tasktype = 'solo'
                         AND tasks.project_id = :projectId
-                        AND users.role = 'member'");
+                        AND users.role = 'member'";
                         
-            $stmt->execute([
-                ":projectId" => $projectId
-            ]);
+            $params = [":projectId" => $projectId];
+
+            if (!empty($taskFilters['filter'])) {
+                switch ($taskFilters['filter']) {
+                    case 'due_today':
+                        $sql .= " AND DATE(tasks.deadline) = CURDATE()";
+                        break;
+                    case 'overdue':
+                        $sql .= " AND DATE(tasks.deadline) < CURDATE()";
+                        break;
+                    case 'upcoming':
+                        $sql .= " AND DATE(tasks.deadline) > CURDATE()";
+                        break;
+                    // No need for 'allSoloTask' — it's the default
+                }
+            }
+
+
+            // Search condition
+            if (!empty($taskFilters['search'])) {
+                $sql .= " AND (tasks.taskname LIKE :search OR users.fullname LIKE :search)";
+                $params[':search'] = '%' . $taskFilters['search'] . '%';
+            }
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
