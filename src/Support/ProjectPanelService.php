@@ -46,6 +46,7 @@ class ProjectPanelService {
 
         if ($currentNavTab === "assignedGroupTask") {
             $tabData["groupTask"] = $this->taskRepository->fetchProjectGroupTask($projectId);
+            $tabData["filter"] = $request["get"]["filter"] ?? "allGroupTask";
         }
 
         return [
