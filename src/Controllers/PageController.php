@@ -39,7 +39,7 @@ class PageController extends AbstractController {
         $currentNavTab = $request["get"]["currentNavTab"] ?? "projectNotes";
         $currentPaginationPage = (int) ($request["get"]["currentPaginationPage"] ?? 1);
 
-        $projectPanel = $this->projectPanelService->buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage);
+        $projectPanel = $this->projectPanelService->buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage, $request);
 
         $this->render("project.view", array_merge($projectPanel, [
             "currentUserSession" => $this->currentUserSession

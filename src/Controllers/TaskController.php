@@ -74,7 +74,7 @@ class TaskController extends AbstractController{
 
   
         if (!empty($errors)) {
-            $projectPanel = $this->projectPanelService->buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage);
+            $projectPanel = $this->projectPanelService->buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage, $request);
         
             $this->render("project.view", array_merge($projectPanel, [
                  "errors" => $errors,

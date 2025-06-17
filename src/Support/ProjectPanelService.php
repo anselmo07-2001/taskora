@@ -13,7 +13,7 @@ class ProjectPanelService {
         private TaskRepository $taskRepository,
     ) {}
 
-    public function buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage): array {
+    public function buildProjectPanel($projectId, $currentNavTab, $currentPaginationPage, $request): array {
         $project = $this->projectRepository->fetchProject($projectId);
 
         $baseUrl = [
@@ -36,13 +36,15 @@ class ProjectPanelService {
 
         if ($currentNavTab === "assignedSoloTask") {
             $tabData["soloTask"] = $this->taskRepository->fetchProjectSoloTasks($projectId);
+            $tabData["filter"] = $request["get"]["filter"] ?? "allSoloTask";
         }
 
         return [
             "project" => $project,
             "baseUrl" => $baseUrl,
             "currentNavTab" => $currentNavTab,
-            "tabData" => $tabData
+            "tabData" => $tabData,
+            "request" => $request,
         ];
     }
 }
