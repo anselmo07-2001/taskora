@@ -9,6 +9,41 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function fetchProjectGroupTask(int $projectId) {
+        try {
+           $stmt = $this->pdo->prepare("SELECT
+                        tasks.id,
+                        tasks.taskname,
+                        COUNT(task_assignments.user_id) AS assigned_members,
+                        MIN(task_assignments.assigned_date) AS assigned_date,
+                        tasks.deadline,
+                        CONCAT(DATEDIFF(CURDATE(), MIN(task_assignments.assigned_date)), ' Days') AS milestone,
+                        tasks.status,
+                        tasks.approval_status
+                    FROM
+                        tasks
+                    JOIN
+                        task_assignments ON tasks.id = task_assignments.task_id
+                    JOIN
+                        users ON task_assignments.user_id = users.id
+                    WHERE
+                        tasks.tasktype = 'group'
+                        AND tasks.project_id = :projectId
+                        AND users.role = 'member'
+                    GROUP BY
+                        tasks.id, tasks.taskname, tasks.deadline, tasks.status, tasks.approval_status;
+                    ");
+
+            $stmt->execute([":projectId" => $projectId]);        
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+
+
     public function fetchProjectSoloTasks(int $projectId, $taskFilters) {
         try {
            $sql = "SELECT
