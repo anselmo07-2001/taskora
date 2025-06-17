@@ -40,17 +40,18 @@ class TaskController extends AbstractController{
             $errors["taskDeadlineErr"] = "Please enter the task deadline";
         }
 
-        if (!empty($taskDeadline)) {
-            $deadlineDate = new DateTime($taskDeadline); 
-            $today = new DateTime();                        
+        //temporary disabled for checking
+        // if (!empty($taskDeadline)) {
+        //     $deadlineDate = new DateTime($taskDeadline); 
+        //     $today = new DateTime();                        
             
-            $deadlineStr = $deadlineDate->format('Y-m-d');
-            $todayStr = $today->format('Y-m-d');
+        //     $deadlineStr = $deadlineDate->format('Y-m-d');
+        //     $todayStr = $today->format('Y-m-d');
 
-            if ($deadlineStr <= $todayStr) {
-                $errors["taskDeadlineErr"] = "Date cannot be set on the previous day or today.";
-            }
-        }
+        //     if ($deadlineStr <= $todayStr) {
+        //         $errors["taskDeadlineErr"] = "Date cannot be set on the previous day or today.";
+        //     }
+        // }
 
         if (empty($taskType)) {
             $errors["taskTypeErr"] = "Please select a task type";

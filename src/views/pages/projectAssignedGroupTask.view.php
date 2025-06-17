@@ -33,7 +33,7 @@
             <input type="hidden" name="filter" value="<?= e($tabData["filter"]) ?>">
         <?php endif; ?>
 
-        <input type="text" class="form-control" name="search" placeholder="Search Task | Member" value="<?= e($request["get"]["search"] ?? "");?>">
+        <input type="text" class="form-control" name="search" placeholder="Search Task" value="<?= e($request["get"]["search"] ?? "");?>">
 
         <button class="btn custom-primary-btn filter-form-btn">
             <img src="./public/images/magnifying-glass.png" alt="icon" style="width:15px; height:15px; filter: invert(1);">

@@ -24,6 +24,11 @@ class ProjectPanelService {
 
         $tabData = [];
 
+        $filters = [
+                "filter" => $request["get"]["filter"] ?? null,
+                "search" => $request["get"]["search"] ?? null,
+        ];
+
         if ($currentNavTab === "projectNotes") {
             $paginationPayload = $this->projectNotesController->fetchProjectNotes($projectId);
             $tabData["projectNotes"] = $paginationPayload["projectNotes"];
@@ -35,17 +40,12 @@ class ProjectPanelService {
         }
 
         if ($currentNavTab === "assignedSoloTask") {
-            $filters = [
-                "filter" => $request["get"]["filter"] ?? null,
-                "search" => $request["get"]["search"] ?? null,
-            ];
-
             $tabData["soloTask"] = $this->taskRepository->fetchProjectSoloTasks($projectId, $filters);
             $tabData["filter"] = $request["get"]["filter"] ?? "allSoloTask";
         }
 
         if ($currentNavTab === "assignedGroupTask") {
-            $tabData["groupTask"] = $this->taskRepository->fetchProjectGroupTask($projectId);
+            $tabData["groupTask"] = $this->taskRepository->fetchProjectGroupTask($projectId, $filters);
             $tabData["filter"] = $request["get"]["filter"] ?? "allGroupTask";
         }
 
