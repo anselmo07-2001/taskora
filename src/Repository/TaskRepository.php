@@ -9,6 +9,78 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function fetchTaskByProjectId(int $taskId): ?array {
+        try {
+            // Query 1: Task info
+            $stmt = $this->pdo->prepare("SELECT 
+                            projects.name AS project_name,
+                            tasks.taskname AS task_name,
+                            tasks.task_description,
+                            tasks.tasktype,
+                            tasks.deadline AS task_deadline,
+                            (SELECT COUNT(*) FROM task_assignments WHERE task_assignments.task_id = tasks.id) AS total_assigned_members,
+                            CASE 
+                                WHEN DATE(tasks.deadline) = CURDATE() THEN 'Due Today'
+                                WHEN DATE(tasks.deadline) > CURDATE() THEN CONCAT(DATEDIFF(tasks.deadline, CURDATE()), ' days away from deadline')
+                                ELSE CONCAT(DATEDIFF(CURDATE(), tasks.deadline), ' days overdue')
+                            END AS task_due_status,
+                            assigner.fullname AS assigned_by,
+                            CASE 
+                                WHEN tasks.tasktype = 'solo' THEN (
+                                    SELECT users.fullname
+                                    FROM task_assignments
+                                    JOIN users ON task_assignments.user_id = users.id
+                                    WHERE task_assignments.task_id = tasks.id
+                                    LIMIT 1
+                                )
+                                ELSE NULL
+                            END AS assigned_to,
+                            tasks.status AS current_task_status,
+                            tasks.approval_status
+                        FROM 
+                            tasks
+                        JOIN projects ON tasks.project_id = projects.id
+                        JOIN users AS assigner ON projects.assigned_manager = assigner.id
+                        WHERE tasks.id = :taskId"); 
+
+            $stmt->execute([":taskId" => $taskId]);
+            $task = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$task) return null;
+
+            // Query 2: Task notes
+            $stmtNotes = $this->pdo->prepare("SELECT 
+                                    task_notes.id AS note_id,
+                                    users.fullname AS note_author,
+                                    task_notes.content AS note_content,
+                                    task_notes.created_at AS note_created_at,
+                                    task_notes.edited_at AS note_edited_at,
+                                    task_notes.tasknote_type
+                                FROM 
+                                    task_notes
+                                JOIN users ON task_notes.user_id = users.id
+                                WHERE 
+                                    task_notes.task_id = :taskId
+                                ORDER BY 
+                                    task_notes.created_at ASC");
+                                    
+                                    
+            $stmtNotes->execute([":taskId" => $taskId]);
+            $notes = $stmtNotes->fetchAll(PDO::FETCH_ASSOC);
+
+            // Combine
+            $task["task_notes"] = $notes;
+
+            return $task;
+
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+
+
     public function fetchProjectGroupTask(int $projectId, array $taskFilters) {
         try {
            $sql = "SELECT

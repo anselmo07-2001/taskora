@@ -41,11 +41,13 @@ $container->bind("ProjectNotesController", function() use($container) {
 $container->bind("PageController", function() use($container) {
     $userRepository = $container->get("userRepository");
     $projectRepository = $container->get("projectRepository");
+    $taskRepository = $container->get("taskRepository");
     $projectNotesRepository = $container->get("projectNotesRepository");
     $projectNotesController = $container->get("ProjectNotesController");
     $taskController = $container->get("TaskController"); // please check this later if this code is really needed
     $projectPanelService = $container->get("ProjectPanelService");
-    return new \App\Controllers\PageController($userRepository, $projectRepository, $projectNotesRepository, $projectNotesController, $taskController, $projectPanelService);
+    return new \App\Controllers\PageController($userRepository, $projectRepository, $projectNotesRepository, 
+                $projectNotesController, $taskController, $projectPanelService, $taskRepository);
 });
 $container->bind("AdminController", function() use($container){
     $userRepository = $container->get("userRepository");

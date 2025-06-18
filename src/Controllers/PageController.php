@@ -7,6 +7,7 @@ use App\Controllers\TaskController;
 use App\Models\ProjectNotes;
 use App\Repository\ProjectNotesRepository;
 use App\Repository\ProjectRepository;
+use App\Repository\TaskRepository;
 use App\Support\SessionService;
 use App\Repository\UserRepository;
 use App\Support\ProjectPanelService;
@@ -14,6 +15,7 @@ use App\Support\ProjectPanelService;
 class PageController extends AbstractController {
     protected UserRepository $userRepository;
     protected ProjectRepository $projectRepository;
+    protected TaskRepository $taskRepository;
     protected ProjectNotesRepository $projectNotesRepository;
     protected ProjectNotesController $projectNotesController;
     protected TaskController $taskController;
@@ -23,15 +25,26 @@ class PageController extends AbstractController {
 
     public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, 
                                 ProjectNotesRepository $projectNotesRepository, ProjectNotesController $projectNotesController,
-                                TaskController $taskController, ProjectPanelService $projectPanelService){
+                                TaskController $taskController, ProjectPanelService $projectPanelService, TaskRepository $taskRepository){
          $this->userRepository = $userRepository;
          $this->projectRepository = $projectRepository;
+         $this->taskRepository = $taskRepository;
          $this->projectNotesRepository = $projectNotesRepository;
          $this->currentUserSession = SessionService::getSessionKey("user") ?? null;
          $this->projectNotesController = $projectNotesController;
          $this->taskController = $taskController;
          $this->projectPanelService = $projectPanelService;
     } 
+
+
+    public function showTask($request) {
+        $taskId = $request["get"]["taskId"];
+        $task = $this->taskRepository->fetchTaskByProjectId($taskId);
+
+        $this->render("task.view", [
+            "task" => $task
+        ]); 
+    }
     
 
     public function showProject($request) {

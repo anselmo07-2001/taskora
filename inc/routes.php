@@ -121,6 +121,15 @@ $routes = [
             "auth" => true,
             "roles" => ["admin", "project_manager"]
         ]
+    ],
+
+    "taskPanel" => [
+        "GET" => [       
+                "controller" => "PageController",
+                "method" => "showTask",
+                "auth" => true,
+                "roles" => ["admin", "project_manager", "member"]
+        ],
     ]
 
 
