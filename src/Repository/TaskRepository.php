@@ -52,6 +52,7 @@ class TaskRepository {
             $stmtNotes = $this->pdo->prepare("SELECT 
                                     task_notes.id AS note_id,
                                     users.fullname AS note_author,
+                                    users.role AS role,
                                     task_notes.content AS note_content,
                                     task_notes.created_at AS note_created_at,
                                     task_notes.edited_at AS note_edited_at,

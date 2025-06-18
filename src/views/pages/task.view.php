@@ -37,54 +37,28 @@
             </div>  
     </div>
 
-    <div class="text-muted mb-2 ">Total Task Note: 3</div>
-    <div class="card mb-3">
-            <div class="card-body">
-                <div class="d-flex align-items-start">
-                    <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
-                    <div>
-                        <h6 class="mb-0">Caramel <sup>(Member)</sup></h6>
-                        <small class="text-muted">Submitted the task at Oct 22, 2024 03: 23 pm</small>
-                        <p class="mt-2 mb-0">
-                        This is a great project! I really like how you structured the tasks.
-                        </p>
+    <div class="text-muted mb-2 ">Total Task Note: <?= count($task["task_notes"]); ?></div>
+
+    <?php foreach($task["task_notes"] as $tasknote): ?>
+        <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-start">
+                        <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
+                        <div>
+                            <h6 class="mb-0"><?= e($tasknote["note_author"]); ?> <sup><?= ucfirst($tasknote["role"]) !== "Admin" ? "( " . ucfirst($tasknote["role"]) . " )": "" ; ?></sup></h6>
+                            <small class="text-muted"><?= e($tasknote["tasknote_type"]); ?> on <?= date("M d, Y, \a\\t h:i A", strtotime($tasknote["note_created_at"])); ?></small>
+                            <p class="mt-2 mb-0">
+                                 <?= e($tasknote["note_content"]); ?>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-    </div>
-
-    <div class="card mb-3">
-        <div class="card-body">
-            <div class="d-flex align-items-start">
-                <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
-                <div>
-                    <h6 class="mb-0">Choco Choco <sup>(Member)</sup></h6>
-                    <small class="text-muted">Submitted the task at Oct 22, 2024 03: 23 pm</small>
-                    <p class="mt-2 mb-0">
-                    This is a great project! I really like how you structured the tasks.
-                    </p>
-                </div>
-            </div>
         </div>
-    </div>
+    <?php endforeach; ?>
 
-    <div class="card mb-4">
-        <div class="card-body position-relative">
-            <div class="d-flex align-items-start">
-                <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
-                <div>
-                    <h6 class="mb-0">Osgar Rivera <sup>(Member)</sup></h6>
-                    <small class="text-muted lh-sm">Edited a task note at on Oct 23, 2024 01:24 pm </small><br/>
-                    <p class="mt-2 mb-0">
-                            This is a great project! I really like how you structured the tasks.
-                    </p>
-                </div>
-            </div>
-            <button class="btn custom-primary-btn position-absolute top-0 end-0 me-2 mt-2">
-                    <img src="./public/images/pen.png" style="filter: invert(1); height: 1rem; width: 1rem;" />
-            </button>  
-        </div>
-    </div>
+   
+
+
 
     <div class="d-flex justify-content-end">
         <nav aria-label="Page navigation">
