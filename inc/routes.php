@@ -130,6 +130,14 @@ $routes = [
                 "auth" => true,
                 "roles" => ["admin", "project_manager", "member"]
         ],
+    ],
+    "createTaskNote" => [
+        "POST" => [       
+                "controller" => "TaskNotesController",
+                "method" => "createTaskNote",
+                "auth" => true,
+                "roles" => ["admin", "project_manager", "member"]
+        ],
     ]
 
 

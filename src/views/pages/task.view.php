@@ -1,6 +1,7 @@
-<?php // var_dump($task); die ?>
+<?php // var_dump($errors); die; ?>
 
 <div class="container custom-container">
+    <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
     <div class="mb-5">
         <div class="d-flex align-items-center gap-2">
             <img src="./public/images/scope.png" class="mytask-title-icon"/>
@@ -29,12 +30,24 @@
 
     <div class="mb-5">
             <h6 class="mb-3">Add Task Note</h6>
-            <form>
-                <textarea style="height: 10rem;" class="w-100 form-control mb-3" rows="4" placeholder="Enter your project note here" name="tasknote"></textarea>
+            <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "createTaskNote"]) ?>">
+                <input type="hidden" name="userId" value="<?= $currentUserSession["userId"] ?>">
+                <input type="hidden" name="taskId" value="<?= $task["task_id"] ?>">
+                <textarea style="height: 10rem;" class="w-100 form-control mb-2 <?= ($errors["taskNoteFormErr"] ?? "") ? 'is-invalid' : ''; ?>" rows="4" placeholder="Enter your project note here" name="content"></textarea>
+                <div class="d-flex justify-content-between">
+                    <div class="me-3 flex-grow-1">
+                        <?php if (!empty($errors["taskNoteFormErr"] ?? null)): ?> 
+                            <div class="invalid-feedback d-block" style="font-size: 0.75rem;">
+                                <?php echo $errors["taskNoteFormErr"]; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="d-flex align-items-start">
+                        <button class="btn custom-primary-btn align-self-start">Save Task Note</button>
+                    </div>
+                </div> 
             </form>
-            <div class="d-flex justify-content-end">
-                <button class="btn custom-primary-btn">Save Project Note</button>
-            </div>  
     </div>
 
     <div class="text-muted mb-2 ">Total Task Note: <?= count($task["task_notes"]); ?></div>

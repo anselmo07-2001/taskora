@@ -17,6 +17,7 @@ class TaskRepository {
                             tasks.taskname AS task_name,
                             tasks.task_description,
                             tasks.tasktype,
+                            tasks.id AS task_id,
                             tasks.deadline AS task_deadline,
                             (SELECT COUNT(*) FROM task_assignments WHERE task_assignments.task_id = tasks.id) AS total_assigned_members,
                             CASE 
@@ -64,7 +65,7 @@ class TaskRepository {
                                 WHERE 
                                     task_notes.task_id = :taskId
                                 ORDER BY 
-                                    task_notes.created_at ASC");
+                                    task_notes.created_at DESC");
                                     
                                     
             $stmtNotes->execute([":taskId" => $taskId]);

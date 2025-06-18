@@ -32,7 +32,7 @@ class ProjectRepository {
         }
         catch(PDOException $e) {
             throw new Exception($e->getMessage());
-         }
+        }
     }
 
     public function handleUpdateProjectStatus(int $projectId, string $newProjectStatus) {
