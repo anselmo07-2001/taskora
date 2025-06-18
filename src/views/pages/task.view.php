@@ -1,4 +1,4 @@
-<?php var_dump($task); ?>
+<?php // var_dump($task); die ?>
 
 <div class="container custom-container">
     <div class="mb-5">
@@ -40,20 +40,56 @@
     <div class="text-muted mb-2 ">Total Task Note: <?= count($task["task_notes"]); ?></div>
 
     <?php foreach($task["task_notes"] as $tasknote): ?>
+        
         <div class="card mb-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-start">
+            <div class="card-body position-relative">
+                <div class="d-flex align-items-start">
                         <img src="./public/images/usernote.png" class="rounded-circle me-3" alt="User avatar" style="height:3rem;">
                         <div>
-                            <h6 class="mb-0"><?= e($tasknote["note_author"]); ?> <sup><?= ucfirst($tasknote["role"]) !== "Admin" ? "( " . ucfirst($tasknote["role"]) . " )": "" ; ?></sup></h6>
-                            <small class="text-muted"><?= e($tasknote["tasknote_type"]); ?> on <?= date("M d, Y, \a\\t h:i A", strtotime($tasknote["note_created_at"])); ?></small>
-                            <p class="mt-2 mb-0">
-                                 <?= e($tasknote["note_content"]); ?>
-                            </p>
+                            <h6 class="mb-0"><?= e($tasknote["note_author"]); ?><sup><?= $tasknote["role"] !== "admin" ? ' (' . $tasknote["role"] . ')' : "" ?></sup></h6>
+                            <small class="text-muted"><?= e($tasknote["tasknote_type"]) . " on " . date("M d, Y, \a\\t h:i A", strtotime($tasknote["note_created_at"])); ?> </small>
+                            <?php if ($tasknote["note_created_at"] !== $tasknote["note_edited_at"]): ?>
+                                <small class="text-muted d-block">Last content modified <?= (new DateTime($tasknote["note_edited_at"]))->format('M d, Y, \a\t h:i A'); ?></small>
+                            <?php endif; ?>
+                            <?php if (e($tasknote["tasknote_type"]) === "Update task status"): ?>
+                                    <?php $content = preg_replace('/^(\[.*?\])/', '<strong>$1</strong>', e($tasknote["note_content"])); ?>
+                                    <p class="mt-2 mb-0">
+                                        <?= $content ?>
+                                    </p>
+                            <?php else: ?>
+                                <p class="mt-2 mb-0"> <?= e($tasknote["note_content"]); ?></p>  
+                            <?php endif; ?>  
                         </div>
-                    </div>
+
+                        <?php if($currentUserSession["userId"] === $tasknote["creator_id"] || $currentUserSession["role"] === "project_manager" || $currentUserSession["role"] === "admin"): ?>
+                            <div class="dropdown position-absolute top-0 end-0 me-2 mt-2">
+                                <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="d-flex flex-column align-items-center justify-content-center" style="width: 20px; height: 30px;">
+                                        <span class="bg-secondary rounded-circle" style="width: 4px; height: 4px; margin: 2px 0;"></span>
+                                        <span class="bg-secondary rounded-circle" style="width: 4px; height: 4px; margin: 2px 0;"></span>
+                                        <span class="bg-secondary rounded-circle" style="width: 4px; height: 4px; margin: 2px 0;"></span>
+                                    </div>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTaskNoteModal" 
+                                            data-note-id="<?= e($tasknote["note_id"]); ?>" data-note-text="<?= e($tasknote["note_content"]); ?>" data-note-type="<?= e($tasknote["tasknote_type"]); ?>" >
+                                            Edit
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "deleteTaskNote"])?>">
+                                            <input type="hidden" name="projectNoteId" value="<?= e($tasknote["note_id"]); ?>">
+                                            <button type="submit" class="dropdown-item">Delete</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>  
+                        <?php endif; ?>
                 </div>
+            </div>
         </div>
+
     <?php endforeach; ?>
 
    

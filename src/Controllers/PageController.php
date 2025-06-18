@@ -42,7 +42,8 @@ class PageController extends AbstractController {
         $task = $this->taskRepository->fetchTaskByProjectId($taskId);
 
         $this->render("task.view", [
-            "task" => $task
+            "task" => $task,
+            "currentUserSession" => $this->currentUserSession
         ]); 
     }
     
