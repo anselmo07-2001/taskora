@@ -23,6 +23,18 @@ class TaskNotesController extends AbstractController {
         $userId = (int) $request["post"]["userId"] ?? "";
         $content = sanitize(trim($request["post"]["content"])) ?? "";
 
+
+        require_once __DIR__ . "/../views/components/modal.view.php";
+        $modalHtml = renderModal([
+            "id" => "editTaskNoteModal",
+            "title" => "Edit task note",
+            "action" => BASE_URL . "/index.php?page=editTaskNote",
+            "textareaLabel" => "Edit your note",
+            "textareaName" => "editTaskNoteTextArea",
+            "submitText" => "Save Task",
+        ]);
+
+
         $errors = [];
         if (empty($content)) {
             $errors["taskNoteFormErr"] = "Please enter your task note";
@@ -31,7 +43,8 @@ class TaskNotesController extends AbstractController {
             $this->render("task.view", [
                 "errors" => $errors,
                 "currentUserSession" => $this->currentUserSession,
-                "task" => $task 
+                "task" => $task,
+                "modalHtml" => $modalHtml
             ]);
             exit;
         }
