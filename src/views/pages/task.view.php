@@ -2,6 +2,7 @@
 
 <div class="container custom-container">
     <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
+    <?= $modalHtml ?>
     <div class="mb-5">
         <div class="d-flex align-items-center gap-2">
             <img src="./public/images/scope.png" class="mytask-title-icon"/>
@@ -51,6 +52,10 @@
     </div>
 
     <div class="text-muted mb-2 ">Total Task Note: <?= count($task["task_notes"]); ?></div>
+
+    <!-- Edit Modal -->
+
+
 
     <?php foreach($task["task_notes"] as $tasknote): ?>
         

@@ -41,9 +41,21 @@ class PageController extends AbstractController {
         $taskId = $request["get"]["taskId"];
         $task = $this->taskRepository->fetchTaskByProjectId($taskId);
 
+
+        require_once __DIR__ . "/../views/components/modal.view.php";
+        $modalHtml = renderModal([
+            "id" => "editTaskNoteModal",
+            "title" => "Edit task note",
+            "action" => BASE_URL . "/index.php?page=editTaskNote",
+            "textareaLabel" => "Edit your note",
+            "textareaName" => "editTaskNoteTextArea",
+            "submitText" => "Save Task",
+        ]);
+
         $this->render("task.view", [
             "task" => $task,
-            "currentUserSession" => $this->currentUserSession
+            "currentUserSession" => $this->currentUserSession,
+            "modalHtml" => $modalHtml
         ]); 
     }
     
