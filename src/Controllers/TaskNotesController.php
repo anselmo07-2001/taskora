@@ -16,24 +16,36 @@ class TaskNotesController extends AbstractController {
          $this->taskRepository = $taskRepository;
          $this->currentUserSession = SessionService::getSessionKey("user");
     }
+
+    public function editTaskNote(array $request) {
+        $newContent = sanitize(trim($request["post"]["editTaskNoteTextArea"] ?? "")); 
+        $taskNoteId = (int) $request["post"]["taskNoteId"] ?? "";
+        $taskId = (int) $request["post"]["taskId"];
+
+        $success = $this->taskNotesRepository->handleEditTaskNote($newContent, $taskNoteId);
+        
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Edited task note sucessully");
+        }
+        else {
+             SessionService::setAlertMessage("error_message", "Failed to edit task note");
+        }
+
+        $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
+            "page" => "taskPanel",
+            "taskId" => $taskId,
+            "currentUserSession" => $this->currentUserSession,
+        ]);
+
+        header("Location: $redirectUrl");
+        exit;
+    }
     
 
     public function createTaskNote($request) {
         $taskId = (int) $request["post"]["taskId"] ?? "";
         $userId = (int) $request["post"]["userId"] ?? "";
         $content = sanitize(trim($request["post"]["content"])) ?? "";
-
-
-        require_once __DIR__ . "/../views/components/modal.view.php";
-        $modalHtml = renderModal([
-            "id" => "editTaskNoteModal",
-            "title" => "Edit task note",
-            "action" => BASE_URL . "/index.php?page=editTaskNote",
-            "textareaLabel" => "Edit your note",
-            "textareaName" => "editTaskNoteTextArea",
-            "submitText" => "Save Task",
-        ]);
-
 
         $errors = [];
         if (empty($content)) {
@@ -44,7 +56,7 @@ class TaskNotesController extends AbstractController {
                 "errors" => $errors,
                 "currentUserSession" => $this->currentUserSession,
                 "task" => $task,
-                "modalHtml" => $modalHtml
+              
             ]);
             exit;
         }
@@ -58,7 +70,7 @@ class TaskNotesController extends AbstractController {
 
         $success = $this->taskNotesRepository->handleCreateTaskNote($formData);
 
-         if ($success) {
+        if ($success) {
              SessionService::setAlertMessage("success_message", "Created task note sucessully");
         }
         else {

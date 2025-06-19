@@ -2,7 +2,24 @@
 
 <div class="container custom-container">
     <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
-    <?= $modalHtml ?>
+
+    <?php
+    //EDIT TASK MODAL
+        require __DIR__ . "/../components/modal.view.php"; 
+        echo renderModal([
+            "id" => "editTaskNoteModal",
+            "title" => "Edit task note",
+            "action" => BASE_URL . "/index.php?page=editTaskNote",
+            "textareaLabel" => "Edit your note",
+            "textareaName" => "editTaskNoteTextArea",
+            "submitText" => "Save Task",
+            "hiddenFields" => [
+                [  "name" => "taskNoteId", "id" => "modalTaskNoteId" ],
+                [  "name" => "taskId", "id" => "modalTaskId" ],
+            ]
+        ]);
+    ?>
+
     <div class="mb-5">
         <div class="d-flex align-items-center gap-2">
             <img src="./public/images/scope.png" class="mytask-title-icon"/>
@@ -53,10 +70,6 @@
 
     <div class="text-muted mb-2 ">Total Task Note: <?= count($task["task_notes"]); ?></div>
 
-    <!-- Edit Modal -->
-
-
-
     <?php foreach($task["task_notes"] as $tasknote): ?>
         
         <div class="card mb-3">
@@ -90,7 +103,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTaskNoteModal" 
+                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTaskNoteModal" data-note-taskId="<?= e($task["task_id"]); ?>"
                                             data-note-id="<?= e($tasknote["note_id"]); ?>" data-note-text="<?= e($tasknote["note_content"]); ?>" data-note-type="<?= e($tasknote["tasknote_type"]); ?>" >
                                             Edit
                                         </button>
@@ -142,4 +155,52 @@
         </nav>
     </div>
 <div>
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const editModal = document.getElementById("editTaskNoteModal");
+        const editModalTextAreaEl = document.getElementById("modalTextAreaEl");
+        const messageLabel = document.getElementById("modalMessage");
+           
+        let originalTaskNote = "";
+
+        editModal.addEventListener('show.bs.modal', function (event) {  
+            const button = event.relatedTarget;
+            const noteText = button.getAttribute('data-note-text');
+            const noteId = button.getAttribute('data-note-id');
+            const taskId = button.getAttribute('data-note-taskId');
+            const noteType = button.getAttribute('data-note-type');
+            const modalTaskNoteIdHiddenEl = document.getElementById("modalTaskNoteId");
+            const modalTaskIdHiddenEl = document.getElementById("modalTaskId");
+            
+            originalTaskNote = noteText;
+            modalTaskNoteIdHiddenEl.value = noteId;
+            modalTaskIdHiddenEl.value = taskId;
+        
+            if (noteType !== "Update project status") {
+                 editModalTextAreaEl.value = noteText;
+            }
+        });
+
+
+        editModal.addEventListener('submit', function (e) {            
+            if (editModalTextAreaEl.value.trim() === originalTaskNote) {
+                e.preventDefault();
+                messageLabel.classList.remove('d-none');
+            }
+        });
+
+        editModal.addEventListener('hidden.bs.modal', function () {
+            messageLabel.classList.add('d-none'); // Also hide the message when modal is closed
+        });
+
+    });
+
+</script>
+
+
+
+
 

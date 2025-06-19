@@ -9,7 +9,7 @@ function renderModal(array $config):string {
     $submitBtnText = $config["submitText"] ?? "Submit";
     $hiddenFields = $config["hiddenFields"] ?? [];
     $labelError = $config["labelError"] ?? "No changes were made";
-    $modalTextAreaAndLabelId = $config["modalTextAreaAndLabelId"] ?? "modalTextarea";
+    $modalTextAreaEl = $config["modalTextAreaEl"] ?? "modalTextAreaEl";
 
     ob_start();
 ?>
@@ -24,12 +24,12 @@ function renderModal(array $config):string {
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="<?= $modalTextAreaAndLabelId ?>" class="form-label"><?= $textareaLabel ?></label>
-                            <textarea class="form-control" id="<?= $modalTextAreaAndLabelId ?>" name="<?= $textareaName ?>" rows="3" required></textarea>
+                            <label for="<?= $modalTextAreaEl ?>" class="form-label"><?= $textareaLabel ?></label>
+                            <textarea class="form-control" id="<?= $modalTextAreaEl ?>" name="<?= $textareaName ?>" rows="3" required></textarea>
                             <label id="modalMessage" class="text-danger mb-2 d-none"><?= $labelError ?></label>
                         </div>
-                        <?php foreach ($hiddenFields as $name => $value): ?>
-                            <input type="hidden" name="<?= e($name) ?>" value="<?= e($value) ?>">
+                        <?php foreach ($hiddenFields as $row): ?>
+                            <input type="hidden" name="<?= e($row["name"]) ?>" id="<?= e($row["id"]) ?>">
                         <?php endforeach; ?>
                     </div>
                     <div class="modal-footer">
@@ -41,7 +41,6 @@ function renderModal(array $config):string {
         </div>
     </div>
 
-    <?php return ob_get_clean();
-        
+    <?php return ob_get_clean();     
 }
     
