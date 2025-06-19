@@ -122,6 +122,14 @@ $routes = [
             "roles" => ["admin", "project_manager"]
         ]
     ],
+    "editTaskStatus" => [
+        "POST" => [
+            "controller" => "TaskController",
+            "method" => "editTaskStatus",
+            "auth" => true,
+            "roles" => ["admin", "project_manager"]
+        ]
+    ],
 
     "taskPanel" => [
         "GET" => [       

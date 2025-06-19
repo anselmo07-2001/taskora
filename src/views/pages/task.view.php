@@ -20,7 +20,25 @@
         ]);
     ?>
 
-    <div class="mb-5">
+
+    <?php
+    //EDIT TASK STATUS MODAL
+        echo renderModal([
+            "id" => "editTaskStatusModal",
+            "title" => "Update the task status?",
+            "action" => BASE_URL . "/index.php?page=editTaskStatus",
+            "textareaLabel" => "Add a Task Note",
+            "textareaName" => "taskStatusNote",
+            "submitText" => "Update Task",
+            "hiddenFields" => [   
+                   [ "name" => "previousTaskStatus", "id" => "modalEditPreviousTaskStatus"],
+                   [ "name" => "newTaskStatus", "id" => "modalEditNewTaskStatus"],
+                   [ "name" => "taskId", "id" => "modalEditTaskId"]
+            ]
+        ]);
+    ?>
+
+    <div class="mb-4">
         <div class="d-flex align-items-center gap-2">
             <img src="./public/images/scope.png" class="mytask-title-icon"/>
             <h6><?= e($task["project_name"]); ?></h6>
@@ -44,6 +62,20 @@
                     <li>Current Project Status: <span><?= e($task["current_task_status"]); ?></span></li>
                 </ul>
         </div>
+    </div>
+
+
+    <div class="mb-5">      
+        <div class="d-flex align-items-center gap-3 mb-2">
+            <label for="taskStatus" class="form-label">Change the task status:</label>
+            <select class="form-select w-25" id="taskStatus" style="margin-right: -0.5rem;">
+                <option value="pending" <?= $task["current_task_status"] === "pending" ? "selected" : "" ?> >Pending</option>
+                <option value="in_progress" <?= $task["current_task_status"] === "in_progress" ? "selected" : "" ?> >In progress</option>
+                <option value="completed" <?= $task["current_task_status"] === "completed" ? "selected" : "" ?> >Completed</option>
+            </select>
+            <button class="btn custom-primary-btn" data-bs-toggle="modal" data-bs-target="#editTaskStatusModal" data-taskId="<?= e($task["task_id"]); ?>" >Update Task</button>   
+        </div>
+        <small id="editTaskStatusErrorMsg" class="text-danger d-none">Please change the task status before updating</small>
     </div>
 
     <div class="mb-5">
@@ -196,7 +228,42 @@
             messageLabel.classList.add('d-none'); // Also hide the message when modal is closed
         });
 
+
+        //////////////////// EDIT TASK STATUS MODAL /////////////////////////
+
+        const selectEl = document.getElementById("taskStatus");
+        const defaultSelectedOptionValue = selectEl.value;
+        const editTaskStatusErrorMsg = document.getElementById("editTaskStatusErrorMsg");
+
+        document.getElementById("editTaskStatusModal").addEventListener("show.bs.modal", function(event) {
+            const selectedOptionValue = selectEl.value;
+            const button = event.relatedTarget;
+            const taskId = button.dataset.taskid;
+             
+             if (defaultSelectedOptionValue === selectedOptionValue) {
+                event.preventDefault();
+                editTaskStatusErrorMsg.classList.remove('d-none');
+
+                setTimeout(() => {
+                    editTaskStatusErrorMsg.classList.add("d-none");
+                }, 3000);
+                return;
+            }else {
+                editTaskStatusErrorMsg.classList.add("d-none");
+            } 
+
+            const newSelectedTaskStatus = this.querySelector('#modalEditNewTaskStatus');
+            const previousTaskStatus = this.querySelector("#modalEditPreviousTaskStatus");
+            const modalEditTaskId = this.querySelector("#modalEditTaskId");
+            
+            
+            newSelectedTaskStatus.value = selectedOptionValue;
+            previousTaskStatus.value = defaultSelectedOptionValue;
+            modalEditTaskId.value = taskId;
+        });
+
     });
+
 
 </script>
 

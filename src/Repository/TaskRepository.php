@@ -9,6 +9,24 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
+
+    public function handleEditTaskStatus(int $taskId, string $newTaskStatus) {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE tasks SET status = :status WHERE id = :taskId");
+            $stmt->execute([
+                "status" => $newTaskStatus,
+                "taskId" => $taskId
+            ]);
+
+            return $stmt->rowCount() > 0; // true if update happened
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+         }
+    }
+
+
+
     public function fetchTaskByProjectId(int $taskId): ?array {
         try {
             // Query 1: Task info

@@ -13,6 +13,26 @@ class TaskController extends AbstractController{
 
     public function __construct(private ProjectPanelService $projectPanelService, protected TaskRepository $taskRepository) {}
     
+    public function editTaskStatus($request) {
+        $taskId = (int) $request["post"]["taskId"] ?? "";
+        $newTaskStatus = $request["post"]["newTaskStatus"] ?? "";
+        $previousTaskStatus = $request["post"]["previousTaskStatus"] ?? "";
+        $tasknote = sanitize(trim($request["post"]["taskStatusNote"] ?? ""));
+
+        $sucess = $this->taskRepository->handleEditTaskStatus($taskId, $newTaskStatus);
+
+
+        
+
+        $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
+            "page" => "taskPanel",
+            "taskId" => $taskId,
+        ]);
+
+        header("Location: $redirectUrl");
+        exit;
+    }
+
 
     public function createTask($request) {
         $projectId = (int) ($request["get"]["projectId"] ?? 0);
