@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\AbstractController;
+use App\Repository\TaskNotesRepository;
 use App\Repository\TaskRepository;
 use App\Support\ProjectPanelService;
 use App\Support\SessionService;
@@ -11,7 +12,8 @@ use DateTime;
 
 class TaskController extends AbstractController{
 
-    public function __construct(private ProjectPanelService $projectPanelService, protected TaskRepository $taskRepository) {}
+    public function __construct(private ProjectPanelService $projectPanelService, protected TaskRepository $taskRepository, 
+    protected TaskNotesRepository $taskNotesRepository) {}
     
     public function editTaskStatus($request) {
         $taskId = (int) $request["post"]["taskId"] ?? "";
@@ -19,11 +21,19 @@ class TaskController extends AbstractController{
         $previousTaskStatus = $request["post"]["previousTaskStatus"] ?? "";
         $tasknote = sanitize(trim($request["post"]["taskStatusNote"] ?? ""));
 
-        $sucess = $this->taskRepository->handleEditTaskStatus($taskId, $newTaskStatus);
+        $success = $this->taskRepository->handleEditTaskStatus($taskId, $newTaskStatus);
 
+        if ($success) {
+            $formData = [
+                "taskId" => $taskId,
+                "userId" => SessionService::getSessionKey("user")["userId"],
+                "content" => "[ Change status from $previousTaskStatus to $newTaskStatus ] " . $tasknote,
+                "taskNoteType" => "Update task status",
+            ];
 
+            $this->taskNotesRepository->handleCreateTaskNote($formData);
+        }
         
-
         $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
             "page" => "taskPanel",
             "taskId" => $taskId,

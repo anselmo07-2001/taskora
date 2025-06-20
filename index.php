@@ -73,7 +73,8 @@ $container->bind("ProjectPanelService", function () use ($container) {
 $container->bind("TaskController", function() use($container){
     $projectPanelService = $container->get("ProjectPanelService");
     $taskRepository = $container->get("taskRepository");
-    return new \App\Controllers\TaskController($projectPanelService, $taskRepository);
+    $taskNotesRepository = $container->get("taskNotesRepository");
+    return new \App\Controllers\TaskController($projectPanelService, $taskRepository, $taskNotesRepository);
 });
 $container->bind("TaskNotesController", function() use($container) {
     $taskNotesRepository = $container->get("taskNotesRepository");
