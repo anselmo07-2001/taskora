@@ -64,34 +64,6 @@ class TaskRepository {
 
             $stmt->execute([":taskId" => $taskId]);
             $task = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$task) return null;
-
-            // Query 2: Task notes
-            $stmtNotes = $this->pdo->prepare("SELECT 
-                                    task_notes.id AS note_id,
-                                    users.fullname AS note_author,
-                                    users.role AS role,
-                                    users.id AS creator_id, 
-                                    task_notes.content AS note_content,
-                                    task_notes.created_at AS note_created_at,
-                                    task_notes.edited_at AS note_edited_at,
-                                    task_notes.tasknote_type
-                                FROM 
-                                    task_notes
-                                JOIN users ON task_notes.user_id = users.id
-                                WHERE 
-                                    task_notes.task_id = :taskId
-                                ORDER BY 
-                                    task_notes.created_at DESC");
-                                    
-                                    
-            $stmtNotes->execute([":taskId" => $taskId]);
-            $notes = $stmtNotes->fetchAll(PDO::FETCH_ASSOC);
-
-            // Combine
-            $task["task_notes"] = $notes;
-
             return $task;
 
         }

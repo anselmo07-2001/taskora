@@ -1,4 +1,6 @@
-<?php // var_dump($errors); die; ?>
+<?php // var_dump($paginationMeta); ?>
+<?php require __DIR__ . "/../components/pagination.view.php" ?>
+
 
 <div class="container custom-container">
     <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
@@ -9,7 +11,7 @@
         echo renderModal([
             "id" => "editTaskNoteModal",
             "title" => "Edit task note",
-            "action" => BASE_URL . "/index.php?page=editTaskNote",
+            "action" => BASE_URL . "/index.php?page=editTaskNote&currentPaginationPage=$currentPaginationPage",
             "textareaLabel" => "Edit your note",
             "textareaName" => "editTaskNoteTextArea",
             "submitText" => "Save Task",
@@ -80,7 +82,7 @@
 
     <div class="mb-5">
             <h6 class="mb-3">Add Task Note</h6>
-            <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "createTaskNote"]) ?>">
+            <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "createTaskNote", "currentPaginationPage" => $currentPaginationPage]) ?>">
                 <input type="hidden" name="userId" value="<?= $currentUserSession["userId"] ?>">
                 <input type="hidden" name="taskId" value="<?= $task["task_id"] ?>">
                 <textarea style="height: 10rem;" class="w-100 form-control mb-2 <?= ($errors["taskNoteFormErr"] ?? "") ? 'is-invalid' : ''; ?>" rows="4" placeholder="Enter your project note here" name="content"></textarea>
@@ -155,38 +157,18 @@
         </div>
 
     <?php endforeach; ?>
+  
+    <?php
+        echo renderPagination([
+            "currentPaginationPage" => $paginationMeta["currentPaginationPage"],
+            "baseUrl" => ["taskId" => $task["task_id"]],
+            "paginationStart" => $paginationMeta["start"],
+            "paginationEnd" => $paginationMeta["end"],
+            "totalPages" => $paginationMeta["totalItems"],
+            "page" => "taskPanel"
+        ]);
+    ?>
 
-   
-
-
-
-    <div class="d-flex justify-content-end">
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                </li>
-                <li class="page-item active">
-                    <a class="page-link page-link-mycolor" href="#">1 <span class="visually-hidden">(current)</span></a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">4</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">5</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
 <div>
 
 

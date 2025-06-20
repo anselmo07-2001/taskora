@@ -68,6 +68,9 @@ class TaskNotesController extends AbstractController {
         $taskId = (int) $request["post"]["taskId"] ?? "";
         $userId = (int) $request["post"]["userId"] ?? "";
         $content = sanitize(trim($request["post"]["content"])) ?? "";
+        $currentPaginationPage = (int) $request["get"]["currentPaginationPage"] ?? 1;
+
+       
 
         $errors = [];
         if (empty($content)) {
@@ -78,7 +81,7 @@ class TaskNotesController extends AbstractController {
                 "errors" => $errors,
                 "currentUserSession" => $this->currentUserSession,
                 "task" => $task,
-              
+                "currentPaginationPage" => $currentPaginationPage
             ]);
             exit;
         }
@@ -102,6 +105,7 @@ class TaskNotesController extends AbstractController {
         $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
             "page" => "taskPanel",
             "taskId" => $taskId,
+            "currentPaginationPage" => $currentPaginationPage
         ]);
 
         header("Location: $redirectUrl");

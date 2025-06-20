@@ -7,9 +7,11 @@ use App\Controllers\TaskController;
 use App\Models\ProjectNotes;
 use App\Repository\ProjectNotesRepository;
 use App\Repository\ProjectRepository;
+use App\Repository\TaskNotesRepository;
 use App\Repository\TaskRepository;
 use App\Support\SessionService;
 use App\Repository\UserRepository;
+use App\Support\PaginateService;
 use App\Support\ProjectPanelService;
 
 class PageController extends AbstractController {
@@ -20,12 +22,14 @@ class PageController extends AbstractController {
     protected ProjectNotesController $projectNotesController;
     protected TaskController $taskController;
     protected ProjectPanelService $projectPanelService;
+    protected TaskNotesRepository $taskNotesRepository;
 
     protected array|null $currentUserSession;
 
     public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, 
                                 ProjectNotesRepository $projectNotesRepository, ProjectNotesController $projectNotesController,
-                                TaskController $taskController, ProjectPanelService $projectPanelService, TaskRepository $taskRepository){
+                                TaskController $taskController, ProjectPanelService $projectPanelService, TaskRepository $taskRepository,
+                                TaskNotesRepository $taskNotesRepository){
          $this->userRepository = $userRepository;
          $this->projectRepository = $projectRepository;
          $this->taskRepository = $taskRepository;
@@ -34,16 +38,25 @@ class PageController extends AbstractController {
          $this->projectNotesController = $projectNotesController;
          $this->taskController = $taskController;
          $this->projectPanelService = $projectPanelService;
+         $this->taskNotesRepository = $taskNotesRepository;
     } 
 
 
     public function showTask($request) {
         $taskId = $request["get"]["taskId"];
         $task = $this->taskRepository->fetchTaskByProjectId($taskId);
-  
+        $currentPaginationPage = (int) ($request["get"]["currentPaginationPage"] ?? 1);
+
+        $totalTaskNotes = $this->taskNotesRepository->countAllTaskNote($taskId);
+        $paginationMeta = PaginateService::paginate($totalTaskNotes, $currentPaginationPage);
+        $taskNotes = $this->taskNotesRepository->fetchTaskNote($taskId, $paginationMeta["limit"], $paginationMeta["offset"]);
+        $task["task_notes"] = $taskNotes;
+       
          $this->render("task.view", [
             "task" => $task,
-            "currentUserSession" => $this->currentUserSession,     
+            "currentUserSession" => $this->currentUserSession,
+            "currentPaginationPage" => $currentPaginationPage,
+            "paginationMeta" => $paginationMeta     
         ]); 
     }
     

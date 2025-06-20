@@ -20,6 +20,7 @@ class TaskController extends AbstractController{
         $newTaskStatus = $request["post"]["newTaskStatus"] ?? "";
         $previousTaskStatus = $request["post"]["previousTaskStatus"] ?? "";
         $tasknote = sanitize(trim($request["post"]["taskStatusNote"] ?? ""));
+        $currentPaginationPage = (int) ($request["get"]["currentPaginationPage"] ?? 1);
 
         $success = $this->taskRepository->handleEditTaskStatus($taskId, $newTaskStatus);
 
@@ -37,6 +38,7 @@ class TaskController extends AbstractController{
         $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
             "page" => "taskPanel",
             "taskId" => $taskId,
+            "currentPaginationPage" => $currentPaginationPage
         ]);
 
         header("Location: $redirectUrl");
