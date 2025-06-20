@@ -142,7 +142,8 @@
                                     </li>
                                     <li>
                                         <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "deleteTaskNote"])?>">
-                                            <input type="hidden" name="projectNoteId" value="<?= e($tasknote["note_id"]); ?>">
+                                            <input type="hidden" name="taskNoteId" value="<?= e($tasknote["note_id"]); ?>">
+                                            <input type="hidden" name="taskId" value="<?= e($task["task_id"]); ?>">
                                             <button type="submit" class="dropdown-item">Delete</button>
                                         </form>
                                     </li>

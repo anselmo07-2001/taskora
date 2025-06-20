@@ -17,6 +17,28 @@ class TaskNotesController extends AbstractController {
          $this->currentUserSession = SessionService::getSessionKey("user");
     }
 
+    public function deleteTaskNote($request) {
+        $taskId = (int) $request["post"]["taskId"] ?? "";
+        $taskNoteId = (int) $request["post"]["taskNoteId"] ?? "";
+        $success = $this->taskNotesRepository->handleDeleteTaskNote($taskNoteId);
+
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Deleted task note sucessully");
+        }
+        else {
+             SessionService::setAlertMessage("error_message", "Failed to deleted task note");
+        }
+
+        $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
+            "page" => "taskPanel",
+            "taskId" => $taskId,
+            "currentUserSession" => $this->currentUserSession,
+        ]);
+
+        header("Location: $redirectUrl");
+        exit;
+    }
+
     public function editTaskNote(array $request) {
         $newContent = sanitize(trim($request["post"]["editTaskNoteTextArea"] ?? "")); 
         $taskNoteId = (int) $request["post"]["taskNoteId"] ?? "";

@@ -10,6 +10,17 @@ class TaskNotesRepository {
 
     public function __construct(private PDO $pdo){}
  
+    public function handleDeleteTaskNote(int $taskNoteId) {
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM task_notes WHERE id = :id");
+            $stmt->bindValue(":id", $taskNoteId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 
     public function handleEditTaskNote(string $newContent, int $taskNoteId) {
         try {
