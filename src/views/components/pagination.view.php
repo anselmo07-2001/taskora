@@ -1,7 +1,6 @@
 <?php
 
 function renderPagination(array $config):string {
-    var_dump($config);
     $currentPaginationPage = $config["currentPaginationPage"] ?? 1;
     $baseUrl = $config["baseUrl"] ?? [];
     $paginationStart = $config["paginationStart"] ?? 1;

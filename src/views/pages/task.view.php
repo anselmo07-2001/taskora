@@ -1,13 +1,13 @@
-<?php // var_dump($paginationMeta); ?>
 <?php require __DIR__ . "/../components/pagination.view.php" ?>
+<?php require __DIR__ . "/../components/modal.view.php";  ?>
+<?php // var_dump($paginationMeta); ?>
 
 
 <div class="container custom-container">
     <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
 
     <?php
-    //EDIT TASK MODAL
-        require __DIR__ . "/../components/modal.view.php"; 
+    //EDIT TASK MODAL    
         echo renderModal([
             "id" => "editTaskNoteModal",
             "title" => "Edit task note",
@@ -61,7 +61,18 @@
                     <li>Project Manager: <span><?= e($task["assigned_by"]); ?></span></li>
                     <li>Deadline: <span><?= e($task["task_deadline"]); ?></span></li>
                     <li>Milestone: <span><?= e($task["task_due_status"]); ?></span></li>
-                    <li>Current Project Status: <span><?= e($task["current_task_status"]); ?></span></li>
+                    <li>Current Task Status: <span><?= e($task["current_task_status"]); ?></span></li>
+                    <li>Task Approval Status: 
+                        <?php if ($task["current_task_status"] !== "completed" && $task["approval_status"] === NULL): ?>
+                            <span>Pending Completion</span>
+                        <?php elseif ($task["current_task_status"] === "completed" && $task["approval_status"] === NULL): ?>
+                            <span>Awaiting Approval</span>
+                        <?php elseif ($task["current_task_status"] === "completed" && $task["approval_status"] === "approved"): ?>
+                            <span>Approved</span>        
+                        <?php elseif ($task["current_task_status"] === "completed" && $task["approval_status"] === "rejected"): ?>
+                            <span>Rejected</span>
+                        <?php endif; ?>
+                    </li>
                 </ul>
         </div>
     </div>
