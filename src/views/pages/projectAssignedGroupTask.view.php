@@ -66,7 +66,7 @@
                 <td><?= $task["milestone"]; ?></td>
                 <td><?= e($task["status"]); ?></td>
                 <td><?= e($task["approval_status"] ?? "Not yet Submitted"); ?></td>
-                <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
+                <td><a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($task["id"]) ]) ?>" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
             </tr>
          <?php endforeach; ?>
     </tbody>
