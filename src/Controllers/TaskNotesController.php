@@ -44,7 +44,9 @@ class TaskNotesController extends AbstractController {
         $taskNoteId = (int) $request["post"]["taskNoteId"] ?? "";
         $taskId = (int) $request["post"]["taskId"];
         $currentPaginationPage = (int) $request["get"]["currentPaginationPage"] ?? 1;
-
+        $taskStatusChangeLog = $request["post"]["taskStatusChangeLog"];
+        $newContent = $taskStatusChangeLog . " " . $newContent;
+        
         $success = $this->taskNotesRepository->handleEditTaskNote($newContent, $taskNoteId);
         
         if ($success) {
@@ -71,8 +73,6 @@ class TaskNotesController extends AbstractController {
         $userId = (int) $request["post"]["userId"] ?? "";
         $content = sanitize(trim($request["post"]["content"])) ?? "";
         $currentPaginationPage = (int) $request["get"]["currentPaginationPage"] ?? 1;
-
-       
 
         $errors = [];
         if (empty($content)) {

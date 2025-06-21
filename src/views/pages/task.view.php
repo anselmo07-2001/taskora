@@ -18,6 +18,7 @@
             "hiddenFields" => [
                 [  "name" => "taskNoteId", "id" => "modalTaskNoteId" ],
                 [  "name" => "taskId", "id" => "modalTaskId" ],
+                [  "name" => "taskStatusChangeLog", "id" => "taskStatusChangeLog"]
             ]
         ]);
     ?>
@@ -205,14 +206,28 @@
             const noteType = button.getAttribute('data-note-type');
             const modalTaskNoteIdHiddenEl = document.getElementById("modalTaskNoteId");
             const modalTaskIdHiddenEl = document.getElementById("modalTaskId");
+            const taskStatusChangeLogEl = document.getElementById("taskStatusChangeLog");
             
             originalTaskNote = noteText;
             modalTaskNoteIdHiddenEl.value = noteId;
             modalTaskIdHiddenEl.value = taskId;
-        
-            if (noteType !== "Update project status") {
+
+            let parts = []
+            if (noteType === "Update task status") {
+                const match = noteText.match(/^(\[.*?\])\s?(.*)/);
+                
+                if (match) {
+                    parts = [match[1], match[2]];
+                    editModalTextAreaEl.value = parts[1];
+                    originalTaskNote = parts[1];
+                    taskStatusChangeLogEl.value = parts[0];
+                } 
+            }
+               
+            if (noteType !== "Update task status") {
                  editModalTextAreaEl.value = noteText;
             }
+
         });
 
 
