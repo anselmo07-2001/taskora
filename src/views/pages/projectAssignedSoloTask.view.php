@@ -66,7 +66,17 @@
                         <td><?= e($row["deadline"]); ?></td>
                         <td><?= e($row["milestone"]); ?></td>
                         <td><?= e($row["status"]); ?></td>
-                        <td><?= e($row["approval_status"] ?? "Not yet submitted"); ?></td>
+                        <td>
+                            <?php if ($row["status"] !== "completed" && $row["approval_status"] === NULL): ?>
+                                <span>Pending Completion</span>
+                            <?php elseif ($row["status"] === "completed" && $row["approval_status"] === NULL): ?>
+                                <span>Awaiting Approval</span>
+                            <?php elseif ($row["status"] === "completed" && $row["approval_status"] === "approved"): ?>
+                                <span>Approved</span>        
+                            <?php elseif ($row["status"] === "completed" && $row["approval_status"] === "rejected"): ?>
+                                <span>Rejected</span>
+                            <?php endif; ?>
+                        </td>
                         <td><a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($row["id"]) ]) ?>" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
                     </tr>
                 <?php endforeach; ?>
