@@ -59,6 +59,8 @@ class ProjectNotesController extends AbstractController {
         $newContent = $request["post"]["updateValueNote"] ?? "";
         $projectNoteId = (int) $request["post"]["projectNoteId"] ?? "";
         $addedProjectNoteStatus = $request["post"]["addedProjectNoteStatus"] ?? "";
+        
+        $currentPaginationPage = (int) $request["get"]["currentPaginationPage"] ?? 1;
 
         $projectNote = $this->projectNotesRepository->fetchProjectNote($projectNoteId);
 
@@ -83,7 +85,8 @@ class ProjectNotesController extends AbstractController {
         $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
             "page" => "projectPanel",
             "projectId" => $project_id,
-            "currentNavTab" => $currentNavTab
+            "currentNavTab" => $currentNavTab,
+            "currentPaginationPage" => $currentPaginationPage
         ]);
 
         header("Location: $redirectUrl");

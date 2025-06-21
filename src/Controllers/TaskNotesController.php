@@ -43,6 +43,7 @@ class TaskNotesController extends AbstractController {
         $newContent = sanitize(trim($request["post"]["editTaskNoteTextArea"] ?? "")); 
         $taskNoteId = (int) $request["post"]["taskNoteId"] ?? "";
         $taskId = (int) $request["post"]["taskId"];
+        $currentPaginationPage = (int) $request["get"]["currentPaginationPage"] ?? 1;
 
         $success = $this->taskNotesRepository->handleEditTaskNote($newContent, $taskNoteId);
         
@@ -57,6 +58,7 @@ class TaskNotesController extends AbstractController {
             "page" => "taskPanel",
             "taskId" => $taskId,
             "currentUserSession" => $this->currentUserSession,
+            "currentPaginationPage" => $currentPaginationPage
         ]);
 
         header("Location: $redirectUrl");
@@ -105,7 +107,7 @@ class TaskNotesController extends AbstractController {
         $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
             "page" => "taskPanel",
             "taskId" => $taskId,
-            "currentPaginationPage" => $currentPaginationPage
+            "currentPaginationPage" => 1 //after creating the task note, set the pagination page to 1
         ]);
 
         header("Location: $redirectUrl");
