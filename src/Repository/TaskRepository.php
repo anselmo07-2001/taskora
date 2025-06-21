@@ -9,6 +9,46 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function fetchSubmittedTasks(int $projectId): ?array {
+        try {
+            $stmt = $this->pdo->prepare("SELECT 
+                tasks.id AS id,
+                tasks.taskname AS task,
+                CONCAT(UCASE(tasks.tasktype), ' (', COUNT(task_assignments.user_id), ' member', IF(COUNT(task_assignments.user_id) > 1, 's', ''), ')') AS task_type_and_members,
+                MIN(task_assignments.assigned_date) AS assigned_date,
+                tasks.deadline AS deadline,
+
+                CASE 
+                    WHEN DATE(tasks.deadline) = CURDATE() THEN 'Due Today'
+                    WHEN DATE(tasks.deadline) < CURDATE() THEN 'Overdue'
+                    ELSE 'Upcoming'
+                END AS deadline_status,
+
+                CONCAT(DATEDIFF(CURDATE(), DATE(tasks.created_at)), ' days') AS milestone,
+
+                CASE
+                    WHEN tasks.approval_status IS NULL THEN 'Pending Review'
+                    WHEN tasks.approval_status = 'approved' THEN 'Approved'
+                    WHEN tasks.approval_status = 'rejected' THEN 'Rejected'
+                    ELSE 'Unknown'
+                END AS approval_status
+
+                FROM tasks
+                JOIN task_assignments ON task_assignments.task_id = tasks.id
+
+                WHERE tasks.status = 'completed'
+                AND tasks.project_id = :projectId
+
+                GROUP BY tasks.id
+                ORDER BY tasks.created_at DESC;");
+
+            $stmt->execute([':projectId' => $projectId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+      
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 
     public function fetchProjectManagerAndMembersByTaskId(int $taskId): ?array {
          try {

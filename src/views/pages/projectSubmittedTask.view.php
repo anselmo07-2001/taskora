@@ -1,3 +1,5 @@
+<?php // var_dump($tabData); ?>
+
 <div class="modal fade" id="approveTaskModal" tabindex="-1" aria-labelledby="approveTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -69,87 +71,30 @@
             <th scope="col">Task Type / Members</th>
             <th scope="col">Assigned Date</th>
             <th scope="col">Deadline</th>
+            <th scope="col">Deadline Status</th>
             <th scope="col">Milestone</th>
-            <th scope="col">Status</th>
             <th scope="col">Approval Status</th>
             <th scope="col">Action</th>
         </tr>
     </thead> 
     <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Write unit tests</td>
-            <td>Group / 2</td>
-            <td>2025-05-26</td>
-            <td>2025-09-23</td>
-            <td>93 Days</td>
-            <td>Completed</td>
-            <td>Pending Review</td>
-            <td>
-                <a href="#" class="btn btn-success my-manage-btn" data-bs-toggle="modal" data-bs-target="#approveTaskModal">Approved</a>
-                <a href="#" class="btn btn-danger my-manage-btn" data-bs-toggle="modal" data-bs-target="#rejectTaskModal">Rejected</a>
-                <a href="#" class="btn custom-primary-btn my-manage-btn" >Manage</a>
-            </td>
-        </tr>
-        <tr>
-            <td scope="row">2</td>
-            <td>Run security audit</td>
-            <td>Solo</td>
-            <td>2025-05-26</td>
-            <td>2025-09-07</td>
-            <td>58 Days</td>
-            <td>Completed</td>
-            <td>Pending Review</td>
-            <td>
-                <a href="#" class="btn btn-success my-manage-btn" data-bs-toggle="modal" data-bs-target="#approveTaskModal">Approved</a>
-                <a href="#" class="btn btn-danger my-manage-btn" data-bs-toggle="modal" data-bs-target="#rejectTaskModal">Rejected</a>
-                <a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a>
-            </td>
-        </tr>
-        <tr>
-            <td scope="row">3</td>
-            <td>Conduct code review</td>
-            <td>Solo</td>
-            <td>2025-05-26</td>
-            <td>2025-08-20</td>
-            <td>112 Days</td>
-            <td>Completed</td>
-            <td>Pending Review</td>
-            <td>
-                <a href="#" class="btn btn-success my-manage-btn" data-bs-toggle="modal" data-bs-target="#approveTaskModal">Approved</a>
-                <a href="#" class="btn btn-danger my-manage-btn" data-bs-toggle="modal" data-bs-target="#rejectTaskModal">Rejected</a>
-                <a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a>
-            </td>
-        </tr>
-        <tr>
-            <td scope="row">4</td>
-            <td>Deploy to staging</td>
-            <td>Group / 3</td>
-            <td>2025-05-26</td>
-            <td>2025-10-06</td>
-            <td>55 Days</td>
-            <td>Completed</td>
-            <td>Pending Review</td>
-            <td>
-                <a href="#" class="btn btn-success my-manage-btn" data-bs-toggle="modal" data-bs-target="#approveTaskModal">Approved</a>
-                <a href="#" class="btn btn-danger my-manage-btn" data-bs-toggle="modal" data-bs-target="#rejectTaskModal">Rejected</a>
-                <a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a>
-            </td>
-        </tr>
-        <tr>
-            <td scope="row">5</td>
-            <td>Fix UI bugs</td>
-            <td>Group / 2</td>
-            <td>2025-05-26</td>
-            <td>2025-08-20</td>
-            <td>32 Days</td>
-            <td>Completed</td>
-            <td>Pending Review</td>
-            <td class="d-flex gap-2">
-                <a href="#" class="btn btn-success my-manage-btn" data-bs-toggle="modal" data-bs-target="#approveTaskModal">Approved</a>
-                <a href="#" class="btn btn-danger my-manage-btn" data-bs-toggle="modal" data-bs-target="#rejectTaskModal">Rejected</a>
-                <a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a>
-            </td>
-        </tr>
+        <?php foreach($tabData["submittedTask"] as $task): ?>
+            <tr>
+                <th scope="row"><?= e($task["id"]); ?></th>
+                <td><?= e($task["task"]); ?></td>
+                <td><?= e($task["task_type_and_members"]); ?></td>
+                <td><?= e($task["assigned_date"]); ?></td>
+                <td><?= e($task["deadline"]); ?></td>
+                <td><?= e($task["deadline_status"]); ?></td>
+                <td><?= e($task["milestone"]); ?></td>
+                <td><?= e($task["approval_status"]); ?></td>
+                <td>
+                    <a href="#" class="btn btn-success my-manage-btn" data-bs-toggle="modal" data-bs-target="#approveTaskModal">Approved</a>
+                    <a href="#" class="btn btn-danger my-manage-btn" data-bs-toggle="modal" data-bs-target="#rejectTaskModal">Rejected</a>
+                    <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($task["id"]) ]) ?>" 
+                       class="btn custom-primary-btn my-manage-btn" >Manage</a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
     </tbody>
 </table>
