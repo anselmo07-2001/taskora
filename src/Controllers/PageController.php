@@ -43,13 +43,16 @@ class PageController extends AbstractController {
 
 
     public function showTask($request) {
-        $taskId = $request["get"]["taskId"];
+        $taskId = $request["get"]["taskId"] ?? "";
         $task = $this->taskRepository->fetchTaskByProjectId($taskId);
+        $taskParticipants = $this->taskRepository->fetchProjectManagerAndMembersByTaskId($taskId);
         $currentPaginationPage = (int) ($request["get"]["currentPaginationPage"] ?? 1);
 
         $totalTaskNotes = $this->taskNotesRepository->countAllTaskNote($taskId);
         $paginationMeta = PaginateService::paginate($totalTaskNotes, $currentPaginationPage);
         $taskNotes = $this->taskNotesRepository->fetchTaskNote($taskId, $paginationMeta["limit"], $paginationMeta["offset"]);
+
+        $task["participants"] = $taskParticipants;
         $task["task_notes"] = $taskNotes;
        
          $this->render("task.view", [

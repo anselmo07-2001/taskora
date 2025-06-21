@@ -1,6 +1,6 @@
 <?php require __DIR__ . "/../components/pagination.view.php" ?>
 <?php require __DIR__ . "/../components/modal.view.php";  ?>
-<?php // var_dump($paginationMeta); ?>
+<?php // var_dump($task["participants"]); ?>
 
 
 <div class="container custom-container">
@@ -77,19 +77,24 @@
         </div>
     </div>
 
-
-    <div class="mb-5">      
-        <div class="d-flex align-items-center gap-3 mb-2">
-            <label for="taskStatus" class="form-label">Change the task status:</label>
-            <select class="form-select w-25" id="taskStatus" style="margin-right: -0.5rem;">
-                <option value="pending" <?= $task["current_task_status"] === "pending" ? "selected" : "" ?> >Pending</option>
-                <option value="in_progress" <?= $task["current_task_status"] === "in_progress" ? "selected" : "" ?> >In progress</option>
-                <option value="completed" <?= $task["current_task_status"] === "completed" ? "selected" : "" ?> >Completed</option>
-            </select>
-            <button class="btn custom-primary-btn" data-bs-toggle="modal" data-bs-target="#editTaskStatusModal" data-taskId="<?= e($task["task_id"]); ?>" >Update Task</button>   
+    <?php if ( 
+                ($currentUserSession["role"] === "member" && in_array($currentUserSession["userId"], array_column($task["participants"]["members"], "id"))) ||
+                ($currentUserSession["role"] === "project_manager" && $currentUserSession["userId"] === $task["participants"]["project_manager"]["id"]) ||
+                ($currentUserSession["role"] === "admin")
+    ): ?>                                
+        <div class="mb-5">      
+            <div class="d-flex align-items-center gap-3 mb-2">
+                <label for="taskStatus" class="form-label">Change the task status:</label>
+                <select class="form-select w-25" id="taskStatus" style="margin-right: -0.5rem;">
+                    <option value="pending" <?= $task["current_task_status"] === "pending" ? "selected" : "" ?> >Pending</option>
+                    <option value="in_progress" <?= $task["current_task_status"] === "in_progress" ? "selected" : "" ?> >In progress</option>
+                    <option value="completed" <?= $task["current_task_status"] === "completed" ? "selected" : "" ?> >Completed</option>
+                </select>
+                <button class="btn custom-primary-btn" data-bs-toggle="modal" data-bs-target="#editTaskStatusModal" data-taskId="<?= e($task["task_id"]); ?>" >Update Task</button>   
+            </div>
+            <small id="editTaskStatusErrorMsg" class="text-danger d-none">Please change the task status before updating</small>
         </div>
-        <small id="editTaskStatusErrorMsg" class="text-danger d-none">Please change the task status before updating</small>
-    </div>
+    <?php endif; ?>
 
     <div class="mb-5">
             <h6 class="mb-3">Add Task Note</h6>

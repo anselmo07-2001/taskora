@@ -10,6 +10,51 @@ class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
 
+    public function fetchProjectManagerAndMembersByTaskId(int $taskId): ?array {
+         try {
+                // Get the project manager of the task
+                $stmt = $this->pdo->prepare("
+                    SELECT 
+                        users.id,
+                        users.fullname
+                    FROM tasks
+                    JOIN projects ON tasks.project_id = projects.id
+                    JOIN users ON projects.assigned_manager = users.id
+                    WHERE tasks.id = :taskId
+                ");
+                
+                $stmt->execute([':taskId' => $taskId]);
+                $manager = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if (!$manager) {
+                    return null;
+                }
+
+                // Get all members assigned to this task
+                $stmt = $this->pdo->prepare("
+                    SELECT users.id, users.fullname
+                    FROM task_assignments
+                    JOIN users ON task_assignments.user_id = users.id
+                    WHERE task_assignments.task_id = :taskId
+                ");
+
+                $stmt->execute([':taskId' => $taskId]);
+                $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
+         
+                return [
+                    "project_manager" => [
+                        "id" => (int)$manager["id"],
+                        "fullname" => $manager["fullname"]
+                    ],
+                    "members" => $members
+                ];
+
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+
     public function handleEditTaskStatus(int $taskId, string $newTaskStatus) {
         try {
             $stmt = $this->pdo->prepare("UPDATE tasks SET status = :status WHERE id = :taskId");
