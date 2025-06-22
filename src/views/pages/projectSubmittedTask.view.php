@@ -1,4 +1,40 @@
-<?php // var_dump($tabData); ?>
+<?php require __DIR__ . "/../components/modal.view.php";  ?>
+<?php var_dump($baseUrl); ?>
+
+<?php 
+    echo renderModal([
+        "id" => "approveTaskModal",
+        "title" => "Approve the task",
+        "action" => BASE_URL . "/index.php?page=approveTask&" . 
+           http_build_query(["projectId" => $baseUrl["projectId"], "currentNavTab" => "submittedTask", "currentPaginationPage" => $baseUrl["currentPaginationPage"]]),
+        "textareaLabel" => "Add your Task Note",
+        "textareaName" => "approvedTaskNote",
+        "modalTextAreaEl" => "approvedTaskNote",
+        "submitText" => "Approved Task",
+        "hiddenFields" => [
+            [  "name" => "taskId", "id" => "approveModalTaskId" ],
+        ]
+    ]);
+?>
+
+<?php 
+    echo renderModal([
+        "id" => "rejectTaskModal",
+        "title" => "Reject the task",
+        "action" => BASE_URL . "/index.php?page=rejectTask&" .
+           http_build_query(["projectId" => $baseUrl["projectId"], "currentNavTab" => "submittedTask", "currentPaginationPage" => $baseUrl["currentPaginationPage"]]),
+        "textareaLabel" => "Add your Task Note",
+        "textareaName" => "rejectTaskNote",
+        "modalTextAreaEl" => "rejectTaskNote",
+        "submitText" => "Reject Task",
+        "btnSubmit" => "btn-danger",
+        "hiddenFields" => [
+            [  "name" => "taskId", "id" => "rejectModalTaskId" ],
+        ]
+    ]);
+?>
+
+
 
 <div class="modal fade" id="approveTaskModal" tabindex="-1" aria-labelledby="approveTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -89,12 +125,35 @@
                 <td><?= e($task["milestone"]); ?></td>
                 <td><?= e($task["approval_status"]); ?></td>
                 <td>
-                    <a href="#" class="btn btn-success my-manage-btn" data-bs-toggle="modal" data-bs-target="#approveTaskModal">Approved</a>
-                    <a href="#" class="btn btn-danger my-manage-btn" data-bs-toggle="modal" data-bs-target="#rejectTaskModal">Rejected</a>
+                    <button class="btn btn-sm btn-success my-manage-btn mb-2" 
+                            data-bs-toggle="modal" data-bs-target="#approveTaskModal" data-taskid="<?= e($task["id"]); ?>">Approved</button>
+                    <button class="btn btn-sm btn-danger my-manage-btn mb-2" 
+                            data-bs-toggle="modal" data-bs-target="#rejectTaskModal" data-taskid="<?= e($task["id"]); ?>">Rejected</button>
                     <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($task["id"]) ]) ?>" 
-                       class="btn custom-primary-btn my-manage-btn" >Manage</a>
+                       class="btn custom-primary-btn my-manage-btn mb-2" >Manage</a>
                 </td>
             </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<script>
+   let taskId;
+
+   document.getElementById("approveTaskModal").addEventListener('show.bs.modal', function (event) {
+        taskId = event.relatedTarget.getAttribute("data-taskid");
+   })
+   document.getElementById("approveTaskModal").addEventListener('submit', function (e) {       
+        $hiddenTaskIdEl = document.getElementById("approveModalTaskId");
+        $hiddenTaskIdEl.value = taskId
+   });
+
+   document.getElementById("rejectTaskModal").addEventListener('show.bs.modal', function (event) {
+        taskId = event.relatedTarget.getAttribute("data-taskid");
+   })
+   document.getElementById("rejectTaskModal").addEventListener('submit', function (e) {       
+        $hiddenTaskIdEl = document.getElementById("rejectModalTaskId");
+        $hiddenTaskIdEl.value = taskId
+   });
+
+</script>

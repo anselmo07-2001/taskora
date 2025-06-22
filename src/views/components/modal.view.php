@@ -10,6 +10,7 @@ function renderModal(array $config):string {
     $hiddenFields = $config["hiddenFields"] ?? [];
     $labelError = $config["labelError"] ?? "No changes were made";
     $modalTextAreaEl = $config["modalTextAreaEl"] ?? "modalTextAreaEl";
+    $btnSubmit = $config["btnSubmit"] ?? "btn-success";
 
     ob_start();
 ?>
@@ -34,7 +35,7 @@ function renderModal(array $config):string {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success"><?= $submitBtnText ?></button>
+                        <button type="submit" class="btn <?= $btnSubmit ?>"><?= $submitBtnText ?></button>
                     </div>
                 </form>
             </div>

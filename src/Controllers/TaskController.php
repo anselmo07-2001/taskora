@@ -15,6 +15,89 @@ class TaskController extends AbstractController{
     public function __construct(private ProjectPanelService $projectPanelService, protected TaskRepository $taskRepository, 
     protected TaskNotesRepository $taskNotesRepository) {}
     
+    public function approveTask($request) {
+        $approveTaskNote = trim(sanitize($request["post"]["approvedTaskNote"] ?? ""));
+        $taskId = $request["post"]["taskId"];
+
+        $projectId = $request["get"]["projectId"];
+        $currentPaginationPage = $request["get"]["currentPaginationPage"];
+        $currentNavTab = $request["get"]["currentNavTab"];
+
+        $success = $this->taskRepository->handleUpdateApprovalStatus([
+            "approvalAction" => "approved",
+            "taskId" => $taskId,
+        ]);
+
+        if ($success) {
+            $this->taskNotesRepository->handleCreateTaskNote([
+                "taskId" => $taskId,
+                "userId" => SessionService::getSessionKey("user")["userId"],
+                "content" => $approveTaskNote,
+                "taskNoteType" => "Approved the task"
+            ]);
+        }
+
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Approved task sucessully");
+        }
+        else {
+             SessionService::setAlertMessage("error_message", "Failed to approved task");
+        }     
+
+        $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
+            "page" => "projectPanel",
+            "projectId" => $projectId,
+            "currentNavTab" => $currentNavTab,
+            "currentPaginationPage" => $currentPaginationPage
+        ]);
+
+        header("Location: $redirectUrl");
+        exit;
+    }
+
+    public function rejectTask($request) {
+        $rejectTaskNote = $request["post"]["rejectTaskNote"];
+        $taskId = $request["post"]["taskId"];
+
+        $projectId = $request["get"]["projectId"];
+        $currentPaginationPage = $request["get"]["currentPaginationPage"];
+        $currentNavTab = $request["get"]["currentNavTab"];
+
+        $success = $this->taskRepository->handleUpdateApprovalStatus([
+            "approvalAction" => "rejected",
+            "taskId" => $taskId,
+        ]);
+
+        if ($success) {
+            $this->taskNotesRepository->handleCreateTaskNote([
+                "taskId" => $taskId,
+                "userId" => SessionService::getSessionKey("user")["userId"],
+                "content" => $rejectTaskNote,
+                "taskNoteType" => "Approved the task"
+            ]);
+        }
+
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Rejected task sucessully");
+        }
+        else {
+             SessionService::setAlertMessage("error_message", "Failed to rejected task");
+        }     
+
+        $redirectUrl = BASE_URL . "/index.php?" . http_build_query([
+            "page" => "projectPanel",
+            "projectId" => $projectId,
+            "currentNavTab" => $currentNavTab,
+            "currentPaginationPage" => $currentPaginationPage
+        ]);
+
+        header("Location: $redirectUrl");
+        exit;
+    }
+
+
+
+
     public function editTaskStatus($request) {
         $taskId = (int) $request["post"]["taskId"] ?? "";
         $newTaskStatus = $request["post"]["newTaskStatus"] ?? "";

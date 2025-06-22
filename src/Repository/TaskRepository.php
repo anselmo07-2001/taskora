@@ -9,6 +9,21 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
+
+    public function handleUpdateApprovalStatus(array $data) {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE tasks SET approval_status = :approvalStatus WHERE id = :taskId");
+            $stmt->bindValue(":approvalStatus", $data["approvalAction"]);
+            $stmt->bindValue(":taskId", $data["taskId"]);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        }   
+        catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+
     public function fetchSubmittedTasks(int $projectId): ?array {
         try {
             $stmt = $this->pdo->prepare("SELECT 

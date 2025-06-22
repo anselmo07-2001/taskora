@@ -130,6 +130,22 @@ $routes = [
             "roles" => ["admin", "project_manager", "member"]
         ]
     ],
+    "approveTask" => [
+        "POST" => [
+                "controller" => "TaskController",
+                "method" => "approveTask",
+                "auth" => true,
+                "roles" => ["admin", "project_manager"]
+        ]
+    ],
+    "rejectTask" => [
+        "POST" => [
+                "controller" => "TaskController",
+                "method" => "rejectTask",
+                "auth" => true,
+                "roles" => ["admin", "project_manager"]
+        ]
+    ],
 
     "taskPanel" => [
         "GET" => [       
@@ -162,7 +178,9 @@ $routes = [
                 "auth" => true,
                 "roles" => ["admin", "project_manager", "member"]
         ]
-    ]
+    ],
+    
+
 
 
 
