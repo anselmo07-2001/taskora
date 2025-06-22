@@ -92,7 +92,8 @@
                             <option value="completed" <?= $task["current_task_status"] === "completed" ? "selected" : "" ?> >Completed</option>
                         </select>
                         <button class="btn custom-primary-btn" data-bs-toggle="modal" data-bs-target="#editTaskStatusModal" 
-                                data-taskId="<?= e($task["task_id"]); ?>" data-taskApprovalStatus="<?= e($task["approval_status"]); ?>" >Update Task</button>   
+                                data-taskId="<?= e($task["task_id"]); ?>" data-taskApprovalStatus="<?= e($task["approval_status"]); ?>" 
+                                data-currentUserRole="<?= $currentUserSession["role"] ?>" >Update Task</button>   
                     </div>
                     <small id="editTaskStatusErrorMsg" class="text-danger d-none">Please change the task status before updating</small>
                 </div>
@@ -255,8 +256,9 @@
             const button = event.relatedTarget;
             const taskId = button.dataset.taskid;
             const taskApprovalStatus = button.dataset.taskapprovalstatus;
+            const currentUserRole = button.dataset.currentuserrole;
             
-            if (taskApprovalStatus === "approved" || taskApprovalStatus === "rejected") {
+            if ( (currentUserRole === "member") && (taskApprovalStatus === "approved" || taskApprovalStatus === "rejected")) {
                 event.preventDefault();
                 editTaskStatusErrorMsg.textContent = "Task status can't be changed after approval or rejection. Please contact the manager or admin."
                 editTaskStatusErrorMsg.classList.remove('d-none');
