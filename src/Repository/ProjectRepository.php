@@ -217,10 +217,10 @@ class ProjectRepository {
                     projects.deadline,
                     projects.status,
                     ROUND(
-                            IF(COUNT(DISTINCT tasks.id) = 0, 0,
-                                (COUNT(DISTINCT CASE WHEN tasks.status = 'completed' THEN tasks.id END) / COUNT(DISTINCT tasks.id)) * 100
-                            ), 0
-                        ) AS progress
+                        IF(COUNT(DISTINCT tasks.id) = 0, 0,
+                            (COUNT(DISTINCT CASE WHEN tasks.approval_status = 'approved' THEN tasks.id END) / COUNT(DISTINCT tasks.id)) * 100
+                        ), 0
+                    ) AS progress
                 FROM projects
                 LEFT JOIN users ON projects.assigned_manager = users.id
                 LEFT JOIN project_members 
