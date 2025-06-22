@@ -41,6 +41,16 @@ class PageController extends AbstractController {
          $this->taskNotesRepository = $taskNotesRepository;
     } 
 
+    public function showMemberAssignedSoloTask() {
+        $tasks = $this->taskRepository->fetchMemberAssignedSoloTask(
+             $this->currentUserSession["userId"]
+        );
+
+        $this->render("myTasks.view", [
+            "tasks" => $tasks
+        ]);
+    }
+
 
     public function showTask($request) {
         $taskId = $request["get"]["taskId"] ?? "";

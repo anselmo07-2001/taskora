@@ -24,14 +24,14 @@
                                 <img src="./public/images/notes.png" class="w-50 mb-2"/>
                                 <p class="card-title fs-5">My Tasks </p>
                             </div>
-                            <a href="#" class="btn custom-primary-btn">Open</a>
+                            <a href="<?php echo BASE_URL . "/index.php?page=mySoloTasks" ?>" class="btn custom-primary-btn">Open</a>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 mb-3">
                         <div class="card custom-card border rounded shadow p-3 lift-hover">
                             <div class="card-body d-flex flex-column align-items-center">
                                 <img src="./public/images/teamwork.png" class="w-50 mb-2"/>
-                                <p class="card-title fs-5">Manage Group Tasks</p>
+                                <p class="card-title fs-5">My Group Tasks</p>
                             </div>
                             <a href="#" class="btn custom-primary-btn">Open</a>
                         </div>

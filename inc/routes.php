@@ -179,7 +179,14 @@ $routes = [
                 "roles" => ["admin", "project_manager", "member"]
         ]
     ],
-    
+    "mySoloTasks" => [
+        "GET" => [
+                "controller" => "PageController",
+                "method" => "showMemberAssignedSoloTask",
+                "auth" => true,
+                "roles" => ["admin", "project_manager", "member"]
+        ]
+    ],
 
 
 

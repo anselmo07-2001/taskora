@@ -9,6 +9,49 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function fetchMemberAssignedSoloTask(int $userId): ?array {
+        try {
+            $stmt = $this->pdo->prepare("SELECT 
+                        tasks.id AS id,
+                        tasks.taskname AS task,
+                        projects.name AS project,
+                        task_assignments.assigned_date AS assigned_date,
+                        tasks.status,
+                        tasks.deadline,
+
+                        -- Milestone: days since assigned_date
+                        CONCAT(DATEDIFF(CURDATE(), DATE(task_assignments.assigned_date)), ' days') AS milestone,
+
+                        -- Approval status with computed logic
+                        CASE
+                            WHEN tasks.approval_status IS NULL AND tasks.status != 'completed' THEN 'Pending Completion'
+                            WHEN tasks.approval_status IS NULL AND tasks.status = 'completed' THEN 'Awaiting Approval'
+                            WHEN tasks.approval_status = 'approved' THEN 'Approved'
+                            WHEN tasks.approval_status = 'rejected' THEN 'Rejected'
+                            ELSE 'Unknown'
+                        END AS approval_status
+
+                    FROM task_assignments
+                    JOIN tasks ON task_assignments.task_id = tasks.id
+                    JOIN projects ON tasks.project_id = projects.id
+
+                    WHERE task_assignments.user_id = :userId
+                          AND tasks.tasktype = 'solo'
+                          AND (
+                                SELECT COUNT(*) 
+                                FROM task_assignments ta 
+                                WHERE ta.task_id = tasks.id
+                            ) = 1
+                    ORDER BY task_assignments.assigned_date DESC;");
+
+             $stmt->bindValue(":userId", $userId);
+             $stmt->execute();
+             return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 
     public function handleUpdateApprovalStatus(array $data) {
         try {
