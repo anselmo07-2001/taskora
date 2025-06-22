@@ -73,7 +73,7 @@ class TaskController extends AbstractController{
                 "taskId" => $taskId,
                 "userId" => SessionService::getSessionKey("user")["userId"],
                 "content" => $rejectTaskNote,
-                "taskNoteType" => "Approved the task"
+                "taskNoteType" => "Rejected the task"
             ]);
         }
 
