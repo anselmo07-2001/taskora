@@ -84,7 +84,7 @@
     </div>
 </div>
 
-<h6 class="text-muted">Total Tasks: 5</h6>
+<h6 class="text-muted">Total Submitted Tasks: <?= count($tabData["submittedTask"]);?></h6>
 <div class="mb-3 d-flex justify-content-between">
     <div class="d-flex align-items-center gap-2">
         <button href="#" class="btn custom-primary-btn filter-form-btn">Due Today</button>
