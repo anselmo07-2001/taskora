@@ -91,7 +91,8 @@
                             <option value="in_progress" <?= $task["current_task_status"] === "in_progress" ? "selected" : "" ?> >In progress</option>
                             <option value="completed" <?= $task["current_task_status"] === "completed" ? "selected" : "" ?> >Completed</option>
                         </select>
-                        <button class="btn custom-primary-btn" data-bs-toggle="modal" data-bs-target="#editTaskStatusModal" data-taskId="<?= e($task["task_id"]); ?>" >Update Task</button>   
+                        <button class="btn custom-primary-btn" data-bs-toggle="modal" data-bs-target="#editTaskStatusModal" 
+                                data-taskId="<?= e($task["task_id"]); ?>" data-taskApprovalStatus="<?= e($task["approval_status"]); ?>" >Update Task</button>   
                     </div>
                     <small id="editTaskStatusErrorMsg" class="text-danger d-none">Please change the task status before updating</small>
                 </div>
@@ -253,6 +254,18 @@
             const selectedOptionValue = selectEl.value;
             const button = event.relatedTarget;
             const taskId = button.dataset.taskid;
+            const taskApprovalStatus = button.dataset.taskapprovalstatus;
+            
+            if (taskApprovalStatus === "approved" || taskApprovalStatus === "rejected") {
+                event.preventDefault();
+                editTaskStatusErrorMsg.textContent = "Task status can't be changed after approval or rejection. Please contact the manager or admin."
+                editTaskStatusErrorMsg.classList.remove('d-none');
+                setTimeout(() => {
+                    editTaskStatusErrorMsg.classList.add("d-none");
+                }, 5000);
+                return;
+            }
+
              
              if (defaultSelectedOptionValue === selectedOptionValue) {
                 event.preventDefault();
