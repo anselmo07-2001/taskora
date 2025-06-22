@@ -36,7 +36,8 @@
             "hiddenFields" => [   
                    [ "name" => "previousTaskStatus", "id" => "modalEditPreviousTaskStatus"],
                    [ "name" => "newTaskStatus", "id" => "modalEditNewTaskStatus"],
-                   [ "name" => "taskId", "id" => "modalEditTaskId"]
+                   [ "name" => "taskId", "id" => "modalEditTaskId"],
+                   [  "name" => "taskApprovalStatus", "id" => "modalTaskApprovalStatus"]
             ]
         ]);
     ?>
@@ -92,7 +93,7 @@
                             <option value="completed" <?= $task["current_task_status"] === "completed" ? "selected" : "" ?> >Completed</option>
                         </select>
                         <button class="btn custom-primary-btn" data-bs-toggle="modal" data-bs-target="#editTaskStatusModal" 
-                                data-taskId="<?= e($task["task_id"]); ?>" data-taskApprovalStatus="<?= e($task["approval_status"]); ?>" 
+                                data-taskId="<?= e($task["task_id"]); ?>" data-taskApprovalStatus="<?= e($task["approval_status"]) ?? "" ?>" 
                                 data-currentUserRole="<?= $currentUserSession["role"] ?>" >Update Task</button>   
                     </div>
                     <small id="editTaskStatusErrorMsg" class="text-danger d-none">Please change the task status before updating</small>
@@ -284,11 +285,14 @@
             const newSelectedTaskStatus = this.querySelector('#modalEditNewTaskStatus');
             const previousTaskStatus = this.querySelector("#modalEditPreviousTaskStatus");
             const modalEditTaskId = this.querySelector("#modalEditTaskId");
-            
-            
+            const hiddenInputTaskApprovalStatus = this.querySelector("#modalTaskApprovalStatus");
+
+            console.log(hiddenInputTaskApprovalStatus);
+                       
             newSelectedTaskStatus.value = selectedOptionValue;
             previousTaskStatus.value = defaultSelectedOptionValue;
             modalEditTaskId.value = taskId;
+            hiddenInputTaskApprovalStatus.value = taskApprovalStatus;
         });
 
     });

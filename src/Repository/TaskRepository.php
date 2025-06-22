@@ -112,7 +112,23 @@ class TaskRepository {
 
     public function handleEditTaskStatus(int $taskId, string $newTaskStatus) {
         try {
-            $stmt = $this->pdo->prepare("UPDATE tasks SET status = :status WHERE id = :taskId");
+            $stmt = $this->pdo->prepare("SELECT approval_status FROM tasks WHERE id = :taskId");
+            $stmt->execute(["taskId" => $taskId]);
+            $current = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$current) {
+                return false; // Task not found
+            }
+
+            $isApprovedOrRejected = in_array($current["approval_status"], ['approved', 'rejected']);
+
+            if ($isApprovedOrRejected) {
+                $sql = "UPDATE tasks SET status = :status, approval_status = NULL WHERE id = :taskId";
+            } else {
+                $sql = "UPDATE tasks SET status = :status WHERE id = :taskId";
+            }
+
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 "status" => $newTaskStatus,
                 "taskId" => $taskId
