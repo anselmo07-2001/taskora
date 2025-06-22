@@ -65,13 +65,13 @@
                     <li>Current Task Status: <span><?= e($task["current_task_status"]); ?></span></li>
                     <li>Task Approval Status: 
                         <?php if ($task["current_task_status"] !== "completed" && $task["approval_status"] === NULL): ?>
-                            <span>Pending Completion</span>
+                            <span class="badge bg-secondary">Pending Completion</span>
                         <?php elseif ($task["current_task_status"] === "completed" && $task["approval_status"] === NULL): ?>
-                            <span>Awaiting Approval</span>
+                            <span class="badge bg-warning text-dark">Awaiting Approval</span>
                         <?php elseif ($task["current_task_status"] === "completed" && $task["approval_status"] === "approved"): ?>
-                            <span>Approved</span>        
+                            <span class="badge bg-success">Approved</span>        
                         <?php elseif ($task["current_task_status"] === "completed" && $task["approval_status"] === "rejected"): ?>
-                            <span>Rejected</span>
+                            <span class="badge bg-danger">Rejected</span>
                         <?php endif; ?>
                     </li>
                 </ul>
