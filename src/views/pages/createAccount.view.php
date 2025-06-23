@@ -1,5 +1,6 @@
 
 <div class="container custom-container">
+        <?php require __DIR__ . "/../components/backButton.view.php" ?>
         <div class="card custom-form-container">
             <div class="card-body p-5">
                 <h1 class="text-center mb-5">Create Account</h1>

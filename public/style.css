@@ -68,7 +68,7 @@ button:active .custom-icon-manage-account-btn {
 /* Home Page */
 
 .container.custom-container {
-    margin-top: 4rem;
+    margin-top: 3rem;
     padding-left: 2rem;   /* mobile default smaller padding */
     padding-right: 2rem;
 }

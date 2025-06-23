@@ -4,6 +4,7 @@
 
 
 <div class="container custom-container">
+    <?php require __DIR__ . "/../components/backButton.view.php" ?>
     <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
 
     <?php

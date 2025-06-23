@@ -1,6 +1,8 @@
 <?php $searchQuery = isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : ''; ?>
 
 <div class="container custom-container">
+        <?php require __DIR__ . "/../components/backButton.view.php" ?>
+
         <h2>Display All Projects Data</h2>
         <hr class="border-primary border-2 mb-4">
 

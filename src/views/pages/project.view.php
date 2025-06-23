@@ -1,6 +1,7 @@
 <?php // var_dump($tabData ?? ""); ?>
 
 <div class="container custom-container pb-5">
+        <?php require __DIR__ . "/../components/backButton.view.php" ?>
         <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
         <div>
             <div class="d-flex align-items-center gap-2 mb-4">
