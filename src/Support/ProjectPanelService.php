@@ -54,6 +54,11 @@ class ProjectPanelService {
             $tabData["filter"] = $request["get"]["filter"] ?? "allGroupTask";
         }
 
+        if ($currentNavTab === "manageMembers") {
+            $tabData["memberStats"] = $this->projectRepository->fetchMemberTaskSummaryByAllTypes($projectId);
+            $tabData["filter"] = $request["get"]["filter"] ?? "solo";
+        }
+
         return [
             "project" => $project,
             "baseUrl" => $baseUrl,
