@@ -9,7 +9,79 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
-    
+    public function fetchUserTasks(int $userId, string $taskType = 'all', ?int $projectId = null): array {
+        try {
+            $sql = "
+                SELECT 
+                    tasks.id AS id,
+                    tasks.taskname AS name,
+
+                    CONCAT(
+                        UPPER(tasks.tasktype),
+                        ' (',
+                        member_count.count,
+                        ' member',
+                        IF(member_count.count > 1, 's', ''),
+                        ')'
+                    ) AS `taskType_members`,
+
+                    ta.assigned_date AS `assigned date`,
+                    tasks.deadline AS deadline,
+                    tasks.status AS status,
+
+                    CONCAT(DATEDIFF(CURDATE(), DATE(tasks.created_at)), ' days') AS milestone,
+
+                    CASE
+                        WHEN tasks.approval_status IS NULL AND tasks.status != 'completed' THEN 'Pending Completion'
+                        WHEN tasks.approval_status IS NULL AND tasks.status = 'completed' THEN 'Awaiting Approval'
+                        WHEN tasks.approval_status = 'approved' THEN 'Approved'
+                        WHEN tasks.approval_status = 'rejected' THEN 'Rejected'
+                        ELSE 'Unknown'
+                    END AS `approval status`
+
+                FROM tasks
+                JOIN task_assignments AS ta ON tasks.id = ta.task_id
+                JOIN (
+                    SELECT task_id, COUNT(*) AS count
+                    FROM task_assignments
+                    GROUP BY task_id
+                ) AS member_count ON member_count.task_id = tasks.id
+            ";
+
+            $conditions = ["ta.user_id = :userId"];
+            $params = [":userId" => $userId];
+
+            if ($taskType === 'solo' || $taskType === 'group') {
+                $conditions[] = "tasks.tasktype = :taskType";
+                $params[":taskType"] = $taskType;
+            }
+
+            // Optional project filter
+            if ($projectId !== null) {
+                $conditions[] = "tasks.project_id = :projectId";
+                $params[":projectId"] = $projectId;
+            }
+
+            // Apply WHERE conditions
+            if (!empty($conditions)) {
+                $sql .= " WHERE " . implode(" AND ", $conditions);
+            }
+
+            $sql .= " ORDER BY ta.assigned_date DESC";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 
     public function fetchMemberAssignedSoloTask(int $userId): ?array {
         try {

@@ -35,55 +35,6 @@
 ?>
 
 
-
-<div class="modal fade" id="approveTaskModal" tabindex="-1" aria-labelledby="approveTaskModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <form action="approve-task.php" method="POST">
-            <div class="modal-header">
-            <h5 class="modal-title" id="approveTaskModalLabel">Approve this Task?</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            <div class="mb-3">
-                <label for="approveReason" class="form-label">Reason for Approving this Task</label>
-                <textarea class="form-control" id="approveReason" name="approveReason" rows="3" required></textarea>
-            </div>
-                <input type="hidden" name="task_id" value="123">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-success">Approve Task</button>
-            </div>
-        </form>
-        </div>
-    </div>
-</div>
-    
-<div class="modal fade" id="rejectTaskModal" tabindex="-1" aria-labelledby="rejectTaskModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <form action="reject-task.php" method="POST">
-            <div class="modal-header">
-            <h5 class="modal-title" id="rejectTaskModalLabel">Reject this Task?</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            <div class="mb-3">
-                <label for="rejectReason" class="form-label">Reason for Rejecting this Task</label>
-                <textarea class="form-control" id="rejectReason" name="rejectReason" rows="3" required></textarea>
-            </div>
-                <input type="hidden" name="task_id" value="123">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-danger">Reject Task</button>
-            </div>
-        </form>
-        </div>
-    </div>
-</div>
-
 <h6 class="text-muted">Total Submitted Tasks: <?= count($tabData["submittedTask"]);?></h6>
 <div class="mb-3 d-flex justify-content-between">
     <div class="d-flex align-items-center gap-2">

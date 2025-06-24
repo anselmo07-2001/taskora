@@ -31,17 +31,20 @@
     <tbody>
 
         <?php if($tabData["filter"] == "solo"): ?>
-            <?php foreach($tabData["memberStats"]["soloTasks"] as $tasks): ?>
+            <?php foreach($tabData["memberStats"]["soloTasks"] as $memberStats): ?>
                 <tr>
-                    <th scope="row"><?= e($tasks["id"]); ?></th>
-                    <td><?= e($tasks["name"]); ?></td>
-                    <td><?= e($tasks["total_task"]); ?></td>
-                    <td><?= e($tasks["unsubmitted_task"]); ?></td>
-                    <td><?= e($tasks["submitted_task"]); ?></td>
-                    <td><?= e($tasks["approved_task"]); ?></td>
-                    <td><?= e($tasks["rejected_task"]); ?></td>
+                    <th scope="row"><?= e($memberStats["id"]); ?></th>
+                    <td><?= e($memberStats["name"]); ?></td>
+                    <td><?= e($memberStats["total_task"]); ?></td>
+                    <td><?= e($memberStats["unsubmitted_task"]); ?></td>
+                    <td><?= e($memberStats["submitted_task"]); ?></td>
+                    <td><?= e($memberStats["approved_task"]); ?></td>
+                    <td><?= e($memberStats["rejected_task"]); ?></td>
                     <td>
-                        <a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a>
+                         <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "memberProfilePanel", "memberId" => $memberStats["id"], "projectId" => $baseUrl["projectId"]]); ?>" 
+                               class="btn custom-primary-btn my-manage-btn">
+                               Manage
+                        </a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -49,17 +52,20 @@
 
 
          <?php if($tabData["filter"] == "group"): ?>
-            <?php foreach($tabData["memberStats"]["groupTasks"] as $tasks): ?>
+            <?php foreach($tabData["memberStats"]["groupTasks"] as $memberStats): ?>
                 <tr>
-                    <th scope="row"><?= e($tasks["id"]); ?></th>
-                    <td><?= e($tasks["name"]); ?></td>
-                    <td><?= e($tasks["total_task"]); ?></td>
-                    <td><?= e($tasks["unsubmitted_task"]); ?></td>
-                    <td><?= e($tasks["submitted_task"]); ?></td>
-                    <td><?= e($tasks["approved_task"]); ?></td>
-                    <td><?= e($tasks["rejected_task"]); ?></td>
+                    <th scope="row"><?= e($memberStats["id"]); ?></th>
+                    <td><?= e($memberStats["name"]); ?></td>
+                    <td><?= e($memberStats["total_task"]); ?></td>
+                    <td><?= e($memberStats["unsubmitted_task"]); ?></td>
+                    <td><?= e($memberStats["submitted_task"]); ?></td>
+                    <td><?= e($memberStats["approved_task"]); ?></td>
+                    <td><?= e($memberStats["rejected_task"]); ?></td>
                     <td>
-                        <a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a>
+                        <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "memberProfilePanel", "memberId" => $memberStats["id"], "projectId" => $baseUrl["projectId"]]); ?>" 
+                               class="btn custom-primary-btn my-manage-btn">
+                               Manage
+                        </a>
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -4,9 +4,31 @@ namespace App\Repository;
 
 use App\Models\UserModel;
 use PDO;
+use PDOException;
+use Exception;
 
 class UserRepository {
     public function __construct(private PDO $pdo) {}
+
+    public function fetchUserProfileById(int $userId) {
+        try {
+            $stmt = $this->pdo->prepare("SELECT id, username, fullname, role, status FROM `users` WHERE id = :userId");
+            $stmt->bindValue(":userId", $userId);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $user = $stmt->fetch();
+
+            if (!empty($user)) {
+             return $user;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
    
     public function findByUsername($username) : ?UserModel {
         $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE username = :username");

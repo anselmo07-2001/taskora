@@ -15,7 +15,7 @@ class TaskController extends AbstractController{
     public function __construct(private ProjectPanelService $projectPanelService, protected TaskRepository $taskRepository, 
     protected TaskNotesRepository $taskNotesRepository) {}
 
-    
+
     public function approveTask($request) {
         $approveTaskNote = trim(sanitize($request["post"]["approvedTaskNote"] ?? ""));
         $taskId = $request["post"]["taskId"];

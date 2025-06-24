@@ -187,6 +187,14 @@ $routes = [
                 "roles" => ["admin", "project_manager", "member"]
         ]
     ],
+    "memberProfilePanel" => [
+        "GET" => [
+                "controller" => "PageController",
+                "method" => "showMemberProfilePanel",
+                "auth" => true,
+                "roles" => ["admin", "project_manager"]
+        ]
+    ],
 
 
 
