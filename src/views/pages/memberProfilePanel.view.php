@@ -1,4 +1,4 @@
-<?php //var_dump($memberTasks); ?>
+<?php // var_dump($memberTasks); ?>
 
 <div class="container custom-container">
         <?php require __DIR__ . "/../components/backButton.view.php" ?>
@@ -25,7 +25,7 @@
         </div>
 
         <div>
-            <h6 class="text-muted">Total Task: 5</h6>
+            <h6 class="text-muted">Total Task: <?= count($memberTasks) ?? 0; ?></h6>
         <div class="mb-3 d-flex justify-content-between">
             <div class="d-flex align-items-center gap-2">
                 <a href="<?= BASE_URL . "/index.php?" . 
