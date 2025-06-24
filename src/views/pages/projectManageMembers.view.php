@@ -1,6 +1,5 @@
 <?php //var_dump($tabData["memberStats"]["soloTasks"]); ?>
 
-<h6 class="text-muted">Total Member: 5</h6>
 <div class="mb-3 d-flex justify-content-between">
     <div class="d-flex align-items-center gap-2">
         <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "manageMembers", "filter" => "solo"]); ?>" 
