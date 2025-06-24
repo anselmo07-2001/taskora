@@ -1,4 +1,4 @@
-<?php var_dump($memberTasks[0]); ?>
+<?php //var_dump($memberTasks); ?>
 
 <div class="container custom-container">
         <?php require __DIR__ . "/../components/backButton.view.php" ?>
@@ -44,8 +44,13 @@
                         Group Task
                 </a>
             </div>
-            <form class="d-flex gap-2">
-                 <input type="text" class="form-control" name="searchProject" placeholder="Search Task">
+            <form method="GET" class="d-flex gap-2" action="<?= BASE_URL . "/index.php?"?>">
+                 <input type="hidden" name="projectId" value="<?= $projectId ?? "" ?>">
+                 <input type="hidden" name="page" value="<?= "memberProfilePanel" ?>">
+                 <input type="hidden" name="memberId" value="<?= $memberProfile["id"] ?? "" ?>">
+                 <input type="hidden" name="filter" value="<?= $filter ?? "all" ?>">
+                 
+                 <input type="text" class="form-control" name="searchTask" placeholder="Search Task" value=<?= $search ?>>
                  <button class="btn custom-primary-btn filter-form-btn">
                       <img src="./public/images/magnifying-glass.png" alt="icon" style="width:15px; height:15px; filter: invert(1);">
                  </button>

@@ -45,12 +45,14 @@ class PageController extends AbstractController {
         $memberId = (int) $request["get"]["memberId"] ?? "";
         $projectId = (int) $request["get"]["projectId"] ?? "";
         $filter = $request["get"]["filter"] ?? "all";
+        $search = trim($request["get"]["searchTask"] ?? "");
         $memberProfile = $this->userRepository->fetchUserProfileById($memberId);
-        $memberTasks = $this->taskRepository->fetchUserTasks($memberId, $filter, $projectId);
-        
+        $memberTasks = $this->taskRepository->fetchUserTasks($memberId, $filter, $projectId, $search);  
+
         $this->render("memberProfilePanel.view", [
             "memberProfile" => $memberProfile,
             "filter" => $filter,
+            "search" => $search,
             "memberTasks" => $memberTasks,
             "projectId" => $projectId
         ]);

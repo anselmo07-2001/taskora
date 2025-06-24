@@ -9,7 +9,7 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
-    public function fetchUserTasks(int $userId, string $taskType = 'all', ?int $projectId = null): array {
+    public function fetchUserTasks(int $userId, string $taskType = 'all', ?int $projectId = null, ?string $search = null): array {
         try {
             $sql = "
                 SELECT 
@@ -51,18 +51,24 @@ class TaskRepository {
             $conditions = ["ta.user_id = :userId"];
             $params = [":userId" => $userId];
 
+            // Optional filter: task type
             if ($taskType === 'solo' || $taskType === 'group') {
                 $conditions[] = "tasks.tasktype = :taskType";
                 $params[":taskType"] = $taskType;
             }
 
-            // Optional project filter
+            // Optional filter: project
             if ($projectId !== null) {
                 $conditions[] = "tasks.project_id = :projectId";
                 $params[":projectId"] = $projectId;
             }
 
-            // Apply WHERE conditions
+            // Optional filter: task name search
+            if (!empty($search)) {
+                $conditions[] = "tasks.taskname LIKE :search";
+                $params[":search"] = '%' . $search . '%';
+            }
+
             if (!empty($conditions)) {
                 $sql .= " WHERE " . implode(" AND ", $conditions);
             }
