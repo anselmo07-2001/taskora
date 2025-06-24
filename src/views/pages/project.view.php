@@ -1,4 +1,4 @@
-<?php // var_dump($tabData ?? ""); ?>
+<?php //var_dump($currentUserSession); ?>
 
 <div class="container custom-container pb-5">
         <?php require __DIR__ . "/../components/backButton.view.php" ?>
@@ -68,22 +68,41 @@
 
             <ul class="nav nav-tabs my-custom-tabs mb-5">
                 <li class="nav-item">
-                    <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "projectNotes"]); ?>" class="nav-link <?= $currentNavTab === "projectNotes" ? "active" : "" ?>" aria-current="page">Project Note</a>
+                    <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "projectNotes"]); ?>" 
+                        class="nav-link <?= $currentNavTab === "projectNotes" ? "active" : "" ?>" aria-current="page">
+                        Project Note
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "assignedSoloTask"]); ?>" class="nav-link <?= $currentNavTab === "assignedSoloTask" ? "active" : "" ?>">Assigned Solo Task</a>
+                    <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "assignedSoloTask"]); ?>" 
+                        class="nav-link <?= $currentNavTab === "assignedSoloTask" ? "active" : "" ?>">
+                        Assigned Solo Task
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "assignedGroupTask"]); ?>" class="nav-link <?= $currentNavTab === "assignedGroupTask" ? "active" : "" ?>">Assigned Group Task</a>
+                    <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "assignedGroupTask"]); ?>" 
+                        class="nav-link <?= $currentNavTab === "assignedGroupTask" ? "active" : "" ?>">
+                    Assigned Group Task
+                    </a>
                 </li>
+                <?php if ($currentUserSession["role"] !== "member" ): ?>
+                    <li class="nav-item">
+                        <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "submittedTask"]); ?>" 
+                            class="nav-link <?= $currentNavTab === "submittedTask" ? "active" : "" ?>" >
+                            Submitted Task
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "createTask"]); ?>" 
+                            class="nav-link <?= $currentNavTab === "createTask" ? "active" : "" ?>" >
+                            Create Task
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li class="nav-item">
-                    <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "submittedTask"]); ?>" class="nav-link <?= $currentNavTab === "submittedTask" ? "active" : "" ?>" >Submitted Task</a>
-                </li>
-                <li class="nav-item">
-                    <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "createTask"]); ?>" class="nav-link <?= $currentNavTab === "createTask" ? "active" : "" ?>" >Create Task</a>
-                </li>
-                <li class="nav-item">
-                    <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "manageMembers"]); ?>" class="nav-link <?= $currentNavTab === "manageMembers" ? "active" : "" ?>" >Manage Members</a>
+                    <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "manageMembers"]); ?>" 
+                        class="nav-link <?= $currentNavTab === "manageMembers" ? "active" : "" ?>" >Manage Members
+                    </a>
                 </li>
             </ul>
 
@@ -102,12 +121,12 @@
         <?php endif; ?>
         
 
-        <?php if ($currentNavTab === "submittedTask"): ?>
+        <?php if ($currentNavTab === "submittedTask" && $currentUserSession["role"] !== "member" ): ?>
             <?php require __DIR__ . "/projectSubmittedTask.view.php"; ?>
         <?php endif; ?>
         
 
-        <?php if ($currentNavTab === "createTask"): ?>
+        <?php if ($currentNavTab === "createTask" && $currentUserSession["role"] !== "member"): ?>
             <?php require __DIR__ . "/projectCreateTask.view.php"; ?>
         <?php endif ?>
 
