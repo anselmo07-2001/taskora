@@ -11,76 +11,87 @@ use Exception;
 class ProjectRepository {
     public function __construct(private PDO $pdo) {}
 
-    public function fetchMemberTaskSummaryByAllTypes(int $projectId): ?array {
+    public function fetchMemberTaskSummary(int $projectId, array $filters = []): ?array {
         try {
-            $results = [
-                'soloTasks' => [],
-                'groupTasks' => []
+            $taskTypeFilter = $filters['filter'] ?? null; // 'solo', 'group', or null
+            $search = $filters['search'] ?? null;
+
+            $conditions = [
+                "project_members.project_id = :projectId",
+                "users.status != 'deleted'",
+                "users.role NOT IN ('project_manager', 'admin')"
             ];
 
-            foreach (['solo', 'group'] as $taskType) {
-                $stmt = $this->pdo->prepare("
-                    SELECT 
-                        users.id AS id,
-                        users.fullname AS name,
+            $params = [
+                ':projectId' => $projectId
+            ];
 
-                        COUNT(CASE WHEN tasks.tasktype = :taskType THEN tasks.id END) AS total_task,
-
-                        COUNT(CASE 
-                            WHEN tasks.tasktype = :taskType AND tasks.status != 'completed' 
-                            THEN tasks.id 
-                        END) AS unsubmitted_task,
-
-                        COUNT(CASE 
-                            WHEN tasks.tasktype = :taskType AND tasks.status = 'completed' 
-                                AND (tasks.approval_status IS NULL OR tasks.approval_status IN ('approved', 'rejected'))
-                            THEN tasks.id 
-                        END) AS submitted_task,
-
-                        COUNT(CASE 
-                            WHEN tasks.tasktype = :taskType AND tasks.approval_status = 'approved' 
-                            THEN tasks.id 
-                        END) AS approved_task,
-
-                        COUNT(CASE 
-                            WHEN tasks.tasktype = :taskType AND tasks.approval_status = 'rejected' 
-                            THEN tasks.id 
-                        END) AS rejected_task
-
-                    FROM project_members
-                    JOIN users ON users.id = project_members.user_id
-                    LEFT JOIN task_assignments ON task_assignments.user_id = users.id
-                    LEFT JOIN tasks ON tasks.id = task_assignments.task_id 
-                        AND tasks.project_id = :projectId
-                        AND tasks.tasktype = :taskType
-
-                    WHERE project_members.project_id = :projectId
-                    AND users.status != 'deleted'
-                    AND project_members.is_active = 1
-                    AND users.role NOT IN ('project_manager', 'admin')
-
-                    GROUP BY users.id, users.fullname
-                    ORDER BY users.fullname
-                ");
-
-                $stmt->bindValue(":projectId", $projectId, PDO::PARAM_INT);
-                $stmt->bindValue(":taskType", $taskType, PDO::PARAM_STR);
-                $stmt->execute();
-
-                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                if ($taskType === 'solo') {
-                    $results['soloTasks'] = $data;
-                } else {
-                    $results['groupTasks'] = $data;
-                }
+            if ($taskTypeFilter === 'solo' || $taskTypeFilter === 'group') {
+                $conditions[] = "tasks.tasktype = :taskType";
+                $params[':taskType'] = $taskTypeFilter;
             }
 
-            return $results;
+            if (!empty($search)) {
+                $conditions[] = "users.fullname LIKE :search";
+                $params[':search'] = "%{$search}%";
+            }
+
+            $whereSql = implode(" AND ", $conditions);
+
+            $sql = "
+                SELECT 
+                    users.id AS id,
+                    users.fullname AS name,
+
+                    COUNT(CASE WHEN tasks.status IS NOT NULL THEN tasks.id END) AS total_task,
+
+                    COUNT(CASE 
+                        WHEN tasks.status IS NOT NULL AND tasks.status != 'completed' 
+                        THEN tasks.id 
+                    END) AS unsubmitted_task,
+
+                    COUNT(CASE 
+                        WHEN tasks.status = 'completed' 
+                            AND (tasks.approval_status IS NULL OR tasks.approval_status IN ('approved', 'rejected'))
+                        THEN tasks.id 
+                    END) AS submitted_task,
+
+                    COUNT(CASE 
+                        WHEN tasks.approval_status = 'approved' 
+                        THEN tasks.id 
+                    END) AS approved_task,
+
+                    COUNT(CASE 
+                        WHEN tasks.approval_status = 'rejected' 
+                        THEN tasks.id 
+                    END) AS rejected_task
+
+                FROM project_members
+                JOIN users ON users.id = project_members.user_id
+                LEFT JOIN task_assignments ON task_assignments.user_id = users.id
+                LEFT JOIN tasks ON tasks.id = task_assignments.task_id 
+                    AND tasks.project_id = :projectId
+
+                WHERE $whereSql
+
+                GROUP BY users.id, users.fullname
+                ORDER BY users.fullname
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            foreach ($params as $key => $val) {
+                $stmt->bindValue($key, $val, is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         } catch (PDOException $e) {
             throw new Exception($e->getMessage());
         }
     }
+
 
     public function fetchMembersInProject(int $projectId) {
         try {
