@@ -62,7 +62,7 @@
         <input type="hidden" name="currentPaginationPage" value="<?= $baseUrl["currentPaginationPage"] ?>">
         <input type="hidden" name="currentNavTab" value="<?= "submittedTask" ?>">
 
-        <input required ="text" class="form-control" name="search" placeholder="Search Task | Member">
+        <input required ="text" class="form-control" name="search" placeholder="Search Task" value=<?= e($request["get"]["search"] ?? ""); ?>>
         <button type="submit" class="btn custom-primary-btn filter-form-btn">
             <img src="./public/images/magnifying-glass.png" alt="icon" style="width:15px; height:15px; filter: invert(1);">
         </button>
