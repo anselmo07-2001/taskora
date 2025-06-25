@@ -38,13 +38,32 @@
 <h6 class="text-muted">Total Submitted Tasks: <?= count($tabData["submittedTask"]);?></h6>
 <div class="mb-3 d-flex justify-content-between">
     <div class="d-flex align-items-center gap-2">
-        <button href="#" class="btn custom-primary-btn filter-form-btn">Due Today</button>
-        <button href="#" class="btn custom-primary-btn filter-form-btn">Overdue</button>
-        <button href="#" class="btn custom-primary-btn filter-form-btn">Upcoming</button>
+        <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "submittedTask", "filter" => "all"]) ?>" 
+            class="btn custom-primary-btn filter-form-btn <?= $tabData["filter"] === "all" ? "filter-active" : "" ?>">
+                All Task
+        </a>
+        <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "submittedTask", "filter" => "due_today"]) ?>" 
+            class="btn custom-primary-btn filter-form-btn <?= $tabData["filter"] === "due_today" ? "filter-active" : "" ?>">
+                Due Today
+        </a>
+        <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "submittedTask", "filter" => "overdue"]) ?>" 
+            class="btn custom-primary-btn filter-form-btn <?= $tabData["filter"] === "overdue" ? "filter-active" : "" ?>">
+                Overdue
+        </a>
+        <a href="<?= BASE_URL . "/index.php?" . http_build_query($baseUrl + ["currentNavTab" => "submittedTask", "filter" => "upcoming"]) ?>" 
+            class="btn custom-primary-btn filter-form-btn <?= $tabData["filter"] === "upcoming" ? "filter-active" : "" ?>">
+                Upcoming
+        </a>
     </div>
-    <form class="d-flex gap-2">
-        <input type="text" class="form-control" name="searchProject" placeholder="Search Task | Member">
-        <button class="btn custom-primary-btn filter-form-btn">
+    <form method="GET" action="<?= BASE_URL . "/index.php?" ?>" class="d-flex gap-2">
+        <input type="hidden" name="filter" value="<?= $tabData["filter"] ?? "all" ?>">
+        <input type="hidden" name="page" value="<?= "projectPanel" ?>">
+        <input type="hidden" name="projectId" value="<?= $baseUrl["projectId"] ?>">
+        <input type="hidden" name="currentPaginationPage" value="<?= $baseUrl["currentPaginationPage"] ?>">
+        <input type="hidden" name="currentNavTab" value="<?= "submittedTask" ?>">
+
+        <input required ="text" class="form-control" name="search" placeholder="Search Task | Member">
+        <button type="submit" class="btn custom-primary-btn filter-form-btn">
             <img src="./public/images/magnifying-glass.png" alt="icon" style="width:15px; height:15px; filter: invert(1);">
         </button>
     </form>

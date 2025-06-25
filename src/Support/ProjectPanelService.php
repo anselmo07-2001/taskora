@@ -50,8 +50,8 @@ class ProjectPanelService {
         }
 
         if ($currentNavTab === "submittedTask") {
-            $tabData["submittedTask"] = $this->taskRepository->fetchSubmittedTasks($projectId);
-            $tabData["filter"] = $request["get"]["filter"] ?? "allGroupTask";
+            $tabData["submittedTask"] = $this->taskRepository->fetchSubmittedTasks($projectId, $filters);
+            $tabData["filter"] = $request["get"]["filter"] ?? "all";
         }
 
         if ($currentNavTab === "manageMembers") {

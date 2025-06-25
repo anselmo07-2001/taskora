@@ -147,42 +147,78 @@ class TaskRepository {
     }
 
 
-    public function fetchSubmittedTasks(int $projectId): ?array {
+    public function fetchSubmittedTasks(int $projectId, array $filters = []): ?array {
         try {
-            $stmt = $this->pdo->prepare("SELECT 
-                tasks.id AS id,
-                tasks.taskname AS task,
-                CONCAT(UCASE(tasks.tasktype), ' (', COUNT(task_assignments.user_id), ' member', IF(COUNT(task_assignments.user_id) > 1, 's', ''), ')') AS task_type_and_members,
-                MIN(task_assignments.assigned_date) AS assigned_date,
-                tasks.deadline AS deadline,
+            $sql = "
+                SELECT 
+                    tasks.id AS id,
+                    tasks.taskname AS task,
+                    CONCAT(
+                        UPPER(tasks.tasktype),
+                        ' (',
+                        COUNT(task_assignments.user_id),
+                        ' member',
+                        IF(COUNT(task_assignments.user_id) > 1, 's', ''),
+                        ')'
+                    ) AS task_type_and_members,
+                    MIN(task_assignments.assigned_date) AS assigned_date,
+                    tasks.deadline AS deadline,
 
-                CASE 
-                    WHEN DATE(tasks.deadline) = CURDATE() THEN 'Due Today'
-                    WHEN DATE(tasks.deadline) < CURDATE() THEN 'Overdue'
-                    ELSE 'Upcoming'
-                END AS deadline_status,
+                    CASE 
+                        WHEN DATE(tasks.deadline) = CURDATE() THEN 'Due Today'
+                        WHEN DATE(tasks.deadline) < CURDATE() THEN 'Overdue'
+                        ELSE 'Upcoming'
+                    END AS deadline_status,
 
-                CONCAT(DATEDIFF(CURDATE(), DATE(tasks.created_at)), ' days') AS milestone,
+                    CONCAT(DATEDIFF(CURDATE(), DATE(tasks.created_at)), ' days') AS milestone,
 
-                CASE
-                    WHEN tasks.approval_status IS NULL THEN 'Pending Review'
-                    WHEN tasks.approval_status = 'approved' THEN 'Approved'
-                    WHEN tasks.approval_status = 'rejected' THEN 'Rejected'
-                    ELSE 'Unknown'
-                END AS approval_status
+                    CASE
+                        WHEN tasks.approval_status IS NULL THEN 'Pending Review'
+                        WHEN tasks.approval_status = 'approved' THEN 'Approved'
+                        WHEN tasks.approval_status = 'rejected' THEN 'Rejected'
+                        ELSE 'Unknown'
+                    END AS approval_status
 
                 FROM tasks
                 JOIN task_assignments ON task_assignments.task_id = tasks.id
-
+                JOIN users ON users.id = task_assignments.user_id
                 WHERE tasks.status = 'completed'
                 AND tasks.project_id = :projectId
+            ";
 
-                GROUP BY tasks.id
-                ORDER BY tasks.created_at DESC;");
+            $params = [':projectId' => $projectId];
 
-            $stmt->execute([':projectId' => $projectId]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-      
+            // Optional: search (by task name or member fullname)
+            if (!empty($filters['search'])) {
+                $sql .= " AND (tasks.taskname LIKE :search OR users.fullname LIKE :search)";
+                $params[':search'] = '%' . $filters['search'] . '%';
+            }
+
+            // Optional: deadline filter
+            switch ($filters['filter'] ?? null) {
+                case 'due_today':
+                    $sql .= " AND DATE(tasks.deadline) = CURDATE()";
+                    break;
+                case 'overdue':
+                    $sql .= " AND DATE(tasks.deadline) < CURDATE()";
+                    break;
+                case 'upcoming':
+                    $sql .= " AND DATE(tasks.deadline) > CURDATE()";
+                    break;
+                // 'all' or null means no deadline filter
+            }
+
+            $sql .= " GROUP BY tasks.id ORDER BY tasks.created_at DESC";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
         } catch (PDOException $e) {
             throw new Exception($e->getMessage());
         }
