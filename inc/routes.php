@@ -187,6 +187,14 @@ $routes = [
                 "roles" => ["admin", "project_manager", "member"]
         ]
     ],
+    "myGroupTasks" => [
+        "GET" => [
+                "controller" => "PageController",
+                "method" => "showMemberAssignedGroupTask",
+                "auth" => true,
+                "roles" => ["admin", "project_manager", "member"]
+        ]
+    ],
     "memberProfilePanel" => [
         "GET" => [
                 "controller" => "PageController",

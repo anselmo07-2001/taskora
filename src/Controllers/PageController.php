@@ -58,12 +58,22 @@ class PageController extends AbstractController {
         ]);
     }
 
-    public function showMemberAssignedSoloTask() {
-        $tasks = $this->taskRepository->fetchMemberAssignedSoloTask(
-             $this->currentUserSession["userId"]
+    public function showMemberAssignedGroupTask() {
+        $tasks = $this->taskRepository->fetchMemberAssignedTasks(
+             $this->currentUserSession["userId"],  "group"
         );
 
-        $this->render("myTasks.view", [
+        $this->render("myGroupTasks.view", [
+            "tasks" => $tasks
+        ]);
+    }
+
+    public function showMemberAssignedSoloTask() {
+        $tasks = $this->taskRepository->fetchMemberAssignedTasks(
+             $this->currentUserSession["userId"],  "solo"
+        );
+
+        $this->render("mySoloTasks.view", [
             "tasks" => $tasks
         ]);
     }

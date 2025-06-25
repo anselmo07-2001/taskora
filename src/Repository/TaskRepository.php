@@ -89,46 +89,92 @@ class TaskRepository {
         }
     }
 
-    public function fetchMemberAssignedSoloTask(int $userId): ?array {
+    public function fetchMemberAssignedTasks(int $userId, ?string $taskType = null, array $filters = []): ?array {
         try {
-            $stmt = $this->pdo->prepare("SELECT 
-                        tasks.id AS id,
-                        tasks.taskname AS task,
-                        projects.name AS project,
-                        task_assignments.assigned_date AS assigned_date,
-                        tasks.status,
-                        tasks.deadline,
+            $sql = "
+                SELECT 
+                    tasks.id AS id,
+                    tasks.taskname AS task,
+                    projects.name AS project,
+                    task_assignments.assigned_date AS assigned_date,
+                    tasks.status,
+                    tasks.deadline,
 
-                        -- Milestone: days since assigned_date
-                        CONCAT(DATEDIFF(CURDATE(), DATE(task_assignments.assigned_date)), ' days') AS milestone,
+                    CONCAT(DATEDIFF(CURDATE(), DATE(task_assignments.assigned_date)), ' days') AS milestone,
 
-                        -- Approval status with computed logic
-                        CASE
-                            WHEN tasks.approval_status IS NULL AND tasks.status != 'completed' THEN 'Pending Completion'
-                            WHEN tasks.approval_status IS NULL AND tasks.status = 'completed' THEN 'Awaiting Approval'
-                            WHEN tasks.approval_status = 'approved' THEN 'Approved'
-                            WHEN tasks.approval_status = 'rejected' THEN 'Rejected'
-                            ELSE 'Unknown'
-                        END AS approval_status
+                    -- Approval status
+                    CASE
+                        WHEN tasks.approval_status IS NULL AND tasks.status != 'completed' THEN 'Pending Completion'
+                        WHEN tasks.approval_status IS NULL AND tasks.status = 'completed' THEN 'Awaiting Approval'
+                        WHEN tasks.approval_status = 'approved' THEN 'Approved'
+                        WHEN tasks.approval_status = 'rejected' THEN 'Rejected'
+                        ELSE 'Unknown'
+                    END AS approval_status,
 
-                    FROM task_assignments
-                    JOIN tasks ON task_assignments.task_id = tasks.id
-                    JOIN projects ON tasks.project_id = projects.id
+                    -- Member count
+                    (
+                        SELECT COUNT(*) 
+                        FROM task_assignments ta 
+                        WHERE ta.task_id = tasks.id
+                    ) AS members
 
-                    WHERE task_assignments.user_id = :userId
-                          AND tasks.tasktype = 'solo'
-                          AND (
-                                SELECT COUNT(*) 
-                                FROM task_assignments ta 
-                                WHERE ta.task_id = tasks.id
-                            ) = 1
-                    ORDER BY task_assignments.assigned_date DESC;");
+                FROM task_assignments
+                JOIN tasks ON task_assignments.task_id = tasks.id
+                JOIN projects ON tasks.project_id = projects.id
+                WHERE task_assignments.user_id = :userId
+            ";
 
-             $stmt->bindValue(":userId", $userId);
-             $stmt->execute();
-             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-        catch (PDOException $e) {
+            $params = [":userId" => $userId];
+
+            // Filter taskType
+            if ($taskType === 'solo') {
+                $sql .= " AND tasks.tasktype = 'solo'
+                        AND (
+                            SELECT COUNT(*) 
+                            FROM task_assignments ta 
+                            WHERE ta.task_id = tasks.id
+                        ) = 1";
+            } elseif ($taskType === 'group') {
+                $sql .= " AND tasks.tasktype = 'group'
+                        AND (
+                            SELECT COUNT(*) 
+                            FROM task_assignments ta 
+                            WHERE ta.task_id = tasks.id
+                        ) > 1";
+            }
+
+            // Filter deadline status
+            if (!empty($filters['filter'])) {
+                switch ($filters['filter']) {
+                    case 'due_today':
+                        $sql .= " AND DATE(tasks.deadline) = CURDATE()";
+                        break;
+                    case 'overdue':
+                        $sql .= " AND DATE(tasks.deadline) < CURDATE()";
+                        break;
+                    case 'upcoming':
+                        $sql .= " AND DATE(tasks.deadline) > CURDATE()";
+                        break;
+                }
+            }
+
+            // Filter by task or project name
+            if (!empty($filters['search'])) {
+                $sql .= " AND (tasks.taskname LIKE :search OR projects.name LIKE :search)";
+                $params[":search"] = '%' . $filters['search'] . '%';
+            }
+
+            $sql .= " ORDER BY task_assignments.assigned_date DESC";
+
+            $stmt = $this->pdo->prepare($sql);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+        } catch (PDOException $e) {
             throw new Exception($e->getMessage());
         }
     }

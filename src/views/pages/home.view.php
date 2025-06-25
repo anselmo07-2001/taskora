@@ -33,7 +33,7 @@
                                 <img src="./public/images/teamwork.png" class="w-50 mb-2"/>
                                 <p class="card-title fs-5">My Group Tasks</p>
                             </div>
-                            <a href="#" class="btn custom-primary-btn">Open</a>
+                            <a href="<?php echo BASE_URL . "/index.php?page=myGroupTasks" ?>" class="btn custom-primary-btn">Open</a>
                         </div>
                     </div>     
                 <?php endif; ?>
