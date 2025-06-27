@@ -26,6 +26,11 @@
                         <div class="d-grid">
                             <button type="submit" class="btn custom-primary-btn">Submit</button>
                         </div>
+                        <?php if (!empty($errors["userAccountErr"] ?? null)): ?> 
+                            <div class="invalid-feedback d-block mb-3 pe-1" style="font-size: 0.75rem;">
+                                     <?php echo e($errors["userAccountErr"]); ?>
+                            </div>
+                        <?php endif; ?>
                     </form>
                 </div>
         </div>

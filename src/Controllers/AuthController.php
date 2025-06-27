@@ -47,6 +47,14 @@ class AuthController extends AbstractController {
             exit;
         }
 
+        if ($user->status === "suspended" || $user->status === "suspended") {
+            $errors["userAccountErr"] = "This account is suspended or no longer available. Please contact your admin for support.";
+            $this->render("login.view", [
+                "errors" => $errors
+            ]);
+            exit;
+        }
+
         
         // check the password
         if (!password_verify($password, $user->password)) {
