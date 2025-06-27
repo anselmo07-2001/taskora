@@ -1,15 +1,33 @@
-<?php // var_dump($memberTasks); ?>
+<?php // var_dump($memberProfile); ?>
 
 <div class="container custom-container">
+        <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
         <?php require __DIR__ . "/../components/backButton.view.php" ?>
         <h1><?= e($memberProfile["fullname"] ?? ""); ?><sup class="sup-lift fs-6 text-muted">(Member)</sup></h1>
         <div class="mb-5">View all tasks involving <?= e($memberProfile["fullname"] ?? ""); ?></div>
 
-        <div class="mb-4">
-            <div class="fw-semibold">Suspend this Account</div>
-            <div class="mb-2">If you want to temporary deactivated this account, you may click this button </div>
-            <button class="btn btn-warning">Suspend Account</button>
-        </div>
+        <?php if ($memberProfile["status"] !== "suspended"): ?>
+            <form method="POST" class="mb-4" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "modifyUserAccountStatus"]) ?>">
+                <div class="fw-semibold">Suspend this Account</div>
+                <div class="mb-2">If you want to temporary deactivated this account, you may click this button </div>
+                <input type="hidden" name="userId" value="<?= $memberProfile["id"] ?>" />
+                <input type="hidden" name="status" value="suspended" />
+                <input type="hidden" name="redirectBack" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
+                <button type="submit" class="btn btn-warning">Suspend Account</button>
+            </form>
+        <?php endif; ?>
+
+        <?php if ($memberProfile["status"] === "suspended"): ?>
+            <form method="POST" class="mb-4" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "modifyUserAccountStatus"]) ?>">
+                <div class="fw-semibold">Unsuspend this Account</div>
+                <div class="mb-2">Account is current suspended, you may click this button to resume this account</div>
+                <input type="hidden" name="userId" value="<?= $memberProfile["id"] ?>" />
+                <input type="hidden" name="status" value="active" />
+                <input type="hidden" name="redirectBack" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
+                <button type="submit" class="btn btn-success">Unsuspend Account</button>
+            </form>
+        <?php endif; ?>
+
 
         <div class="mb-5">
             <div class="fw-semibold">Delete this Account</div>

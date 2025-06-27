@@ -84,6 +84,11 @@ $container->bind("TaskNotesController", function() use($container) {
     $taskRepository = $container->get("taskRepository");
     return new \App\Controllers\TaskNotesController($taskNotesRepository, $taskRepository);
 });
+$container->bind("AccountController", function() use($container) {
+    $userRepository = $container->get("userRepository");
+    return new \App\Controllers\AccountController($userRepository);
+});
+
 
 
 

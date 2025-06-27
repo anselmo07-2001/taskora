@@ -10,6 +10,19 @@ use Exception;
 class UserRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function handleUpdateAccountStatus(int $userId, string $status) { 
+        try {
+            $stmt = $this->pdo->prepare("UPDATE users SET status = :status WHERE id = :userId");
+            $stmt->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $stmt->bindValue(":status", $status);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        }
+        catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }      
+    }
+
     public function fetchUserProfileById(int $userId) {
         try {
             $stmt = $this->pdo->prepare("SELECT id, username, fullname, role, status FROM `users` WHERE id = :userId");

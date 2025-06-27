@@ -203,6 +203,14 @@ $routes = [
                 "roles" => ["admin", "project_manager"]
         ]
     ],
+    "modifyUserAccountStatus" => [
+        "POST" => [
+                "controller" => "AccountController",
+                "method" => "modifyUserAccountStatus",
+                "auth" => true,
+                "roles" => ["admin", "project_manager"]
+        ]
+    ]
 
 
 
