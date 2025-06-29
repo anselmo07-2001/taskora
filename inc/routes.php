@@ -210,7 +210,15 @@ $routes = [
                 "auth" => true,
                 "roles" => ["admin", "project_manager"]
         ]
-    ]
+    ],
+    "members" => [
+        "GET" => [
+                "controller" => "PageController",
+                "method" => "showAccounts",
+                "auth" => true,
+                "roles" => ["admin", "project_manager"]
+        ]
+    ],
 
 
 

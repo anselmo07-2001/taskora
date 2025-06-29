@@ -9,6 +9,82 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function fetchUsersTasks() : ?array {
+        try {
+            $sql = "SELECT 
+                    users.id AS id,
+                    users.fullname AS name,
+                    users.role AS role,
+
+                    -- Project count: owned by project manager OR member
+                    COUNT(DISTINCT CASE 
+                        WHEN projects.assigned_manager = users.id THEN projects.id 
+                    END) AS owned_project_count,
+
+                    COUNT(DISTINCT CASE 
+                        WHEN project_members.user_id = users.id THEN project_members.project_id 
+                    END) AS member_project_count,
+
+                    -- Total task assigned to user (only members, not admin/project manager)
+                    COUNT(DISTINCT CASE 
+                        WHEN users.role NOT IN ('admin', 'project_manager') THEN task_assignments.task_id 
+                    END) AS total_task,
+
+                    COUNT(DISTINCT CASE 
+                        WHEN users.role NOT IN ('admin', 'project_manager') 
+                            AND tasks.status != 'completed' THEN tasks.id 
+                    END) AS unsubmitted_task,
+
+                    COUNT(DISTINCT CASE 
+                        WHEN users.role NOT IN ('admin', 'project_manager') 
+                            AND tasks.status = 'completed' THEN tasks.id 
+                    END) AS submitted_task,
+
+                    COUNT(DISTINCT CASE 
+                        WHEN users.role NOT IN ('admin', 'project_manager') 
+                            AND tasks.approval_status = 'approved' THEN tasks.id 
+                    END) AS approved_task,
+
+                    COUNT(DISTINCT CASE 
+                        WHEN users.role NOT IN ('admin', 'project_manager') 
+                            AND tasks.approval_status = 'rejected' THEN tasks.id 
+                    END) AS rejected_task
+
+                FROM users
+                LEFT JOIN project_members 
+                    ON project_members.user_id = users.id
+
+                LEFT JOIN projects 
+                    ON projects.assigned_manager = users.id 
+                    OR projects.id = project_members.project_id
+
+                LEFT JOIN task_assignments 
+                    ON task_assignments.user_id = users.id
+
+                LEFT JOIN tasks 
+                    ON tasks.id = task_assignments.task_id
+
+                WHERE users.status != 'deleted'
+
+                GROUP BY users.id, users.fullname, users.role
+                ORDER BY users.fullname";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+            foreach ($rows as &$row) {
+                $row['total_project_count'] = (int)$row['owned_project_count'] + (int)$row['member_project_count'];
+            }
+
+            return $rows;
+                
+        }
+        catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function fetchUserTasks(int $userId, string $taskType = 'all', ?int $projectId = null, ?string $search = null): array {
         try {
             $sql = "

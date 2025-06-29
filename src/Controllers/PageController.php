@@ -41,6 +41,14 @@ class PageController extends AbstractController {
          $this->taskNotesRepository = $taskNotesRepository;
     } 
 
+    public function showAccounts() {
+        $userTaskSummary = $this->taskRepository->fetchUsersTasks();
+
+        $this->render("members.view", [
+            "userTaskSummary" => $userTaskSummary
+        ]);
+    }
+
     public function showMemberProfilePanel($request) {
         $memberId = (int) $request["get"]["memberId"] ?? "";
         $projectId = (int) $request["get"]["projectId"] ?? "";

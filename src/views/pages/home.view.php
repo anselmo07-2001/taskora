@@ -95,7 +95,7 @@
                                 <img src="./public/images/choosing.png" class="w-50 mb-2"/>
                                 <p class="card-title fs-5">Members</p>
                             </div>
-                            <a href="#" class="btn custom-primary-btn">Open</a>
+                            <a href="<?php echo BASE_URL . "/index.php?page=members" ?>" class="btn custom-primary-btn">Open</a>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 mb-3">
