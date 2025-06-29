@@ -1,20 +1,26 @@
-<?php // var_dump($userTaskSummary[1]); ?>
+<?php //var_dump($filter); ?>
 
 <div class="container custom-container">
     <?php require __DIR__ . "/../components/backButton.view.php" ?>
     <h2>Display All Accounts</h2>
     <hr class="border-primary border-2 mb-4">
 
-    <h6 class="text-muted">Total Project: 5</h6>
+    <h6 class="text-muted">Total Account: <?= count($userTaskSummary); ?></h6>
     <div class="mb-3 d-flex justify-content-between">
         <div class="d-flex align-items-center gap-2">
-            <button href="#" class="btn custom-primary-btn filter-form-btn">All Role</button>
-            <button href="#" class="btn custom-primary-btn filter-form-btn">Member</button>
-            <button href="#" class="btn custom-primary-btn filter-form-btn">Project Manager</button>
-            <button href="#" class="btn custom-primary-btn filter-form-btn">Admin</button>
+            <a href="<?= BASE_URL . "/index.php?page=members&" . http_build_query(["filter" => "all"]); ?>" 
+                class="btn custom-primary-btn filter-form-btn <?= $filter === "all" ? "filter-active" : "" ?>">All Role</a>
+            <a href="<?= BASE_URL . "/index.php?page=members&" . http_build_query(["filter" => "member"]); ?>" 
+                class="btn custom-primary-btn filter-form-btn <?= $filter === "member" ? "filter-active" : "" ?>">Member</a>
+            <a href="<?= BASE_URL . "/index.php?page=members&" . http_build_query(["filter" => "project_manager"]); ?>" 
+                class="btn custom-primary-btn filter-form-btn <?= $filter === "project_manager" ? "filter-active" : "" ?>">Project Manager</a>
+            <a href="<?= BASE_URL . "/index.php?page=members&" . http_build_query(["filter" => "admin"]); ?>" 
+                class="btn custom-primary-btn filter-form-btn <?= $filter === "admin" ? "filter-active" : "" ?>">Admin</a>
         </div>
-        <form class="d-flex gap-2">
-                <input type="text" class="form-control" name="searchProject" placeholder="Search Project">
+        <form method="GET" class="d-flex gap-2">
+                <input type="hidden" name="page" value="members"/>
+                <input type="hidden" name="filter" value="<?= $filter ?>"/>
+                <input required type="text" class="form-control" name="search" placeholder="Search User" value="<?= $search ?>">
                 <button class="btn custom-primary-btn filter-form-btn">
                     <img src="./public/images/magnifying-glass.png" alt="icon" style="width:15px; height:15px; filter: invert(1);">
                 </button>

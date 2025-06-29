@@ -41,11 +41,16 @@ class PageController extends AbstractController {
          $this->taskNotesRepository = $taskNotesRepository;
     } 
 
-    public function showAccounts() {
-        $userTaskSummary = $this->taskRepository->fetchUsersTasks();
+    public function showAccounts($request) {
+        $filter = $request["get"]["filter"] ?? "all";
+        $search = $request["get"]["search"] ?? "";
 
+        $userTaskSummary = $this->taskRepository->fetchUsersTasks($filter, $search);
+       
         $this->render("members.view", [
-            "userTaskSummary" => $userTaskSummary
+            "userTaskSummary" => $userTaskSummary,
+            "filter" => $filter,
+            "search" => $search
         ]);
     }
 
