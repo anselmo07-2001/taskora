@@ -38,6 +38,7 @@
                 <th scope="col">Submitted Tasks</t h>
                 <th scope="col">Approved Status</th>
                 <th scope="col">Rejected Status</th>
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -52,7 +53,7 @@
                     <td><?= e($user["submitted_task"]); ?></td>
                     <td><?= e($user["approved_task"]); ?></td>
                     <td><?= e($user["rejected_task"]); ?></td>
-                    <td><a href="#" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
+                    <td><a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "memberProjects", "userId" => $user["id"]]); ?>" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

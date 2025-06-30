@@ -212,9 +212,17 @@ $routes = [
         ]
     ],
     "members" => [
+            "GET" => [
+                    "controller" => "PageController",
+                    "method" => "showAccounts",
+                    "auth" => true,
+                    "roles" => ["admin", "project_manager"]
+            ]
+    ],
+    "memberProjects" => [
         "GET" => [
                 "controller" => "PageController",
-                "method" => "showAccounts",
+                "method" => "showMemberProjects",
                 "auth" => true,
                 "roles" => ["admin", "project_manager"]
         ]

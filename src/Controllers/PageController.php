@@ -41,6 +41,47 @@ class PageController extends AbstractController {
          $this->taskNotesRepository = $taskNotesRepository;
     } 
 
+    public function showMemberProjects($request) {
+        $filter = $_GET["filter"] ?? "";
+        $userId = (int) $request["get"]["userId"];
+        $search = $_GET["search"] ?? "";
+        $today = date("Y-m-d");
+
+        $whereClauses = [];
+        $params = [];
+
+        if ($filter === 'due_today') {
+            $whereClauses[] = "projects.deadline = :today";
+            $params['today'] = $today;
+        } elseif ($filter === 'overdue') {
+            $whereClauses[] = "projects.deadline < :today";
+            $params['today'] = $today;
+        } elseif ($filter === 'upcoming') {
+            $whereClauses[] = "projects.deadline > :today";
+            $params['today'] = $today;
+        }
+
+        if (!empty($search)) {
+            $whereClauses[] = "projects.name LIKE :search";
+            $params['search'] = '%' . $search . '%';
+        }
+    
+        $whereSQL = '';
+        if (count($whereClauses) > 0) {
+            $whereSQL = 'WHERE ' . implode(' AND ', $whereClauses);
+        }
+
+        $projects = $this->projectRepository->fetchProjectsForMember($userId, $whereSQL, $params);
+        $user = $this->userRepository->fetchUserProfileById($userId);
+        
+        $this->render("memberProjects.view", [
+            "projects" => $projects,
+            "headerTitle" => "Display All Project of {$user['fullname']}",
+            "filter" => $filter,
+            "userId" => $userId,
+        ]);
+    }
+
     public function showAccounts($request) {
         $filter = $request["get"]["filter"] ?? "all";
         $search = $request["get"]["search"] ?? "";
