@@ -40,6 +40,18 @@ class PageController extends AbstractController {
          $this->projectPanelService = $projectPanelService;
          $this->taskNotesRepository = $taskNotesRepository;
     } 
+    public function showTasks($request) {
+        $filter = $request["get"]["filter"] ?? 'all';
+        $search = $request["get"]["search"] ?? "";
+
+        $tasks = $this->taskRepository->fetchTasksWithDetails($filter, $search);
+
+        $this->render("tasks.view", [
+            "tasks" => $tasks,
+            "filter" => $filter,
+            "search" => $search,
+        ]);
+    }
 
     public function showMemberProjects($request) {
         $filter = $_GET["filter"] ?? "";

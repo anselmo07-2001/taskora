@@ -227,6 +227,14 @@ $routes = [
                 "roles" => ["admin", "project_manager"]
         ]
     ],
+    "tasks" => [
+        "GET" => [
+                "controller" => "PageController",
+                "method" => "showTasks",
+                "auth" => true,
+                "roles" => ["admin", "project_manager"]
+        ]
+    ],
 
 
 

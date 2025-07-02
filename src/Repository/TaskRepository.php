@@ -9,6 +9,100 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
+    //if $role is project_manager then provide the project_manager id
+    public function fetchTasksWithDetails( string $filter = 'all', string $search = '', string $role = 'admin', int $userId = 0) : array { 
+        try {
+            $sql = "
+                SELECT 
+                    tasks.id AS id,
+                    tasks.taskname AS task,
+                    projects.name AS project_name,
+                    
+                    CASE 
+                        WHEN tasks.tasktype = 'solo' THEN 1
+                        ELSE COUNT(DISTINCT task_assignments.user_id)
+                    END AS assigned_member,
+                    
+                    MIN(task_assignments.assigned_date) AS assigned_date,
+                    
+                    tasks.status AS status,
+                    tasks.deadline AS deadline,
+                    
+                    CASE
+                        WHEN tasks.status != 'completed' THEN 'pending completion'
+                        WHEN tasks.status = 'completed' AND tasks.approval_status IS NULL THEN 'pending approval'
+                        WHEN tasks.approval_status = 'approved' THEN 'approved'
+                        WHEN tasks.approval_status = 'rejected' THEN 'rejected'
+                        ELSE 'unknown'
+                    END AS approval_status
+
+                FROM tasks
+
+                LEFT JOIN projects
+                    ON tasks.project_id = projects.id
+
+                LEFT JOIN task_assignments
+                    ON tasks.id = task_assignments.task_id
+
+                WHERE tasks.status != 'deleted'
+            ";
+
+            $params = [];
+
+            // Role restriction
+            if ($role === 'project_manager') {
+                $sql .= " AND projects.assigned_manager = :manager_id";
+                $params[':manager_id'] = $userId;
+            }
+
+            // Filter conditions
+            if ($filter !== 'all') {
+                if ($filter === 'due_today') {
+                    $sql .= " AND tasks.deadline = CURRENT_DATE()";
+                } elseif ($filter === 'overdue') {
+                    $sql .= " AND tasks.deadline < CURRENT_DATE()";
+                } elseif ($filter === 'upcoming') {
+                    $sql .= " AND tasks.deadline > CURRENT_DATE()";
+                }
+            }
+
+            // Search condition
+            if (!empty($search)) {
+                $sql .= " AND tasks.taskname LIKE :search";
+                $params[':search'] = '%' . $search . '%';
+            }
+
+            $sql .= "
+                GROUP BY 
+                    tasks.id, 
+                    tasks.taskname, 
+                    projects.name, 
+                    tasks.tasktype, 
+                    tasks.status, 
+                    tasks.deadline, 
+                    tasks.approval_status
+
+                ORDER BY tasks.deadline ASC
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            // Bind all params
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+
+
     public function fetchUsersTasks(int $limit, int $offset, string $filter = 'all', string $search = ''): array
     {
         try {
