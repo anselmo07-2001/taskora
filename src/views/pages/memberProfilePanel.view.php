@@ -31,7 +31,7 @@
 
         <div class="mb-5">
             <div class="fw-semibold">Delete this Account</div>
-            <div class="mb-2">If you want to delete this account, Please note that all data related to this account will also deleted </div>
+            <div class="mb-2">If you delete this account, it will be soft deleted (not permanently removed).</div>
             <button class="btn btn-danger">Delete Account</button>
         </div>
 
@@ -76,7 +76,7 @@
         </div>
 
         <!-- Suspended Task BTN Modal -->
-        <div class="modal fade" id="suspendModal" tabindex="-1" aria-labelledby="suspendModalLabel" aria-hidden="true">
+        <!-- <div class="modal fade" id="suspendModal" tabindex="-1" aria-labelledby="suspendModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form action="your-php-handler.php" method="POST">
@@ -89,7 +89,6 @@
                             <label for="suspendReason" class="form-label">Reason for Suspension</label>
                             <textarea class="form-control" id="suspendReason" name="suspend_reason" rows="3" required></textarea>
                         </div>
-                        <!-- hidden input to pass task ID -->
                         <input type="hidden" name="task_id" value="123">
                         </div>
                             <div class="modal-footer">
@@ -99,9 +98,9 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <!-- <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                 <form action="reject-task.php" method="POST">
@@ -123,7 +122,7 @@
                 </form>
                 </div>
             </div>
-        </div>
+        </div> -->
 
 
             <table class="table table-striped table-bordered">
@@ -153,8 +152,7 @@
                             <td><?= e($memberTask["approval status"]); ?></td>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <a href="#" class="btn btn-warning my-manage-btn" data-bs-toggle="modal" data-bs-target="#suspendModal">Suspend</a>
-                                    <a href="#" class="btn btn-danger my-manage-btn" data-bs-toggle="modal" data-bs-target="#rejectModal">Rejected</a>
+                                    <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($memberTask["id"])]) ?>" class="btn custom-primary-btn my-manage-btn">Open</a>
                                 </div>
                             </td>
                         </tr>
