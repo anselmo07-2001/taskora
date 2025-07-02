@@ -66,46 +66,7 @@ class TaskRepository {
     //if $role is project_manager then provide the project_manager id
     public function fetchTasksWithDetails( string $filter = 'all', string $search = '', 
         string $role = 'admin', int $userId = 1, int $limit = 10, int $offset = 0) : array { 
-        try {
-            // Subquery: select task IDs first, applying filters + pagination
-            $subquery = "
-                SELECT tasks.id
-                FROM tasks
-                LEFT JOIN projects ON tasks.project_id = projects.id
-                WHERE tasks.status != 'deleted'
-            ";
-
-            $params = [];
-
-            // Role restriction
-            if ($role === 'project_manager' && $userId !== 1) {
-                $subquery .= " AND projects.assigned_manager = :manager_id";
-                $params[':manager_id'] = $userId;
-            }
-
-            // Filter conditions
-            if ($filter !== 'all') {
-                if ($filter === 'due_today') {
-                    $subquery .= " AND tasks.deadline = CURRENT_DATE()";
-                } elseif ($filter === 'overdue') {
-                    $subquery .= " AND tasks.deadline < CURRENT_DATE()";
-                } elseif ($filter === 'upcoming') {
-                    $subquery .= " AND tasks.deadline > CURRENT_DATE()";
-                }
-            }
-
-            // Search condition
-            if (!empty($search)) {
-                $subquery .= " AND tasks.taskname LIKE :search";
-                $params[':search'] = '%' . $search . '%';
-            }
-
-            $subquery .= " 
-                ORDER BY tasks.deadline ASC
-                LIMIT :limit OFFSET :offset
-            ";
-
-            // Now main query: join on the selected IDs
+          try {
             $sql = "
                 SELECT 
                     tasks.id AS id,
@@ -133,8 +94,32 @@ class TaskRepository {
                 FROM tasks
                 LEFT JOIN projects ON tasks.project_id = projects.id
                 LEFT JOIN task_assignments ON tasks.id = task_assignments.task_id
-                INNER JOIN ( $subquery ) AS paged_tasks ON tasks.id = paged_tasks.id
+                WHERE tasks.status != 'deleted'
+            ";
 
+            $params = [];
+
+            if ($role === 'project_manager' && $userId !== 1) {
+                $sql .= " AND projects.assigned_manager = :manager_id";
+                $params[':manager_id'] = $userId;
+            }
+
+            if ($filter !== 'all') {
+                if ($filter === 'due_today') {
+                    $sql .= " AND tasks.deadline = CURRENT_DATE()";
+                } elseif ($filter === 'overdue') {
+                    $sql .= " AND tasks.deadline < CURRENT_DATE()";
+                } elseif ($filter === 'upcoming') {
+                    $sql .= " AND tasks.deadline > CURRENT_DATE()";
+                }
+            }
+
+            if (!empty($search)) {
+                $sql .= " AND tasks.taskname LIKE :search";
+                $params[':search'] = '%' . $search . '%';
+            }
+
+            $sql .= "
                 GROUP BY 
                     tasks.id, 
                     tasks.taskname, 
@@ -143,13 +128,12 @@ class TaskRepository {
                     tasks.status, 
                     tasks.deadline, 
                     tasks.approval_status
-
                 ORDER BY tasks.deadline ASC
+                LIMIT :limit OFFSET :offset
             ";
 
             $stmt = $this->pdo->prepare($sql);
 
-            // Bind parameters
             foreach ($params as $key => $value) {
                 $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
             }
