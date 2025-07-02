@@ -1,3 +1,4 @@
+<?php require __DIR__ . "/../components/pagination.view.php" ?>
 <div class="container custom-container">
     <h2>Display All Tasks</h2>
     <hr class="border-primary border-2 mb-4">
@@ -16,6 +17,7 @@
         </div>
         <form method="GET" class="d-flex gap-2">
                 <input type="hidden" name="page" value="tasks" />
+                <input type="hidden" name="currentPaginationPage" value="<?= $currentPaginationPage ?? 1 ?>" />
                 <input type="hidden" name="filter" value="<?= $filter ?? "" ?>" />
 
                 <input type="text" class="form-control" name="search" placeholder="Search Task" value="<?= $search ?? "" ?>">
@@ -54,4 +56,15 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+
+    <?php
+        echo renderPagination([
+            "currentPaginationPage" => $paginationMeta["currentPaginationPage"],
+            "baseUrl" => ["filter" => $filter, "search" => $search ?? ""],
+            "paginationStart" => $paginationMeta["start"],
+            "paginationEnd" => $paginationMeta["end"],
+            "totalPages" => $paginationMeta["totalItems"],
+            "page" => "tasks"
+        ]);
+    ?>
 </div>

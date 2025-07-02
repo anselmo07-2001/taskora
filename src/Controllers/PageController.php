@@ -40,16 +40,28 @@ class PageController extends AbstractController {
          $this->projectPanelService = $projectPanelService;
          $this->taskNotesRepository = $taskNotesRepository;
     } 
+
+
     public function showTasks($request) {
         $filter = $request["get"]["filter"] ?? 'all';
         $search = $request["get"]["search"] ?? "";
+        $currentPaginationPage = (int) ($request["get"]["currentPaginationPage"] ?? 1);
 
-        $tasks = $this->taskRepository->fetchTasksWithDetails($filter, $search);
+        $totalTasks = $this->taskRepository->countAllTasks($filter, $search);
+        $paginationMeta = PaginateService::paginate($totalTasks, $currentPaginationPage, 10);
+        $tasks = $this->taskRepository->fetchTasksWithDetails(
+                        $filter, $search, $this->currentUserSession["role"],  $this->currentUserSession["userId"], 
+                        $paginationMeta["limit"], $paginationMeta["offset"]);
+
+        var_dump($tasks); echo "<br>";
+        var_dump($paginationMeta);
 
         $this->render("tasks.view", [
             "tasks" => $tasks,
             "filter" => $filter,
             "search" => $search,
+            "paginationMeta" => $paginationMeta,
+            "currentPaginationPage" => $currentPaginationPage
         ]);
     }
 

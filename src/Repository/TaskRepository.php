@@ -9,47 +9,18 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
-    //if $role is project_manager then provide the project_manager id
-    public function fetchTasksWithDetails( string $filter = 'all', string $search = '', string $role = 'admin', int $userId = 0) : array { 
+    public function countAllTasks(string $filter = 'all', string $search = '', string $role = 'admin',  int $userId = 0): int {
         try {
             $sql = "
-                SELECT 
-                    tasks.id AS id,
-                    tasks.taskname AS task,
-                    projects.name AS project_name,
-                    
-                    CASE 
-                        WHEN tasks.tasktype = 'solo' THEN 1
-                        ELSE COUNT(DISTINCT task_assignments.user_id)
-                    END AS assigned_member,
-                    
-                    MIN(task_assignments.assigned_date) AS assigned_date,
-                    
-                    tasks.status AS status,
-                    tasks.deadline AS deadline,
-                    
-                    CASE
-                        WHEN tasks.status != 'completed' THEN 'pending completion'
-                        WHEN tasks.status = 'completed' AND tasks.approval_status IS NULL THEN 'pending approval'
-                        WHEN tasks.approval_status = 'approved' THEN 'approved'
-                        WHEN tasks.approval_status = 'rejected' THEN 'rejected'
-                        ELSE 'unknown'
-                    END AS approval_status
-
+                SELECT COUNT(DISTINCT tasks.id) AS total_tasks
                 FROM tasks
-
-                LEFT JOIN projects
-                    ON tasks.project_id = projects.id
-
-                LEFT JOIN task_assignments
-                    ON tasks.id = task_assignments.task_id
-
+                LEFT JOIN projects ON tasks.project_id = projects.id
                 WHERE tasks.status != 'deleted'
             ";
 
             $params = [];
 
-            // Role restriction
+            // Role condition: if project_manager, limit to their managed projects
             if ($role === 'project_manager') {
                 $sql .= " AND projects.assigned_manager = :manager_id";
                 $params[':manager_id'] = $userId;
@@ -72,7 +43,98 @@ class TaskRepository {
                 $params[':search'] = '%' . $search . '%';
             }
 
-            $sql .= "
+            $stmt = $this->pdo->prepare($sql);
+
+            // Bind parameters
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return isset($result['total_tasks']) ? (int) $result['total_tasks'] : 0;
+
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+
+
+    //if $role is project_manager then provide the project_manager id
+    public function fetchTasksWithDetails( string $filter = 'all', string $search = '', 
+        string $role = 'admin', int $userId = 1, int $limit = 10, int $offset = 0) : array { 
+        try {
+            // Subquery: select task IDs first, applying filters + pagination
+            $subquery = "
+                SELECT tasks.id
+                FROM tasks
+                LEFT JOIN projects ON tasks.project_id = projects.id
+                WHERE tasks.status != 'deleted'
+            ";
+
+            $params = [];
+
+            // Role restriction
+            if ($role === 'project_manager' && $userId !== 1) {
+                $subquery .= " AND projects.assigned_manager = :manager_id";
+                $params[':manager_id'] = $userId;
+            }
+
+            // Filter conditions
+            if ($filter !== 'all') {
+                if ($filter === 'due_today') {
+                    $subquery .= " AND tasks.deadline = CURRENT_DATE()";
+                } elseif ($filter === 'overdue') {
+                    $subquery .= " AND tasks.deadline < CURRENT_DATE()";
+                } elseif ($filter === 'upcoming') {
+                    $subquery .= " AND tasks.deadline > CURRENT_DATE()";
+                }
+            }
+
+            // Search condition
+            if (!empty($search)) {
+                $subquery .= " AND tasks.taskname LIKE :search";
+                $params[':search'] = '%' . $search . '%';
+            }
+
+            $subquery .= " 
+                ORDER BY tasks.deadline ASC
+                LIMIT :limit OFFSET :offset
+            ";
+
+            // Now main query: join on the selected IDs
+            $sql = "
+                SELECT 
+                    tasks.id AS id,
+                    tasks.taskname AS task,
+                    projects.name AS project_name,
+
+                    CASE 
+                        WHEN tasks.tasktype = 'solo' THEN 1
+                        ELSE COUNT(DISTINCT task_assignments.user_id)
+                    END AS assigned_member,
+
+                    MIN(task_assignments.assigned_date) AS assigned_date,
+
+                    tasks.status AS status,
+                    tasks.deadline AS deadline,
+
+                    CASE
+                        WHEN tasks.status != 'completed' THEN 'pending completion'
+                        WHEN tasks.status = 'completed' AND tasks.approval_status IS NULL THEN 'pending approval'
+                        WHEN tasks.approval_status = 'approved' THEN 'approved'
+                        WHEN tasks.approval_status = 'rejected' THEN 'rejected'
+                        ELSE 'unknown'
+                    END AS approval_status
+
+                FROM tasks
+                LEFT JOIN projects ON tasks.project_id = projects.id
+                LEFT JOIN task_assignments ON tasks.id = task_assignments.task_id
+                INNER JOIN ( $subquery ) AS paged_tasks ON tasks.id = paged_tasks.id
+
                 GROUP BY 
                     tasks.id, 
                     tasks.taskname, 
@@ -87,10 +149,13 @@ class TaskRepository {
 
             $stmt = $this->pdo->prepare($sql);
 
-            // Bind all params
+            // Bind parameters
             foreach ($params as $key => $value) {
                 $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
             }
+
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
             $stmt->execute();
 
