@@ -150,11 +150,10 @@ class TaskRepository {
         }
     }
 
-
-
-    public function fetchUsersTasks(int $limit, int $offset, string $filter = 'all', string $search = ''): array
+    
+    public function fetchUsersTasks(int $limit, int $offset, string $filter = 'all', string $search = '', string $role = "admin", int $userId = 1): array
     {
-        try {
+         try {
             $sql = "
                 SELECT 
                     users.id AS id,
@@ -195,8 +194,8 @@ class TaskRepository {
                     ON project_members.user_id = users.id
 
                 LEFT JOIN projects 
-                    ON projects.assigned_manager = users.id 
-                    OR projects.id = project_members.project_id
+                    ON (projects.assigned_manager = users.id 
+                        OR projects.id = project_members.project_id)
 
                 LEFT JOIN task_assignments 
                     ON task_assignments.user_id = users.id
@@ -209,17 +208,25 @@ class TaskRepository {
 
             $params = [];
 
+            // Apply filter on user role if specified
             if ($filter !== 'all') {
-                $sql .= " AND users.role = :role";
-                $params[':role'] = $filter;
+                $sql .= " AND users.role = :user_role";
+                $params[':user_role'] = $filter;
             }
 
+            // Apply search
             if (!empty($search)) {
                 $sql .= " AND users.fullname LIKE :search";
                 $params[':search'] = '%' . $search . '%';
             }
 
-            $sql .= " 
+            // Project manager restriction
+            if ($role === 'project_manager') {
+                $sql .= " AND projects.assigned_manager = :manager_id";
+                $params[':manager_id'] = $userId;
+            }
+
+            $sql .= "
                 GROUP BY users.id, users.fullname, users.role
                 ORDER BY users.fullname
                 LIMIT :limit OFFSET :offset
@@ -227,11 +234,12 @@ class TaskRepository {
 
             $stmt = $this->pdo->prepare($sql);
 
+            // Bind dynamic filters
             foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value, PDO::PARAM_STR);
+                $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
             }
 
-            // Bind limit and offset (always integer type)
+            // Bind pagination
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 

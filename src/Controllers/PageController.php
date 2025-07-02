@@ -109,10 +109,12 @@ class PageController extends AbstractController {
         $search = $request["get"]["search"] ?? "";
         $currentPaginationPage = (int) ($request["get"]["currentPaginationPage"] ?? 1);
 
-        $totalAccounts = $this->userRepository->countAllUsers($filter, $search);
+        $totalAccounts = $this->userRepository->countAllUsers($filter, $search, $this->currentUserSession["role"], $this->currentUserSession["userId"]);
         $paginationMeta =  PaginateService::paginate($totalAccounts, $currentPaginationPage, 10);
 
-        $userTaskSummary = $this->taskRepository->fetchUsersTasks($paginationMeta["limit"], $paginationMeta["offset"], $filter, $search);
+        $userTaskSummary = $this->taskRepository->fetchUsersTasks(
+                     $paginationMeta["limit"], $paginationMeta["offset"], $filter, $search, 
+                     $this->currentUserSession["role"], $this->currentUserSession["userId"]);
        
         $this->render("members.view", [
             "userTaskSummary" => $userTaskSummary,

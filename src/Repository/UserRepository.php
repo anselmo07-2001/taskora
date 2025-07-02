@@ -10,34 +10,45 @@ use Exception;
 class UserRepository {
     public function __construct(private PDO $pdo) {}
 
-    public function countAllUsers(string $filter = 'all', string $search = ''): int
-    {
+    public function countAllUsers(string $filter = 'all', string $search = '', string $role = 'admin',  int $userId = 1 ): int {
         try {
-            $sql = "SELECT COUNT(*) AS total_users FROM users WHERE status != 'deleted'";
+            $sql = "
+                SELECT COUNT(DISTINCT users.id) AS total_users
+                FROM users
+                LEFT JOIN project_members ON project_members.user_id = users.id
+                LEFT JOIN projects 
+                    ON projects.id = project_members.project_id
+                WHERE users.status != 'deleted'
+            ";
+
             $params = [];
 
+            // Filter users by their role if specified
             if ($filter !== 'all') {
-                $sql .= " AND role = :role";
-                $params[':role'] = $filter;
+                $sql .= " AND users.role = :user_role";
+                $params[':user_role'] = $filter;
             }
 
+            // Apply search on fullname
             if (!empty($search)) {
-                $sql .= " AND fullname LIKE :search";
+                $sql .= " AND users.fullname LIKE :search";
                 $params[':search'] = '%' . $search . '%';
+            }
+
+            // If project_manager, limit to users in their projects
+            if ($role === 'project_manager') {
+                $sql .= " AND projects.assigned_manager = :manager_id";
+                $params[':manager_id'] = $userId;
             }
 
             $stmt = $this->pdo->prepare($sql);
 
-            if (isset($params[':role'])) {
-                $stmt->bindValue(':role', $params[':role'], PDO::PARAM_STR);
-            }
-
-            if (isset($params[':search'])) {
-                $stmt->bindValue(':search', $params[':search'], PDO::PARAM_STR);
+            // Bind values
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
             }
 
             $stmt->execute();
-
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             return isset($result['total_users']) ? (int) $result['total_users'] : 0;
