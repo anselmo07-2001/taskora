@@ -94,11 +94,18 @@ class PageController extends AbstractController {
         }
 
         $projects = $this->projectRepository->fetchProjectsForMember($userId, $whereSQL, $params);
+
+        if ($this->currentUserSession["role"] !== "admin") {
+            $projects = array_filter($projects, function ($project) {
+                 return (int) $project['manager_id'] === (int) $this->currentUserSession["userId"];
+            });
+        } 
+       
         $user = $this->userRepository->fetchUserProfileById($userId);
         
         $this->render("memberProjects.view", [
             "projects" => $projects,
-            "headerTitle" => "Display All Project of {$user['fullname']}",
+            "headerTitle" => "Projects Involving {$user['fullname']}",
             "filter" => $filter,
             "userId" => $userId,
         ]);

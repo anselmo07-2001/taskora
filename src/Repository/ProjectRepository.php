@@ -201,6 +201,7 @@ class ProjectRepository {
 
      /** fetch projects that owned by a member */
     public function fetchProjectsForMember(int $memberId, string $whereSql = "", array $params = []) {
+        
         try {
             $where = [];
             $params['memberId'] = $memberId;
@@ -224,6 +225,7 @@ class ProjectRepository {
                 SELECT 
                     projects.id,
                     projects.name,
+                    projects.assigned_manager AS manager_id,  -- added field
                     manager.fullname AS fullname,
 
                     COUNT(DISTINCT CASE 
@@ -256,6 +258,7 @@ class ProjectRepository {
                 GROUP BY 
                     projects.id,
                     projects.name,
+                    projects.assigned_manager,  -- added to GROUP BY
                     manager.fullname,
                     projects.deadline,
                     projects.status
