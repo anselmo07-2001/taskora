@@ -3,7 +3,15 @@
     <h2>Display All Tasks</h2>
     <hr class="border-primary border-2 mb-4">
 
-    <h6 class="text-muted">Total Project: 5</h6>
+    <?php
+        $label = ([
+            'all' => 'All',
+            'due_today' => 'Due Today',
+            'overdue' => 'Overdue',
+            'upcoming' => 'Upcoming'
+        ][$filter] ?? 'All');
+    ?>
+    <h6 class="text-muted"><?= $label ?> Projects: <?= $totalTasks ?></h6>
     <div class="mb-3 d-flex justify-content-between">
         <div class="d-flex align-items-center gap-2">
             <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "tasks", "filter" => "all"]) ?>" 
@@ -11,7 +19,7 @@
             <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "tasks", "filter" => "due_today"]) ?>" 
                     class="btn custom-primary-btn filter-form-btn <?= $filter === "due_today" ? "filter-active" : "" ?>">Due Today</a>
             <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "tasks", "filter" => "overdue"]) ?>" 
-                class="btn custom-primary-btn filter-form-btn <?= $filter === "ovedue" ? "filter-active" : "" ?>">Ovedue</a>
+                class="btn custom-primary-btn filter-form-btn <?= $filter === "overdue" ? "filter-active" : "" ?>">Ovedue</a>
             <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "tasks", "filter" => "upcoming"]) ?>" 
                 class="btn custom-primary-btn filter-form-btn <?= $filter === "upcoming" ? "filter-active" : "" ?>">Upcoming</a>
         </div>
@@ -56,15 +64,16 @@
             <?php endforeach; ?>
         </tbody>
     </table>
-
     <?php
-        echo renderPagination([
-            "currentPaginationPage" => $paginationMeta["currentPaginationPage"],
-            "baseUrl" => ["filter" => $filter, "search" => $search ?? ""],
-            "paginationStart" => $paginationMeta["start"],
-            "paginationEnd" => $paginationMeta["end"],
-            "totalPages" => $paginationMeta["totalItems"],
-            "page" => "tasks"
-        ]);
+        if ($totalTasks > 10) {
+            echo renderPagination([
+                "currentPaginationPage" => $paginationMeta["currentPaginationPage"],
+                "baseUrl" => ["filter" => $filter, "search" => $search ?? ""],
+                "paginationStart" => $paginationMeta["start"],
+                "paginationEnd" => $paginationMeta["end"],
+                "totalPages" => $paginationMeta["totalItems"],
+                "page" => "tasks"
+            ]);
+        } 
     ?>
 </div>

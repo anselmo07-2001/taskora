@@ -53,15 +53,13 @@ class PageController extends AbstractController {
                         $filter, $search, $this->currentUserSession["role"],  $this->currentUserSession["userId"], 
                         $paginationMeta["limit"], $paginationMeta["offset"]);
 
-        var_dump($tasks); echo "<br>";
-        var_dump($paginationMeta);
-
         $this->render("tasks.view", [
             "tasks" => $tasks,
             "filter" => $filter,
             "search" => $search,
             "paginationMeta" => $paginationMeta,
-            "currentPaginationPage" => $currentPaginationPage
+            "currentPaginationPage" => $currentPaginationPage,
+            "totalTasks" => $totalTasks,
         ]);
     }
 
