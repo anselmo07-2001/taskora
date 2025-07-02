@@ -9,7 +9,8 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
-    public function fetchUsersTasks(string $filter = 'all', string $search = ''): ?array {
+    public function fetchUsersTasks(int $limit, int $offset, string $filter = 'all', string $search = ''): array
+    {
         try {
             $sql = "
                 SELECT 
@@ -65,20 +66,21 @@ class TaskRepository {
 
             $params = [];
 
-            // Apply role filter if not "all"
             if ($filter !== 'all') {
                 $sql .= " AND users.role = :role";
                 $params[':role'] = $filter;
             }
 
-            // Apply search filter if search is not empty
             if (!empty($search)) {
                 $sql .= " AND users.fullname LIKE :search";
                 $params[':search'] = '%' . $search . '%';
             }
 
-            $sql .= " GROUP BY users.id, users.fullname, users.role
-                    ORDER BY users.fullname";
+            $sql .= " 
+                GROUP BY users.id, users.fullname, users.role
+                ORDER BY users.fullname
+                LIMIT :limit OFFSET :offset
+            ";
 
             $stmt = $this->pdo->prepare($sql);
 
@@ -86,7 +88,12 @@ class TaskRepository {
                 $stmt->bindValue($key, $value, PDO::PARAM_STR);
             }
 
+            // Bind limit and offset (always integer type)
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
             $stmt->execute();
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
         } catch (PDOException $e) {

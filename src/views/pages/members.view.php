@@ -1,11 +1,12 @@
-<?php //var_dump($filter); ?>
+<?php require __DIR__ . "/../components/pagination.view.php" ?>
+<?php //var_dump($totalAccountsByFilter); ?>
 
 <div class="container custom-container">
     <?php require __DIR__ . "/../components/backButton.view.php" ?>
     <h2>Display All Accounts</h2>
     <hr class="border-primary border-2 mb-4">
 
-    <h6 class="text-muted">Total Account: <?= count($userTaskSummary); ?></h6>
+    <h6 class="text-muted">Total Account: <?= $totalAccountsByFilter ?></h6>
     <div class="mb-3 d-flex justify-content-between">
         <div class="d-flex align-items-center gap-2">
             <a href="<?= BASE_URL . "/index.php?page=members&" . http_build_query(["filter" => "all"]); ?>" 
@@ -58,4 +59,16 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+
+
+    <?php
+        echo renderPagination([
+            "currentPaginationPage" => $paginationMeta["currentPaginationPage"],
+            "baseUrl" => ["filter" => $filter, "search" => $_GET["search"] ?? ""],
+            "paginationStart" => $paginationMeta["start"],
+            "paginationEnd" => $paginationMeta["end"],
+            "totalPages" => $paginationMeta["totalItems"],
+            "page" => "members"
+        ]);
+    ?>
 </div>

@@ -10,6 +10,43 @@ use Exception;
 class UserRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function countAllUsers(string $filter = 'all', string $search = ''): int
+    {
+        try {
+            $sql = "SELECT COUNT(*) AS total_users FROM users WHERE status != 'deleted'";
+            $params = [];
+
+            if ($filter !== 'all') {
+                $sql .= " AND role = :role";
+                $params[':role'] = $filter;
+            }
+
+            if (!empty($search)) {
+                $sql .= " AND fullname LIKE :search";
+                $params[':search'] = '%' . $search . '%';
+            }
+
+            $stmt = $this->pdo->prepare($sql);
+
+            if (isset($params[':role'])) {
+                $stmt->bindValue(':role', $params[':role'], PDO::PARAM_STR);
+            }
+
+            if (isset($params[':search'])) {
+                $stmt->bindValue(':search', $params[':search'], PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return isset($result['total_users']) ? (int) $result['total_users'] : 0;
+
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function handleUpdateAccountStatus(int $userId, string $status) { 
         try {
             $stmt = $this->pdo->prepare("UPDATE users SET status = :status WHERE id = :userId");
