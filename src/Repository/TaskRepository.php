@@ -9,7 +9,7 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
-    public function countAllTasks(string $filter = 'all', string $search = '', string $role = 'admin',  int $userId = 0): int {
+    public function countAllTasks(string $filter = 'all', string $search = '', string $role = 'admin',  int $userId = 1): int {
         try {
             $sql = "
                 SELECT COUNT(DISTINCT tasks.id) AS total_tasks
@@ -21,7 +21,7 @@ class TaskRepository {
             $params = [];
 
             // Role condition: if project_manager, limit to their managed projects
-            if ($role === 'project_manager') {
+            if ($role === 'project_manager' && $userId !== 1) {
                 $sql .= " AND projects.assigned_manager = :manager_id";
                 $params[':manager_id'] = $userId;
             }

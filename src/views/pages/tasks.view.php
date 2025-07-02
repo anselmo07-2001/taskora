@@ -11,7 +11,7 @@
             'upcoming' => 'Upcoming'
         ][$filter] ?? 'All');
     ?>
-    <h6 class="text-muted"><?= $label ?> Projects: <?= $totalTasks ?></h6>
+    <h6 class="text-muted"><?= $label ?> Tasks: <?= $totalTasks ?></h6>
     <div class="mb-3 d-flex justify-content-between">
         <div class="d-flex align-items-center gap-2">
             <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "tasks", "filter" => "all"]) ?>" 
