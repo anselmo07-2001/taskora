@@ -11,6 +11,19 @@ use Exception;
 class ProjectRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function handleDeleteProject(int $projectId) {
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM projects WHERE id = :id");
+            $stmt->bindValue(":id", $projectId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+
     public function fetchMemberTaskSummary(int $projectId, array $filters = []): ?array {
         try {
             $taskTypeFilter = $filters['filter'] ?? null; // 'solo', 'group', or null

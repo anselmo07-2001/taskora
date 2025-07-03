@@ -147,6 +147,7 @@ th {
   font-weight: normal;
 }
 
+button.my-manage-btn,
 a.my-manage-btn {
   padding: 0.40rem 0.60rem;
   font-size: 0.875rem;

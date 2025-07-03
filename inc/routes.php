@@ -236,6 +236,15 @@ $routes = [
         ]
     ],
 
+    "deleteProject" => [
+        "POST" => [
+                "controller" => "ProjectController",
+                "method" => "deleteProject",
+                "auth" => true,
+                "roles" => ["admin", "project_manager"]
+        ]
+    ],
+
 
 
 

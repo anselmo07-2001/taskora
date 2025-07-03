@@ -12,6 +12,22 @@ use DateTime;
 class ProjectController extends AbstractController {
     public function __construct(protected UserRepository $userRepository, protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository){}
 
+    public function deleteProject($request) {
+        $projectId = (int) $request["post"]["projectId"] ?? "";
+
+        $success = $this->projectRepository->handleDeleteProject($projectId);
+
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Deleted project successfully");
+        }
+        else {
+             SessionService::setAlertMessage("success_message", "Project deletion failed");
+        }
+
+        header("Location: index.php?page=projects");
+    }
+
+
     public function updateProjectStatus($request) {
         $previousProjectStatus =  $request["post"]["defaultProjectStatus"];
         $newProjectStatus = $request["post"]["selectedProjectStatus"];

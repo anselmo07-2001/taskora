@@ -64,9 +64,17 @@
                         <td><?php echo e($project["progress"]) . "%"; ?></td>
                         <td><?php echo e($project["status"]); ?></td>
                         <td>
-                            <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "projectId" => $project['id']])  ?>" 
-                                class="btn custom-primary-btn my-manage-btn">Manage
-                            </a>
+                            <div class="d-flex gap-1">
+                                <?php if($currentUserSession["role"] !== "member"): ?>
+                                    <form method="POST" action="<?= BASE_URL . "/index.php?page=deleteProject" ?>">
+                                        <input type="hidden" name="projectId" value="<?= e($project["id"]); ?>"/>
+                                        <button type="submit" class="btn btn-danger my-manage-btn">Delete</button>
+                                    </form>
+                                <?php endif; ?>
+                                <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "projectPanel", "projectId" => $project['id']])  ?>" 
+                                    class="btn custom-primary-btn my-manage-btn">Manage
+                                </a>
+                            </div>         
                         </td>
                     </tr>
                 <?php endforeach; ?>

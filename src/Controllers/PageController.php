@@ -250,7 +250,8 @@ class PageController extends AbstractController {
  
         $this->render("projects.view",[
             "projects" => $projects,
-            "filter" => $filter
+            "filter" => $filter,
+            "currentUserSession" => $this->currentUserSession
         ]);
     }
 
