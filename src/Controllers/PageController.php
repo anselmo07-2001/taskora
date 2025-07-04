@@ -41,6 +41,15 @@ class PageController extends AbstractController {
          $this->taskNotesRepository = $taskNotesRepository;
     } 
 
+    public function showUpdateAccountInfoForm($request) {
+        $userId = $request["get"]["userId"] ?? "";
+
+        $userAccount = $this->userRepository->fetchUserProfileById($userId);
+
+        $this->render("accountUpdateForm.view", [
+            "userAccount" => $userAccount
+        ]);
+    }
 
     public function showTasks($request) {
         $filter = $request["get"]["filter"] ?? 'all';

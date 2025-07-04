@@ -243,13 +243,27 @@ $routes = [
                 "roles" => ["admin", "project_manager"]
         ]
     ],
-
     "deleteProject" => [
         "POST" => [
                 "controller" => "ProjectController",
                 "method" => "deleteProject",
                 "auth" => true,
                 "roles" => ["admin", "project_manager"]
+        ]
+    ],
+
+    "updateAccountInfoForm" => [
+        "GET" => [
+                "controller" => "PageController",
+                "method" => "showUpdateAccountInfoForm",
+                "auth" => true,
+                "roles" => ["admin"]
+        ],
+        "POST" => [
+                "controller" => "AccountController",
+                "method" => "updateAccountInfoForm",
+                "auth" => true,
+                "roles" => ["admin"]
         ]
     ],
 

@@ -54,7 +54,12 @@
                     <td><?= e($user["submitted_task"]); ?></td>
                     <td><?= e($user["approved_task"]); ?></td>
                     <td><?= e($user["rejected_task"]); ?></td>
-                    <td><a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "memberProjects", "userId" => $user["id"]]); ?>" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "updateAccountInfoForm", "userId" => $user["id"]]); ?>" class="btn custom-primary-btn my-manage-btn">Update</a>
+                            <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "memberProjects", "userId" => $user["id"]]); ?>" class="btn custom-primary-btn my-manage-btn">Open Projects</a>
+                        </div>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

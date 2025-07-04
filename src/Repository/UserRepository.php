@@ -10,6 +10,24 @@ use Exception;
 class UserRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function handleUpdateAccount(string $sql, array $params) {
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            
+            foreach($params as $key => $value) {
+                $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        }
+        catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+        
+    }
+
+
     public function countAllUsers(string $filter = 'all', string $search = '', string $role = 'admin',  int $userId = 1 ): int {
         try {
             $sql = "
@@ -73,7 +91,7 @@ class UserRepository {
 
     public function fetchUserProfileById(int $userId) {
         try {
-            $stmt = $this->pdo->prepare("SELECT id, username, fullname, role, status FROM `users` WHERE id = :userId");
+            $stmt = $this->pdo->prepare("SELECT id, username, fullname, role, status, password FROM `users` WHERE id = :userId");
             $stmt->bindValue(":userId", $userId);
             $stmt->execute();
             $stmt->setFetchMode(PDO::FETCH_ASSOC);

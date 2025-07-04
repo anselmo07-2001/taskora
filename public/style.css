@@ -151,7 +151,11 @@ button.my-manage-btn,
 a.my-manage-btn {
   padding: 0.40rem 0.60rem;
   font-size: 0.875rem;
-  line-height: 1;
+  
+  line-height: 1.2;  /* Adjusted for better vertical centering */
+  display: inline-flex;  /* Ensures alignment */
+  align-items: center;   /* Vertically centers text */
+  justify-content: center; /* Horizontally center (optional) */
 }
 
 
