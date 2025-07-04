@@ -252,7 +252,7 @@ class ProjectRepository {
 
                     ROUND(
                         IF(COUNT(DISTINCT tasks.id) = 0, 0,
-                            (COUNT(DISTINCT CASE WHEN tasks.status = 'completed' THEN tasks.id END) / COUNT(DISTINCT tasks.id)) * 100
+                            (COUNT(DISTINCT CASE WHEN tasks.approval_status = 'approved' THEN tasks.id END) / COUNT(DISTINCT tasks.id)) * 100
                         ), 0
                     ) AS progress
 
