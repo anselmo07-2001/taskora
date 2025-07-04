@@ -61,18 +61,6 @@ $routes = [
             "roles" => ["admin", "project_manager", "member"]
         ]
     ],
-    
-    // "projectPanel" => [
-    //     "GET" => [
-    //         "default" => [
-    //             "controller" => "PageController",
-    //             "method" => "showProject",
-    //             "auth" => true,
-    //             "role" => ["admin", "project_manager", "member"]
-    //         ]
-    //     ]
-    // ]
-
     "projectPanel" => [
         "GET" => [       
                 "controller" => "PageController",
