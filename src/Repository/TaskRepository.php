@@ -165,106 +165,118 @@ class TaskRepository {
     }
 
     
-    public function fetchUsersTasks(int $limit, int $offset, string $filter = 'all', string $search = '', string $role = "admin", int $userId = 1): array
-    {
-         try {
-            $sql = "
-                SELECT 
-                    users.id AS id,
-                    users.fullname AS name,
-                    users.role AS role,
+    public function fetchUsersTasks(int $limit, int $offset, string $filter = 'all', string $search = '', string $role = "admin", int $userId = 1): array {
+    try {
+        $sql = "
+            SELECT 
+                users.id AS id,
+                users.fullname AS name,
+                users.role AS role,
 
-                    (
-                        COUNT(DISTINCT CASE WHEN projects.assigned_manager = users.id THEN projects.id END) +
-                        COUNT(DISTINCT CASE WHEN project_members.user_id = users.id THEN project_members.project_id END)
-                    ) AS total_project_count,
+                -- Total project
+                CASE 
+                    WHEN users.role = 'admin' THEN 0
+                    WHEN users.role = 'project_manager' THEN COUNT(DISTINCT projects.id)
+                    ELSE COUNT(DISTINCT project_members.project_id)
+                END AS total_project,
 
-                    COUNT(DISTINCT CASE 
-                        WHEN users.role NOT IN ('admin', 'project_manager') THEN task_assignments.task_id 
-                    END) AS total_task,
+                -- Total task
+                CASE 
+                    WHEN users.role = 'admin' THEN 0
+                    WHEN users.role = 'project_manager' THEN COUNT(DISTINCT tasks.id)
+                    ELSE COUNT(DISTINCT task_assignments.task_id)
+                END AS total_task,
 
-                    COUNT(DISTINCT CASE 
-                        WHEN users.role NOT IN ('admin', 'project_manager') 
-                            AND tasks.status != 'completed' THEN tasks.id 
-                    END) AS unsubmitted_task,
+                -- Unsubmitted task
+                CASE 
+                    WHEN users.role = 'admin' THEN 0
+                    WHEN users.role = 'project_manager' THEN COUNT(DISTINCT CASE WHEN tasks.status != 'completed' THEN tasks.id END)
+                    ELSE COUNT(DISTINCT CASE WHEN tasks.status != 'completed' THEN tasks.id END)
+                END AS unsubmitted_task,
 
-                    COUNT(DISTINCT CASE 
-                        WHEN users.role NOT IN ('admin', 'project_manager') 
-                            AND tasks.status = 'completed' THEN tasks.id 
-                    END) AS submitted_task,
+                -- Submitted task
+                CASE 
+                    WHEN users.role = 'admin' THEN 0
+                    WHEN users.role = 'project_manager' THEN COUNT(DISTINCT CASE WHEN tasks.status = 'completed' THEN tasks.id END)
+                    ELSE COUNT(DISTINCT CASE WHEN tasks.status = 'completed' THEN tasks.id END)
+                END AS submitted_task,
 
-                    COUNT(DISTINCT CASE 
-                        WHEN users.role NOT IN ('admin', 'project_manager') 
-                            AND tasks.approval_status = 'approved' THEN tasks.id 
-                    END) AS approved_task,
+                -- Approved task
+                CASE 
+                    WHEN users.role = 'admin' THEN 0
+                    WHEN users.role = 'project_manager' THEN COUNT(DISTINCT CASE WHEN tasks.approval_status = 'approved' THEN tasks.id END)
+                    ELSE COUNT(DISTINCT CASE WHEN tasks.approval_status = 'approved' THEN tasks.id END)
+                END AS approved_task,
 
-                    COUNT(DISTINCT CASE 
-                        WHEN users.role NOT IN ('admin', 'project_manager') 
-                            AND tasks.approval_status = 'rejected' THEN tasks.id 
-                    END) AS rejected_task
+                -- Rejected task
+                CASE 
+                    WHEN users.role = 'admin' THEN 0
+                    WHEN users.role = 'project_manager' THEN COUNT(DISTINCT CASE WHEN tasks.approval_status = 'rejected' THEN tasks.id END)
+                    ELSE COUNT(DISTINCT CASE WHEN tasks.approval_status = 'rejected' THEN tasks.id END)
+                END AS rejected_task
 
-                FROM users
-                LEFT JOIN project_members 
-                    ON project_members.user_id = users.id
+            FROM users
 
-                LEFT JOIN projects 
-                    ON (projects.assigned_manager = users.id 
-                        OR projects.id = project_members.project_id)
+            LEFT JOIN projects 
+                ON projects.assigned_manager = users.id
 
-                LEFT JOIN task_assignments 
-                    ON task_assignments.user_id = users.id
+            LEFT JOIN project_members 
+                ON project_members.user_id = users.id
 
-                LEFT JOIN tasks 
-                    ON tasks.id = task_assignments.task_id
+            LEFT JOIN tasks 
+                ON (
+                    (users.role = 'project_manager' AND tasks.project_id = projects.id)
+                    OR 
+                    (users.role != 'project_manager' AND tasks.id IN (
+                        SELECT task_id FROM task_assignments WHERE user_id = users.id
+                    ))
+                )
 
-                WHERE users.status != 'deleted'
-            ";
+            LEFT JOIN task_assignments 
+                ON task_assignments.task_id = tasks.id AND task_assignments.user_id = users.id
 
-            $params = [];
+            WHERE users.status != 'deleted'
+        ";
 
-            // Apply filter on user role if specified
-            if ($filter !== 'all') {
-                $sql .= " AND users.role = :user_role";
-                $params[':user_role'] = $filter;
-            }
+        $params = [];
 
-            // Apply search
-            if (!empty($search)) {
-                $sql .= " AND users.fullname LIKE :search";
-                $params[':search'] = '%' . $search . '%';
-            }
-
-            // Project manager restriction
-            if ($role === 'project_manager') {
-                $sql .= " AND projects.assigned_manager = :manager_id";
-                $params[':manager_id'] = $userId;
-            }
-
-            $sql .= "
-                GROUP BY users.id, users.fullname, users.role
-                ORDER BY users.fullname
-                LIMIT :limit OFFSET :offset
-            ";
-
-            $stmt = $this->pdo->prepare($sql);
-
-            // Bind dynamic filters
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
-            }
-
-            // Bind pagination
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-
-            $stmt->execute();
-
-            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-
-        } catch (PDOException $e) {
-            throw new Exception($e->getMessage());
+        if ($filter !== 'all') {
+            $sql .= " AND users.role = :user_role";
+            $params[':user_role'] = $filter;
         }
+
+        if (!empty($search)) {
+            $sql .= " AND users.fullname LIKE :search";
+            $params[':search'] = '%' . $search . '%';
+        }
+
+        $sql .= "
+            GROUP BY users.id, users.fullname, users.role
+            ORDER BY users.fullname
+            LIMIT :limit OFFSET :offset
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+    } catch (PDOException $e) {
+        throw new Exception($e->getMessage());
     }
+}
+
+
+
+
 
 
     public function fetchUserTasks(int $userId, string $taskType = 'all', ?int $projectId = null, ?string $search = null): array {

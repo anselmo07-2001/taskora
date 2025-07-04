@@ -131,7 +131,7 @@ class PageController extends AbstractController {
         $userTaskSummary = $this->taskRepository->fetchUsersTasks(
                      $paginationMeta["limit"], $paginationMeta["offset"], $filter, $search, 
                      $this->currentUserSession["role"], $this->currentUserSession["userId"]);
-       
+      
         $this->render("members.view", [
             "userTaskSummary" => $userTaskSummary,
             "totalAccountsByFilter" => $totalAccounts,

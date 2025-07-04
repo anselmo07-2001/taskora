@@ -48,7 +48,7 @@
                     <th scope="row"><?= e($user["id"]); ?></th>
                     <td><?= e($user["name"]); ?></td>
                     <td><?= e($user["role"]); ?></td>
-                    <td><?= e($user["total_project_count"]); ?></td>
+                    <td><?= e($user["total_project"]); ?></td>
                     <td><?= e($user["total_task"]); ?></td>
                     <td><?= e($user["unsubmitted_task"]); ?></td>
                     <td><?= e($user["submitted_task"]); ?></td>
