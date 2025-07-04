@@ -1,5 +1,6 @@
 <?php require __DIR__ . "/../components/pagination.view.php" ?>
 <div class="container custom-container">
+    <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
     <h2>Display All Tasks</h2>
     <hr class="border-primary border-2 mb-4">
 
@@ -59,7 +60,18 @@
                     <td><?= e($task["status"]); ?></td>
                     <td><?= e($task["deadline"]); ?></td>
                     <td><?= e($task["approval_status"]); ?></td>
-                    <td><a href="<?= BASE_URL . "/index.php?" . http_build_query([ "page" => "taskPanel", "taskId" => e($task["id"])]) ?>" class="btn custom-primary-btn my-manage-btn">Open</a></td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "deleteTask"]) ?>">
+                                <input type="hidden" name="taskId" value="<?= e($task["id"]); ?>"/>
+                                <button type="submit" class="btn btn-danger my-manage-btn">Delete</button>
+                            </form>
+                            <a href="<?= BASE_URL . "/index.php?" . http_build_query([ "page" => "taskPanel", "taskId" => e($task["id"])]) ?>" 
+                                class="btn custom-primary-btn my-manage-btn">
+                                    Open
+                            </a>
+                        </div>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

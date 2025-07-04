@@ -9,6 +9,20 @@ use PDO;
 class TaskRepository {
     public function __construct(private PDO $pdo) {}
 
+
+    public function handleDeleteTask(int $taskId) {
+       try {
+            $stmt = $this->pdo->prepare("DELETE FROM tasks WHERE id = :id");
+            $stmt->bindValue(":id", $taskId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+
     public function countAllTasks(string $filter = 'all', string $search = '', string $role = 'admin',  int $userId = 1): int {
         try {
             $sql = "

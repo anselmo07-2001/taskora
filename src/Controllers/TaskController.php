@@ -15,6 +15,21 @@ class TaskController extends AbstractController{
     public function __construct(private ProjectPanelService $projectPanelService, protected TaskRepository $taskRepository, 
     protected TaskNotesRepository $taskNotesRepository) {}
 
+    public function deleteTask($request) {
+        $taskId = (int) $request["post"]["taskId"] ?? "";
+        
+        $success = $this->taskRepository->handleDeleteTask($taskId);
+
+        if ($success) {
+             SessionService::setAlertMessage("success_message", "Deleted task sucessully");
+        }
+        else {
+             SessionService::setAlertMessage("error_message", "Failed to delete task");
+        }     
+
+        header("Location: index.php?page=tasks");
+        exit;
+    }
 
     public function approveTask($request) {
         $approveTaskNote = trim(sanitize($request["post"]["approvedTaskNote"] ?? ""));
