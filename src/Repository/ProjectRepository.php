@@ -163,7 +163,7 @@ class ProjectRepository {
                         IFNULL(
                             CONCAT(
                                 ROUND(
-                                    (SUM(CASE WHEN tasks.status = 'completed' THEN 1 ELSE 0 END) / NULLIF(COUNT(tasks.id), 0)) * 100,
+                                    (SUM(CASE WHEN tasks.approval_status = 'approved' THEN 1 ELSE 0 END) / NULLIF(COUNT(tasks.id), 0)) * 100,
                                     0
                                 ), '%'
                             ),
