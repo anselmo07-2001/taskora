@@ -150,13 +150,17 @@ class PageController extends AbstractController {
         ]);
     }
 
-    public function showMemberAssignedGroupTask() {
+    public function showMemberAssignedGroupTask($request) {
+        $filter = $request["get"]["filter"] ?? "all";
+        $search = trim(sanitize($request["get"]["search"] ?? ""));
+
         $tasks = $this->taskRepository->fetchMemberAssignedTasks(
-             $this->currentUserSession["userId"],  "group"
+             $this->currentUserSession["userId"],  "group", ["filter" => $filter, "search" => $search]
         );
 
         $this->render("myGroupTasks.view", [
-            "tasks" => $tasks
+            "tasks" => $tasks,
+            "filter" => $filter 
         ]);
     }
 
