@@ -1,5 +1,6 @@
 <?php require __DIR__ . "/../components/pagination.view.php" ?>
 <div class="container custom-container">
+    <?php require __DIR__ . "/../components/backButton.view.php" ?>
     <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
     <h2>Display All Tasks</h2>
     <hr class="border-primary border-2 mb-4">
