@@ -114,7 +114,8 @@ class PageController extends AbstractController {
         
         $this->render("memberProjects.view", [
             "projects" => $projects,
-            "headerTitle" => "Projects Involving {$user['fullname']}",
+            "headerTitle" => $this->currentUserSession["role"] === "admin" ? "Projects with {$user['fullname']}" :
+                                $this->currentUserSession["fullname"] . " Projects with " . $user['fullname'],
             "filter" => $filter,
             "userId" => $userId,
         ]);
