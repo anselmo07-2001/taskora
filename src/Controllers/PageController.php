@@ -160,13 +160,17 @@ class PageController extends AbstractController {
         ]);
     }
 
-    public function showMemberAssignedSoloTask() {
+    public function showMemberAssignedSoloTask($request) {
+        $filter = $request["get"]["filter"] ?? "all";
+        $search = trim(sanitize($request["get"]["search"] ?? ""));
+
         $tasks = $this->taskRepository->fetchMemberAssignedTasks(
-             $this->currentUserSession["userId"],  "solo"
+             $this->currentUserSession["userId"],  "solo" , ["filter" => $filter, "search" => $search]
         );
 
         $this->render("mySoloTasks.view", [
-            "tasks" => $tasks
+            "tasks" => $tasks,
+            "filter" => $filter 
         ]);
     }
 
