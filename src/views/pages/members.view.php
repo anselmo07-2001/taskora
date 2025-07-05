@@ -56,8 +56,16 @@
                     <td><?= e($user["rejected_task"]); ?></td>
                     <td>
                         <div class="d-flex gap-1">
-                            <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "updateAccountInfoForm", "userId" => $user["id"]]); ?>" class="btn custom-primary-btn my-manage-btn">Update</a>
-                            <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "memberProjects", "userId" => $user["id"]]); ?>" class="btn custom-primary-btn my-manage-btn">Open Projects</a>
+                            <?php if($currentUserSession["role"] === "admin" ): ?>
+                                <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "updateAccountInfoForm", "userId" => $user["id"]]); ?>" 
+                                        class="btn custom-primary-btn my-manage-btn">
+                                            Update
+                                </a>
+                            <?php endif; ?>
+                            <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "memberProjects", "userId" => $user["id"]]); ?>" 
+                                    class="btn custom-primary-btn my-manage-btn">
+                                        Open Projects
+                            </a>
                         </div>
                     </td>
                 </tr>

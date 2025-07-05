@@ -158,7 +158,8 @@ class PageController extends AbstractController {
             "filter" => $filter,
             "search" => $search,
             "currentPaginationPage" => $currentPaginationPage,
-            "paginationMeta" => $paginationMeta
+            "paginationMeta" => $paginationMeta,
+            "currentUserSession" => $this->currentUserSession,
         ]);
     }
 
