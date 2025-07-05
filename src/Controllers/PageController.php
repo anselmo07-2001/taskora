@@ -40,6 +40,11 @@ class PageController extends AbstractController {
          $this->projectPanelService = $projectPanelService;
          $this->taskNotesRepository = $taskNotesRepository;
     } 
+    public function showEditProjectForm($request) {
+        $this->render("projectEditForm.view", [
+          
+        ]);
+    }
 
     public function showUpdateAccountInfoForm($request) {
         $userId = $request["get"]["userId"] ?? "";
@@ -128,9 +133,6 @@ class PageController extends AbstractController {
         if ($this->currentUserSession["role"] === "project_manager" ) {
             $headerTitle = "Projects of {$user['fullname']}";
         }
-
-        var_dump($headerTitle);
-        
            
         $this->render("memberProjects.view", [
             "projects" => $projects,

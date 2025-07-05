@@ -12,6 +12,11 @@ use DateTime;
 class ProjectController extends AbstractController {
     public function __construct(protected UserRepository $userRepository, protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository){}
 
+
+    public function editProject($request) {
+        echo "edit projects";
+    }
+
     public function deleteProject($request) {
         $projectId = (int) $request["post"]["projectId"] ?? "";
 

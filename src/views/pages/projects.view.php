@@ -67,6 +67,9 @@
                         <td>
                             <div class="d-flex gap-1">
                                 <?php if($currentUserSession["role"] !== "member"): ?>
+                                    <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "editProject", "projectId" => $project['id']])  ?>" 
+                                        class="btn btn-secondary my-manage-btn">Edit
+                                    </a>
                                     <form method="POST" action="<?= BASE_URL . "/index.php?page=deleteProject" ?>">
                                         <input type="hidden" name="projectId" value="<?= e($project["id"]); ?>"/>
                                         <button type="submit" class="btn btn-danger my-manage-btn">Delete</button>

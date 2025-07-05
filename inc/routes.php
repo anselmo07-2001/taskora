@@ -53,6 +53,20 @@ $routes = [
             "roles" => ["admin", "project_manager"]
         ]
     ],
+    "editProject" => [
+        "GET" => [
+            "controller" => "PageController",
+            "method" => "showEditProjectForm",
+            "auth" => true,
+            "roles" => ["admin", "project_manager"]
+        ],
+        "POST" => [
+            "controller" => "ProjectController",
+            "method" => "editProject",
+            "auth" => true,
+            "roles" => ["admin", "project_manager"]
+        ],
+    ],
     "projects" => [
         "GET" => [
             "controller" => "PageController",
