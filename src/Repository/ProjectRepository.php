@@ -284,7 +284,7 @@ class ProjectRepository {
         }
     }
 
-
+    // fetch all the projects that managed of a proj_man
     public function fetchProjects(?int $projectManagerId = null, string $whereSql = "", array $params = []) {
         try {
             $where = [];
@@ -307,6 +307,7 @@ class ProjectRepository {
                 SELECT 
                     projects.id,
                     projects.name,
+                    projects.assigned_manager AS manager_id,
                     users.fullname,
                     COUNT(DISTINCT CASE 
                         WHEN project_members.user_id != projects.assigned_manager THEN project_members.user_id 
@@ -331,6 +332,7 @@ class ProjectRepository {
                 GROUP BY 
                     projects.id, 
                     projects.name, 
+                    projects.assigned_manager,
                     users.fullname, 
                     projects.deadline, 
                     projects.status

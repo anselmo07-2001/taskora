@@ -102,20 +102,39 @@ class PageController extends AbstractController {
             $whereSQL = 'WHERE ' . implode(' AND ', $whereClauses);
         }
 
-        $projects = $this->projectRepository->fetchProjectsForMember($userId, $whereSQL, $params);
 
+        $user = $this->userRepository->fetchUserProfileById($userId);
+
+        $projects = [];
+        // get all the projects by a member
+        if ($user["role"] === "member") {
+            $projects = $this->projectRepository->fetchProjectsForMember($userId, $whereSQL, $params);
+        }
+        if ($user["role"] === "project_manager") {
+            $projects = $this->projectRepository->fetchProjects($userId, $whereSQL, $params);
+        }
+
+        //If the user is not an admin, filter only the projects managed by the project manager
         if ($this->currentUserSession["role"] !== "admin") {
             $projects = array_filter($projects, function ($project) {
                  return (int) $project['manager_id'] === (int) $this->currentUserSession["userId"];
             });
         } 
-       
-        $user = $this->userRepository->fetchUserProfileById($userId);
+
+        $headerTitle = "";
+        if ($this->currentUserSession["role"] === "admin" && $filter !== "project_manager" ) {
+            $headerTitle = "Projects with {$user['fullname']}";
+        }
+        if ($this->currentUserSession["role"] === "project_manager" ) {
+            $headerTitle = "Projects of {$user['fullname']}";
+        }
+
+        var_dump($headerTitle);
         
+           
         $this->render("memberProjects.view", [
             "projects" => $projects,
-            "headerTitle" => $this->currentUserSession["role"] === "admin" ? "Projects with {$user['fullname']}" :
-                                $this->currentUserSession["fullname"] . " Projects with " . $user['fullname'],
+            "headerTitle" => $headerTitle,
             "filter" => $filter,
             "userId" => $userId,
         ]);
