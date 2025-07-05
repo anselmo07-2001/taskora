@@ -12,9 +12,82 @@ use DateTime;
 class ProjectController extends AbstractController {
     public function __construct(protected UserRepository $userRepository, protected ProjectRepository $projectRepository, protected ProjectNotesRepository $projectNotesRepository){}
 
-
     public function editProject($request) {
-        echo "edit projects";
+        $project = json_decode($request["post"]["project"], true);
+        $newProjectName = trim(sanitize($request["post"]["projectName"])) ?? "";
+        $newProjectDescription = trim(sanitize($request["post"]["projectDescription"])) ?? "";
+        $newProjectDeadline = $request["post"]["projectDeadline"] ?? "";
+
+        $errors = [];
+        if (empty($newProjectName)) {
+            $errors["projectNameErr"] = "Please enter the project name";
+        }
+
+        if (empty($newProjectDescription)) {
+            $errors["projectDescriptionErr"] = "Please enter the project description";
+        }
+
+        if (empty($newProjectDeadline)) {
+            $errors["projectDeadlineErr"] = "Please enter the project deadline";
+        }
+
+        if (!empty($errors)) {
+           $this->render("projectEditForm.view", [
+                "project" => $project,
+                "errors" => $errors,
+                "newProjectName" => $newProjectName,
+                "newProjectDescription" => $newProjectDescription,
+                "newProjectDeadline" => $newProjectDeadline
+            ]);
+            exit;
+        }
+
+
+        $hasChanged = false;
+        $fieldsToUpdate = [];
+        $params = [];
+
+        if ($newProjectName !== $project["name"]) {
+            $hasChanged = true;
+            $fieldsToUpdate[] = "name = :name";
+            $params[":name"] = $newProjectName; 
+        }
+        if ($newProjectDescription !== $project["project_description"]) {
+            $hasChanged = true;
+            $fieldsToUpdate[] = "project_description = :project_description";
+            $params[":project_description"] = $newProjectDescription;
+        }
+        if ($newProjectDeadline !== $project["deadline"]) {
+            $hasChanged = true;
+            $fieldsToUpdate[] = "deadline = :deadline";
+            $params[":deadline"] = $newProjectDeadline;
+        }
+
+        if ($hasChanged && empty($errors)) {
+            $sql = "UPDATE projects SET " . implode(", ", $fieldsToUpdate) . " WHERE id = :id";
+            $params[":id"] = $project["id"];
+            $success = $this->projectRepository->handleUpdateProjectInfo($sql, $params);
+
+            if ($success) {
+                SessionService::setAlertMessage("success_message", "Edited project successfully");
+            }
+            else {
+                SessionService::setAlertMessage("error_message", "Edited project failed");
+            }
+
+            header("Location: index.php?page=projects");
+        }
+        else {
+            SessionService::setAlertMessage("error_message", "The project information is already up to date");
+            $this->render("projectEditForm.view", [
+                "project" => $project,
+                "errors" => $errors,
+                "newProjectName" => $newProjectName,
+                "newProjectDescription" => $newProjectDescription,
+                "newProjectDeadline" => $newProjectDeadline
+            ]);
+            exit;
+        }
     }
 
     public function deleteProject($request) {
@@ -26,7 +99,7 @@ class ProjectController extends AbstractController {
              SessionService::setAlertMessage("success_message", "Deleted project successfully");
         }
         else {
-             SessionService::setAlertMessage("success_message", "Project deletion failed");
+             SessionService::setAlertMessage("error_message", "Project deletion failed");
         }
 
         header("Location: index.php?page=projects");

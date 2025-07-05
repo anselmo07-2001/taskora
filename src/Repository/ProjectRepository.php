@@ -11,6 +11,34 @@ use Exception;
 class ProjectRepository {
     public function __construct(private PDO $pdo) {}
 
+    public function handleUpdateProjectInfo(string $sql, array $params) {
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            }
+            
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    } 
+
+
+    public function fetchProjectDetail(int $projectId) {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM projects WHERE id = :id");
+            $stmt->bindValue(":id", $projectId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);     
+        }
+        catch(PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function handleDeleteProject(int $projectId) {
         try {
             $stmt = $this->pdo->prepare("DELETE FROM projects WHERE id = :id");

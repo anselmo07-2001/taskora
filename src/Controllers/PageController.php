@@ -41,8 +41,11 @@ class PageController extends AbstractController {
          $this->taskNotesRepository = $taskNotesRepository;
     } 
     public function showEditProjectForm($request) {
+        $projectId = $request["get"]["projectId"] ?? "";
+        $project = $this->projectRepository->fetchProjectDetail($projectId)[0];
+
         $this->render("projectEditForm.view", [
-          
+             "project" => $project,
         ]);
     }
 
