@@ -21,7 +21,7 @@
             <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "tasks", "filter" => "due_today"]) ?>" 
                     class="btn custom-primary-btn filter-form-btn <?= $filter === "due_today" ? "filter-active" : "" ?>">Due Today</a>
             <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "tasks", "filter" => "overdue"]) ?>" 
-                class="btn custom-primary-btn filter-form-btn <?= $filter === "overdue" ? "filter-active" : "" ?>">Ovedue</a>
+                class="btn custom-primary-btn filter-form-btn <?= $filter === "overdue" ? "filter-active" : "" ?>">Overdue</a>
             <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "tasks", "filter" => "upcoming"]) ?>" 
                 class="btn custom-primary-btn filter-form-btn <?= $filter === "upcoming" ? "filter-active" : "" ?>">Upcoming</a>
         </div>
