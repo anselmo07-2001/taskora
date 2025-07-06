@@ -58,11 +58,12 @@
                             <option value="failed" <?= $project["status"] === "failed" ? "selected" : "" ?>>Failed</option>
                         </select>
                         <button class="btn custom-primary-btn" data-bs-toggle="modal" 
-                              data-bs-target="#updateProjectStatusModal" data->
+                              data-bs-target="#updateProjectStatusModal" data-current-projectStatus="<?= $project["progress"] ?>">
                             Update Project
                         </button>
                     </div>
                     <small id="changeProjectStatusMessage" class="text-danger d-none">Please change the project status before updating</small>
+                    <p id="notYetCompleteStatusMessage" class="text-danger d-none small">You must finish all tasks before setting the project status to "Approved".</p>
                 </div>
             <?php endif ?>
 
@@ -140,12 +141,27 @@
 <script>
         const selectEl = document.getElementById("project-status");
         const changeProjectStatusMessageEl = document.getElementById("changeProjectStatusMessage");
+        const notYetCompleteStatusMessageEl = document.getElementById("notYetCompleteStatusMessage");
+        const currentProjectProgress = document.querySelector('button[data-bs-target="#updateProjectStatusModal"]').getAttribute('data-current-projectStatus');;
         const defaultSelectedOptionValue = selectEl.value;
 
 
         document.getElementById('updateProjectStatusModal').addEventListener('show.bs.modal', function (event) {  
             const selectedOptionValue = selectEl.value;
 
+            if (selectedOptionValue === "completed" && currentProjectProgress !== "100%") {
+                event.preventDefault();
+                notYetCompleteStatusMessageEl.classList.remove('d-none');
+
+                setTimeout(() => {
+                    notYetCompleteStatusMessageEl.classList.add("d-none");
+                }, 4500);
+                return;
+            }
+            else {
+                notYetCompleteStatusMessageEl.classList.add("d-none");
+            } 
+            
             if (defaultSelectedOptionValue === selectedOptionValue) {
                 event.preventDefault();
                 changeProjectStatusMessageEl.classList.remove('d-none');
