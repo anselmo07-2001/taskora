@@ -95,16 +95,18 @@
                 <td><?= e($task["milestone"]); ?></td>
                 <td><?= e($task["approval_status"]); ?></td>
                 <td>
-                    <button class="btn btn-sm btn-success my-manage-btn mb-2 <?= $task["approval_status"] === "Approved" ? "disabled" : "" ?>" 
-                            <?= $task["approval_status"] === "Approved" ? "disabled" : "" ?>
-                            data-bs-toggle="modal" data-bs-target="#approveTaskModal" data-taskid="<?= e($task["id"]); ?>">Approved
-                    </button>
-                    <button class="btn btn-sm btn-danger my-manage-btn mb-2 <?= $task["approval_status"] === "Rejected" ? "disabled" : "" ?>"
-                            <?= $task["approval_status"] === "Rejected" ? "disabled" : "" ?> 
-                            data-bs-toggle="modal" data-bs-target="#rejectTaskModal" data-taskid="<?= e($task["id"]); ?>">Rejected
-                    </button>
-                    <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($task["id"]) ]) ?>" 
-                       class="btn custom-primary-btn my-manage-btn mb-2" >Manage</a>
+                    <div class="d-flex gap-1">
+                        <button class="btn btn-sm btn-success my-manage-btn mb-2 <?= $task["approval_status"] === "Approved" ? "disabled" : "" ?>" 
+                                <?= $task["approval_status"] === "Approved" ? "disabled" : "" ?>
+                                data-bs-toggle="modal" data-bs-target="#approveTaskModal" data-taskid="<?= e($task["id"]); ?>">Approved
+                        </button>
+                        <button class="btn btn-sm btn-danger my-manage-btn mb-2 <?= $task["approval_status"] === "Rejected" ? "disabled" : "" ?>"
+                                <?= $task["approval_status"] === "Rejected" ? "disabled" : "" ?> 
+                                data-bs-toggle="modal" data-bs-target="#rejectTaskModal" data-taskid="<?= e($task["id"]); ?>">Rejected
+                        </button>
+                        <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($task["id"]) ]) ?>" 
+                        class="btn custom-primary-btn my-manage-btn mb-2" >Manage</a>
+                    </div>
                 </td>
             </tr>
         <?php endforeach; ?>
