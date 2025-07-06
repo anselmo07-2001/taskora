@@ -15,6 +15,84 @@ class TaskController extends AbstractController{
     public function __construct(private ProjectPanelService $projectPanelService, protected TaskRepository $taskRepository, 
     protected TaskNotesRepository $taskNotesRepository) {}
 
+    public function editTask($request) {
+        $task = json_decode($request["post"]["task"] ?? "", true);
+        $newTaskName = trim(sanitize($request["post"]["taskName"])) ?? "";
+        $newTaskDescription = trim(sanitize($request["post"]["taskDescription"])) ?? "";
+        $newTaskDeadline = $request["post"]["taskDeadline"] ?? "";
+
+        $errors = [];
+        if (empty($newTaskName)) {
+            $errors["taskNameErr"] = "Please enter the task name";
+        }
+
+        if (empty($newTaskDescription)) {
+            $errors["taskDescriptionErr"] = "Please enter the task description";
+        }
+
+        if (empty($newTaskDeadline)) {
+            $errors["taskDeadlineErr"] = "Please enter the task deadline";
+        }
+
+        if (!empty($errors)) {
+           $this->render("editTaskForm.view", [
+                "task" => $task,
+                "errors" => $errors,
+                "newTaskName" => $newTaskName,
+                "newTaskDescription" => $newTaskDescription,
+                "newTaskDeadline" => $newTaskDeadline
+            ]);
+            exit;
+        }
+
+        $hasChanged = false;
+        $fieldsToUpdate = [];
+        $params = [];
+
+        if ($newTaskName !== $task["taskname"]) {
+            $hasChanged = true;
+            $fieldsToUpdate[] = "taskname = :taskname";
+            $params[":taskname"] = $newTaskName; 
+        }
+        if ($newTaskDescription !== $task["task_description"]) {
+            $hasChanged = true;
+            $fieldsToUpdate[] = "task_description = :task_description";
+            $params[":task_description"] = $newTaskDescription;
+        }
+        if ($newTaskDeadline !== $task["deadline"]) {
+            $hasChanged = true;
+            $fieldsToUpdate[] = "deadline = :deadline";
+            $params[":deadline"] =  $newTaskDeadline;
+        }
+
+        if ($hasChanged && empty($errors)) {
+            $sql = "UPDATE tasks SET " . implode(", ", $fieldsToUpdate) . " WHERE id = :id";
+            $params[":id"] = $task["id"];
+            $success = $this->taskRepository->handleUpdateTaskInfo($sql, $params);
+
+            if ($success) {
+                SessionService::setAlertMessage("success_message", "Edited task successfully");
+            }
+            else {
+                SessionService::setAlertMessage("error_message", "Edited task failed");
+            }
+
+            header("Location: index.php?page=tasks");
+        }
+        else {
+            SessionService::setAlertMessage("error_message", "The task information is already up to date");
+              $this->render("editTaskForm.view", [
+                "task" => $task,
+                "errors" => $errors,
+                "newTaskName" => $newTaskName,
+                "newTaskDescription" => $newTaskDescription,
+                "newTaskDeadline" => $newTaskDeadline
+            ]);
+            exit;
+        }
+    }
+
+
     public function deleteTask($request) {
         $taskId = (int) $request["post"]["taskId"] ?? "";
         

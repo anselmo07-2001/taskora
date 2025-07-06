@@ -40,6 +40,17 @@ class PageController extends AbstractController {
          $this->projectPanelService = $projectPanelService;
          $this->taskNotesRepository = $taskNotesRepository;
     } 
+
+    public function showEditTaskForm($request) {
+        $taskId = (int) $request["get"]["taskId"] ?? "";
+        $task = $this->taskRepository->fetchTask($taskId);
+
+        $this->render("editTaskForm.view", [
+            "task" => $task,
+        ]);
+    }
+
+
     public function showEditProjectForm($request) {
         $projectId = $request["get"]["projectId"] ?? "";
         $project = $this->projectRepository->fetchProjectDetail($projectId)[0];

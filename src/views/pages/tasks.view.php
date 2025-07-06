@@ -63,6 +63,10 @@
                     <td><?= e($task["approval_status"]); ?></td>
                     <td>
                         <div class="d-flex gap-1">
+                            <a href="<?= BASE_URL . "/index.php?" . http_build_query([ "page" => "editTask", "taskId" => e($task["id"])]) ?>" 
+                                class="btn btn-secondary my-manage-btn">
+                                    Edit
+                            </a>
                             <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "deleteTask"]) ?>">
                                 <input type="hidden" name="taskId" value="<?= e($task["id"]); ?>"/>
                                 <button type="submit" class="btn btn-danger my-manage-btn">Delete</button>
