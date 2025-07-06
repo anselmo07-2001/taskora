@@ -78,20 +78,22 @@
                             <?php endif; ?>
                         </td>
                         <td>
-                            <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "deleteTask"]) ?>">
-                                <input type="hidden" name="redirectUrl" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
-                                <input type="hidden" name="taskId" value="<?= e($row["id"]); ?>"/>
-                                <button type="submit" class="btn btn-danger my-manage-btn">Delete</button>
-                            </form>
-                            <a href="<?= BASE_URL . "/index.php?" . 
-                                http_build_query(["page" => "editTask", "taskId" => e($row["id"]), "redirect" => urlencode($_SERVER['REQUEST_URI']) ]) ?>" 
-                                class="btn btn-secondary my-manage-btn">
-                                Edit
-                            </a>
-                            <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($row["id"]) ]) ?>" 
-                                class="btn custom-primary-btn my-manage-btn">
-                                Manage
-                            </a>
+                            <div class="d-flex gap-1">
+                                <form method="POST" action="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "deleteTask"]) ?>">
+                                    <input type="hidden" name="redirectUrl" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
+                                    <input type="hidden" name="taskId" value="<?= e($row["id"]); ?>"/>
+                                    <button type="submit" class="btn btn-danger my-manage-btn">Delete</button>
+                                </form>
+                                <a href="<?= BASE_URL . "/index.php?" . 
+                                    http_build_query(["page" => "editTask", "taskId" => e($row["id"]), "redirect" => urlencode($_SERVER['REQUEST_URI']) ]) ?>" 
+                                    class="btn btn-secondary my-manage-btn">
+                                    Edit
+                                </a>
+                                <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($row["id"]) ]) ?>" 
+                                    class="btn custom-primary-btn my-manage-btn">
+                                    Manage
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
