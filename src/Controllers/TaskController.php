@@ -17,6 +17,10 @@ class TaskController extends AbstractController{
 
     public function editTask($request) {
         $task = json_decode($request["post"]["task"] ?? "", true);
+        $redirectUrl = $request["post"]["redirectUrl"] ?? "index.php?page=tasks";
+        $redirectUrl = urldecode($redirectUrl);
+        
+
         $newTaskName = trim(sanitize($request["post"]["taskName"])) ?? "";
         $newTaskDescription = trim(sanitize($request["post"]["taskDescription"])) ?? "";
         $newTaskDeadline = $request["post"]["taskDeadline"] ?? "";
@@ -44,6 +48,7 @@ class TaskController extends AbstractController{
             ]);
             exit;
         }
+
 
         $hasChanged = false;
         $fieldsToUpdate = [];
@@ -77,7 +82,7 @@ class TaskController extends AbstractController{
                 SessionService::setAlertMessage("error_message", "Edited task failed");
             }
 
-            header("Location: index.php?page=tasks");
+            header("Location: " . $redirectUrl);
         }
         else {
             SessionService::setAlertMessage("error_message", "The task information is already up to date");

@@ -77,7 +77,17 @@
                                 <span>Rejected</span>
                             <?php endif; ?>
                         </td>
-                        <td><a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($row["id"]) ]) ?>" class="btn custom-primary-btn my-manage-btn">Manage</a></td>
+                        <td>
+                            <a href="<?= BASE_URL . "/index.php?" . 
+                                http_build_query(["page" => "editTask", "taskId" => e($row["id"]), "redirect" => urlencode($_SERVER['REQUEST_URI']) ]) ?>" 
+                                class="btn btn-secondary my-manage-btn">
+                                Edit
+                            </a>
+                            <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "taskPanel", "taskId" => e($row["id"]) ]) ?>" 
+                                class="btn custom-primary-btn my-manage-btn">
+                                Manage
+                            </a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
         </tbody>

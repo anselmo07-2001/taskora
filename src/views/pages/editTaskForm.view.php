@@ -5,10 +5,12 @@
     <?php require __DIR__ . "/../components/backButton.view.php" ?>
     <div class="card custom-form-container">
         <div class="card-body p-5">
-            <h1 class="text-center mb-5">Edit Project Information</h1>        
+            <h1 class="text-center mb-5">Edit Task Information</h1>        
             <form method="POST" action=<?= BASE_URL . "/index.php?" . http_build_query(["page" => "editTask"]) ?> >
                 <!-- hold the original value of the project (will be use to compare value) -->
                 <input type="hidden" name="task" value="<?= e(json_encode($task)) ?>"/>
+                <input type="hidden" name="redirectUrl" value="<?= $redirectUrl ?>"/>
+
                 <div class="mb-4">
                     <label for="taskName" class="form-label">Task Name</label>
                     <input type="text" class="form-control <?= ($errors["taskNameErr"] ?? "") ? 'is-invalid' : ''; ?>" 

@@ -44,9 +44,12 @@ class PageController extends AbstractController {
     public function showEditTaskForm($request) {
         $taskId = (int) $request["get"]["taskId"] ?? "";
         $task = $this->taskRepository->fetchTask($taskId);
+        $redirectUrl = $request["get"]["redirect"] ?? "index.php?page=tasks";
+       
 
         $this->render("editTaskForm.view", [
             "task" => $task,
+            "redirectUrl" => $redirectUrl,
         ]);
     }
 
