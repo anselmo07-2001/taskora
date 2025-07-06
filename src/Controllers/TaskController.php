@@ -100,7 +100,9 @@ class TaskController extends AbstractController{
 
     public function deleteTask($request) {
         $taskId = (int) $request["post"]["taskId"] ?? "";
-        
+        $redirectUrl = $request["post"]["redirectUrl"] ?? "index.php?page=tasks";
+        $redirectUrl = urldecode($redirectUrl);
+    
         $success = $this->taskRepository->handleDeleteTask($taskId);
 
         if ($success) {
@@ -110,7 +112,7 @@ class TaskController extends AbstractController{
              SessionService::setAlertMessage("error_message", "Failed to delete task");
         }     
 
-        header("Location: index.php?page=tasks");
+        header("Location: " . $redirectUrl);
         exit;
     }
 
