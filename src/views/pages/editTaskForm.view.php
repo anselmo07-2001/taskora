@@ -1,4 +1,4 @@
-<?php //var_dump($project); ?>
+<?php //var_dump(explode("?",urldecode($redirectUrl))[1]); ?>
 
 <div class="container custom-container">
     <?php require __DIR__ . "/../components/flashMessage.view.php" ?>
@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="d-grid">
-                    <a href="<?php echo BASE_URL . "/index.php?page=tasks"; ?>" class="btn btn-danger">Cancel</a>
+                    <a href="<?php echo BASE_URL . "/index.php?" . explode("?",urldecode($redirectUrl))[1]; ?>" class="btn btn-danger">Cancel</a>
                 </div>
             </form>
         </div>

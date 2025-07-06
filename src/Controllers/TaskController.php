@@ -44,7 +44,8 @@ class TaskController extends AbstractController{
                 "errors" => $errors,
                 "newTaskName" => $newTaskName,
                 "newTaskDescription" => $newTaskDescription,
-                "newTaskDeadline" => $newTaskDeadline
+                "newTaskDeadline" => $newTaskDeadline,
+                "redirectUrl" => $redirectUrl
             ]);
             exit;
         }
@@ -91,7 +92,8 @@ class TaskController extends AbstractController{
                 "errors" => $errors,
                 "newTaskName" => $newTaskName,
                 "newTaskDescription" => $newTaskDescription,
-                "newTaskDeadline" => $newTaskDeadline
+                "newTaskDeadline" => $newTaskDeadline, 
+                "redirectUrl" => $redirectUrl
             ]);
             exit;
         }
