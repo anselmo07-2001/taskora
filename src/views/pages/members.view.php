@@ -58,8 +58,8 @@
                         <div class="d-flex gap-1">
                             <?php if($currentUserSession["role"] === "admin" ): ?>
                                 <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "updateAccountInfoForm", "userId" => $user["id"]]); ?>" 
-                                        class="btn custom-primary-btn my-manage-btn">
-                                            Update
+                                        class="btn btn-secondary my-manage-btn">
+                                            Edit
                                 </a>
                             <?php endif; ?>
                             <a href="<?= BASE_URL . "/index.php?" . http_build_query(["page" => "memberProjects", "userId" => $user["id"]]); ?>" 
