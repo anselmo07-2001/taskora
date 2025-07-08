@@ -1,4 +1,7 @@
-Taskora is a lightweight and straightforward project management tool I built to help teams stay organized. It lets admins and project managers create projects and tasks, assign them to members, and keep track of progress. Once a task is marked as done by a member, a manager or admin can review and approve it. You may view my project at https://taskora.riveraanselmo.com/index.php, kindly use this cred, username: admin  password: 123
+Taskora is a lightweight and straightforward project management tool I built to help teams stay organized. It lets admins and project managers create projects and tasks, assign them to members, and keep track of progress. Once a task is marked as done by a member, a manager or admin can review and approve it. 
+
+You may view my project at https://taskora.riveraanselmo.com/index.php, 
+Kindly use this cred, username: admin  password: 123
 
 Who Can Do What?
 Admin
