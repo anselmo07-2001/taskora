@@ -118,7 +118,8 @@ if (isset($routes[$page][$method])) {
         $role = SessionService::getSessionKey("user")["role"];
         if (!in_array($role, $route['roles'])) {
             http_response_code(403);
-            echo "<h1>Forbidden Route Please contact your Administrator to access this page</h1>";
+            $container->get("PageController")->showError404Page();
+            //echo "<h1>Forbidden Route Please contact your Administrator to access this page</h1>";
             exit;
         }
     }

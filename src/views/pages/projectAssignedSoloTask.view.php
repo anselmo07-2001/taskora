@@ -1,4 +1,4 @@
-<?php var_dump($currentUserSession); ?>
+<?php // var_dump($currentUserSession); ?>
 
 <h6 class="text-muted">Total Solo Task: <?= count($tabData["soloTask"]); ?></h6>
 <div class="mb-3 d-flex justify-content-between">

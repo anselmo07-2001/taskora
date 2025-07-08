@@ -41,6 +41,11 @@ class PageController extends AbstractController {
          $this->taskNotesRepository = $taskNotesRepository;
     } 
 
+    public function showError404Page() {
+        $this->render("error404.view", [
+        ]);
+    }
+
     public function showEditTaskForm($request) {
         $taskId = (int) $request["get"]["taskId"] ?? "";
         $task = $this->taskRepository->fetchTask($taskId);
